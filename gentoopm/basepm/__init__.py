@@ -3,7 +3,10 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.basepm import PackageManager
+from abc import ABCMeta
 
-class PortagePM(PackageManager):
-	pass
+class PackageManager(object):
+	"""
+	Base abstract class for a package manager.
+	"""
+	__metaclass__ = ABCMeta

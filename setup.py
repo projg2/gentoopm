@@ -40,7 +40,11 @@ setup(
 		url = 'https://github.com/mgorny/gentoopm/',
 
 		packages = [
-			'gentoopm'
+			'gentoopm',
+			'gentoopm.basepm',
+			'gentoopm.paludispm',
+			'gentoopm.pkgcorepm',
+			'gentoopm.portagepm'
 		],
 		
 		classifiers = [

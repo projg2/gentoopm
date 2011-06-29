@@ -5,5 +5,5 @@
 
 from gentoopm.basepm import PackageManager
 
-class PortagePM(PackageManager):
+class PaludisPM(PackageManager):
 	pass
