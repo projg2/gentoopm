@@ -1,0 +1,12 @@
+#!/usr/bin/python
+#	vim:fileencoding=utf-8
+# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# Released under the terms of the 2-clause BSD license.
+
+import sys
+
+from gentoopm.querycli import PMQueryCLI
+
+if __name__ == '__main__':
+	cli = PMQueryCLI()
+	sys.exit(cli.main(sys.argv))
