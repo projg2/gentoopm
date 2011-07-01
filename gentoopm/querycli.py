@@ -65,23 +65,19 @@ class PMQueryCommands(object):
 
 	class repo_path(PMQueryCommand):
 		"""
-		Print the path to the named repository (or the main repository, if none
-		specified).
+		Print the path to the named repository.
 		"""
 		def __init__(self, argparser):
 			PMQueryCommand.__init__(self, argparser)
-			argparser.add_argument('repo_name', type=reponame, nargs='?',
-				help='the repository name to look up (defaults to the main repository)')
+			argparser.add_argument('repo_name', type=reponame,
+				help='The repository name to look up')
 
 		def __call__(self, pm, args):
-			if args.repo_name is None:
-				r = pm.repositories.master
-			else:
-				try:
-					r = pm.repositories[args.repo_name]
-				except KeyError:
-					self._arg.error('No repository named %s' % args.repo_name)
-					return 1
+			try:
+				r = pm.repositories[args.repo_name]
+			except KeyError:
+				self._arg.error('No repository named %s' % args.repo_name)
+				return 1
 			print(r.path)
 
 	def __iter__(self):
