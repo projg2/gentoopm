@@ -27,6 +27,7 @@ class PMQueryCommand(ABCObject):
 		Return the help string for a sub-command.
 		"""
 		descdoc = ' '.join(self.__doc__.split())
+		descdoc = descdoc[0].lower() + descdoc[1:]
 		return descdoc.rstrip('.')
 
 	def __init__(self, argparser):
