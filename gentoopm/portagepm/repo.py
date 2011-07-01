@@ -24,6 +24,11 @@ class PortageRepoDict(PMRepositoryDict):
 		else:
 			return PortDBRepository(r, self._dbapi)
 
+	@property
+	def master(self):
+		return PortDBRepository(self._dbapi.repositories.mainRepo(),
+				self._dbapi)
+
 	def __init__(self, portdbapi):
 		self._dbapi = portdbapi
 

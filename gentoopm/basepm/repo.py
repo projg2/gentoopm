@@ -44,6 +44,14 @@ class PMRepositoryDict(ABCObject):
 		"""
 		pass
 
+	@abstractproperty
+	def master(self):
+		"""
+		Get the master (main) repository. This is usually the 'gentoo'
+		repository.
+		"""
+		pass
+
 class PMRepository(ABCObject):
 	"""
 	Base abstract class for a single ebuild repository.
