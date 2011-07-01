@@ -6,4 +6,4 @@
 from gentoopm.basepm import PackageManager
 
 class PaludisPM(PackageManager):
-	pass
+	name = 'paludis'

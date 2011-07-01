@@ -6,4 +6,4 @@
 from gentoopm.basepm import PackageManager
 
 class PortagePM(PackageManager):
-	pass
+	name = 'portage'

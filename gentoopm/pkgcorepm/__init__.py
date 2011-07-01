@@ -6,4 +6,4 @@
 from gentoopm.basepm import PackageManager
 
 class PkgCorePM(PackageManager):
-	pass
+	name = 'pkgcore'
