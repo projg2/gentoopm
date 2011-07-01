@@ -19,3 +19,10 @@ class PortDBRepository(PMRepository):
 	@property
 	def name(self):
 		return self._name
+
+	@property
+	def path(self):
+		p = self._dbapi.getRepositoryPath(self._name)
+		if not p:
+			raise KeyError('Failed to access repository %s' % self._name)
+		return p

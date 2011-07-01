@@ -18,3 +18,10 @@ class PMRepository(object):
 		fallback name).
 		"""
 		pass
+
+	@abstractproperty
+	def path(self):
+		"""
+		Return the canonical path to the ebuild repository.
+		"""
+		pass
