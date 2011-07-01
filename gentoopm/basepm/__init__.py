@@ -3,6 +3,8 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import os.path
+
 from abc import ABCMeta, abstractmethod, abstractproperty
 
 class PMRepositoryDict(object):
@@ -14,6 +16,26 @@ class PMRepositoryDict(object):
 	subclass.
 	"""
 	__metaclass__ = ABCMeta
+
+	def __getitem__(self, key):
+		"""
+		Get the repository by its name or path. If using a path as a key,
+		an absolute path must be passed.
+
+		By default, iterates over the repository list. Can be replaced with
+		something more optimal.
+		"""
+		bypath = os.path.isabs(key)
+
+		for r in self:
+			if bypath:
+				# We're requiring exact match to match portage behaviour
+				m = r.path == key
+			else:
+				m = r.name == key
+			if m:
+				return r
+		raise KeyError('No repository matched key %s' % key)
 
 	@abstractmethod
 	def __iter__(self):
