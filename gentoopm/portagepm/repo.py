@@ -9,6 +9,8 @@ class PortDBRepository(PMRepository):
 	def __init__(self, repo_name, portdbapi):
 		self._name = repo_name
 		self._dbapi = portdbapi
+		# Check if repo_name is correct
+		self.path
 
 	def __repr__(self):
 		return '%s(%s, %s)' % (
