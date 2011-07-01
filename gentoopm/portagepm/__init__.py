@@ -3,7 +3,19 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import os
+from portage import create_trees
+
 from gentoopm.basepm import PackageManager
 
 class PortagePM(PackageManager):
 	name = 'portage'
+
+	def reload_config(self):
+		# Similarly to emerge, care for PORTAGE_CONFIGROOT and ROOT.
+		trees = create_trees(
+				config_root = os.environ.get('PORTAGE_CONFIGROOT'),
+				target_root = os.environ.get('ROOT'))
+		tree = trees[max(trees)]
+		self._vardb = tree['vartree'].dbapi
+		self._portdb = tree['porttree'].dbapi
