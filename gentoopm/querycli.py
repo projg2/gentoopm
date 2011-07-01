@@ -8,6 +8,15 @@ from abc import ABCMeta, abstractmethod
 
 from gentoopm import get_package_manager
 
+def reponame(val):
+	"""
+	Check the value for correctness as repository name. In fact, it only ensures
+	it isn't a path so that it won't confuse pm.repositories[val].
+	"""
+	if os.path.isabs(val):
+		raise ValueError('Invalid repository name: %s' % val)
+	return val
+
 class PMQueryCommand(object):
 	""" A single gentoopmq command. """
 	__metaclass__ = ABCMeta
@@ -25,6 +34,7 @@ class PMQueryCommand(object):
 		Instantiate the subcommand, setting argument parser as necessary.
 		"""
 		argparser.set_defaults(instance = self)
+		self._arg = argparser
 
 	@abstractmethod
 	def __call__(self, pm, args):
@@ -44,6 +54,30 @@ class PMQueryCommands(object):
 		"""
 		def __call__(self, pm, args):
 			print(pm.name)
+
+	class repositories(PMQueryCommand):
+		"""
+		Print the list of ebuild repositories.
+		"""
+		def __call__(self, pm, args):
+			return ' '.join([r.name for r in pm.repositories])
+
+	class repo_path(PMQueryCommand):
+		"""
+		Print the path to the named repository.
+		"""
+		def __init__(self, argparser):
+			PMQueryCommand.__init__(self, argparser)
+			argparser.add_argument('repo_name', type=reponame,
+				help='The repository name to look up')
+
+		def __call__(self, pm, args):
+			try:
+				r = pm.repositories[args.repo_name]
+			except KeyError:
+				self._arg.error('No repository named %s' % args.repo_name)
+				return 1
+			print(r.path)
 
 	def __iter__(self):
 		for k in dir(self):
