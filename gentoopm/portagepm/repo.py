@@ -3,7 +3,27 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.basepm.repo import PMRepository
+import os.path
+
+from gentoopm.basepm.repo import PMRepository, PMRepositoryDict
+
+class PortageRepoDict(PMRepositoryDict):
+	def __iter__(self):
+		for repo_name in self._dbapi.getRepositories():
+			yield PortDBRepository(repo_name, self._dbapi)
+
+	def __getitem__(self, key):
+		if os.path.isabs(key):
+			repo_name = self._dbapi.getRepositoryName(key)
+		else:
+			repo_name = key
+		try:
+			return PortDBRepository(repo_name, self._dbapi)
+		except KeyError:
+			raise KeyError('No repository matched key %s' % key)
+
+	def __init__(self, portdbapi):
+		self._dbapi = portdbapi
 
 class PortDBRepository(PMRepository):
 	def __init__(self, repo_name, portdbapi):
