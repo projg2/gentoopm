@@ -85,7 +85,7 @@ class PMQueryCommands(object):
 			if k.startswith('_'):
 				continue
 			cls = getattr(self, k)
-			yield (k, cls.help(), cls)
+			yield (k.replace('_', '-'), cls.help(), cls)
 
 class PMQueryCLI(object):
 	""" A CLI for gentoopmq. """
