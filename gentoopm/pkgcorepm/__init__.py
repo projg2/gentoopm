@@ -6,9 +6,14 @@
 from pkgcore.config import load_config
 
 from gentoopm.basepm import PackageManager
+from gentoopm.pkgcorepm.repo import PkgCoreRepoDict
 
 class PkgCorePM(PackageManager):
 	name = 'pkgcore'
 
 	def reload_config(self):
 		self._config = load_config()
+
+	@property
+	def repositories(self):
+		return PkgCoreRepoDict(self._config)
