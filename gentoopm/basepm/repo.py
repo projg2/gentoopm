@@ -3,13 +3,14 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from abc import ABCMeta, abstractproperty
+from abc import abstractproperty
 
-class PMRepository(object):
+from gentoopm.util import ABCObject
+
+class PMRepository(ABCObject):
 	"""
 	Base abstract class for a single ebuild repository.
 	"""
-	__metaclass__ = ABCMeta
 
 	@abstractproperty
 	def name(self):

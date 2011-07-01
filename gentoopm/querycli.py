@@ -4,9 +4,10 @@
 # Released under the terms of the 2-clause BSD license.
 
 import argparse, os.path
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 
 from gentoopm import get_package_manager
+from gentoopm.util import ABCObject
 
 def reponame(val):
 	"""
@@ -17,9 +18,8 @@ def reponame(val):
 		raise ValueError('Invalid repository name: %s' % val)
 	return val
 
-class PMQueryCommand(object):
+class PMQueryCommand(ABCObject):
 	""" A single gentoopmq command. """
-	__metaclass__ = ABCMeta
 
 	@classmethod
 	def help(self):

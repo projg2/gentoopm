@@ -4,10 +4,11 @@
 # Released under the terms of the 2-clause BSD license.
 
 import os.path
+from abc import abstractmethod, abstractproperty
 
-from abc import ABCMeta, abstractmethod, abstractproperty
+from gentoopm.util import ABCObject
 
-class PMRepositoryDict(object):
+class PMRepositoryDict(ABCObject):
 	"""
 	A dict-like object providing access to a set of repositories.
 
@@ -15,7 +16,6 @@ class PMRepositoryDict(object):
 	or iterated over. An access should result in an instantiated PMRepository
 	subclass.
 	"""
-	__metaclass__ = ABCMeta
 
 	def __getitem__(self, key):
 		"""
@@ -44,11 +44,10 @@ class PMRepositoryDict(object):
 		"""
 		pass
 
-class PackageManager(object):
+class PackageManager(ABCObject):
 	"""
 	Base abstract class for a package manager.
 	"""
-	__metaclass__ = ABCMeta
 
 	@abstractproperty
 	def name(self):
