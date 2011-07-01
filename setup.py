@@ -46,6 +46,9 @@ setup(
 			'gentoopm.pkgcorepm',
 			'gentoopm.portagepm'
 		],
+		scripts = [
+			'gentoopmq'
+		],
 		
 		classifiers = [
 			'Development Status :: 1 - Planning',
