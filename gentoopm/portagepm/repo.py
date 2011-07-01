@@ -9,42 +9,33 @@ from gentoopm.basepm.repo import PMRepository, PMRepositoryDict
 
 class PortageRepoDict(PMRepositoryDict):
 	def __iter__(self):
-		for repo_name in self._dbapi.getRepositories():
-			yield PortDBRepository(repo_name, self._dbapi)
+		for p_repo in self._dbapi.repositories:
+			yield PortDBRepository(p_repo, self._dbapi)
 
 	def __getitem__(self, key):
-		if os.path.isabs(key):
-			repo_name = self._dbapi.getRepositoryName(key)
-		else:
-			repo_name = key
 		try:
-			return PortDBRepository(repo_name, self._dbapi)
+			if os.path.isabs(key):
+				repo_name = self._dbapi.repositories.get_name_for_location(key)
+			else:
+				repo_name = key
+			r = self._dbapi.repositories[repo_name]
 		except KeyError:
 			raise KeyError('No repository matched key %s' % key)
+		else:
+			return PortDBRepository(r, self._dbapi)
 
 	def __init__(self, portdbapi):
 		self._dbapi = portdbapi
 
 class PortDBRepository(PMRepository):
-	def __init__(self, repo_name, portdbapi):
-		self._name = repo_name
+	def __init__(self, repo_obj, portdbapi):
+		self._repo = repo_obj
 		self._dbapi = portdbapi
-		# Check if repo_name is correct
-		self.path
-
-	def __repr__(self):
-		return '%s(%s, %s)' % (
-				self.__class__.__name__,
-				repr(self._name),
-				repr(self._dbapi))
 
 	@property
 	def name(self):
-		return self._name
+		return self._repo.name
 
 	@property
 	def path(self):
-		p = self._dbapi.getRepositoryPath(self._name)
-		if not p:
-			raise KeyError('Failed to access repository %s' % self._name)
-		return p
+		return self._repo.location
