@@ -13,10 +13,6 @@ class PaludisRepoDict(PMRepositoryDict):
 				'--format', 'e'):
 			yield PaludisRepository(l, self._shell)
 
-	@property
-	def master(self):
-		return self['gentoo'] # XXX
-
 	def __init__(self, shell):
 		self._shell = shell
 

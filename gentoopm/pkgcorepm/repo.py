@@ -13,10 +13,6 @@ class PkgCoreRepoDict(PMRepositoryDict):
 			if os.path.isabs(k):
 				yield PkgCoreRepository(self._config.repo[k])
 
-	@property
-	def master(self):
-		return PkgCoreRepository(self._config.repo['portdir'])
-
 	def __init__(self, config):
 		self._config = config
 
