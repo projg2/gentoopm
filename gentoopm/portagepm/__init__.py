@@ -6,7 +6,16 @@
 import os
 from portage import create_trees
 
-from gentoopm.basepm import PackageManager
+from gentoopm.basepm import PackageManager, PMRepositoryDict
+from gentoopm.portagepm.repo import PortDBRepository
+
+class PortageRepoDict(PMRepositoryDict):
+	def __iter__(self):
+		for repo_name in self._dbapi.getRepositories():
+			yield PortDBRepository(repo_name, self._dbapi)
+
+	def __init__(self, portdbapi):
+		self._dbapi = portdbapi
 
 class PortagePM(PackageManager):
 	name = 'portage'
@@ -19,3 +28,7 @@ class PortagePM(PackageManager):
 		tree = trees[max(trees)]
 		self._vardb = tree['vartree'].dbapi
 		self._portdb = tree['porttree'].dbapi
+
+	@property
+	def repositories(self):
+		return PortageRepoDict(self._portdb)
