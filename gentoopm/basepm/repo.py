@@ -6,6 +6,7 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
+from gentoopm.basepm.pkg import PMKeyedPackageDict
 from gentoopm.util import ABCObject
 
 class PMRepositoryDict(ABCObject):
@@ -44,10 +45,18 @@ class PMRepositoryDict(ABCObject):
 		"""
 		pass
 
-class PMRepository(ABCObject):
+class PMRepository(PMKeyedPackageDict):
 	"""
 	Base abstract class for a single ebuild repository.
 	"""
+
+	@property
+	def parent(self):
+		return None
+
+	@property
+	def key(self):
+		return self.name
 
 	@abstractproperty
 	def name(self):

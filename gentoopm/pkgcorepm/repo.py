@@ -6,6 +6,7 @@
 import os.path
 
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict
+from gentoopm.pkgcorepm.pkg import PkgCoreCategory
 
 class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -27,3 +28,7 @@ class PkgCoreRepository(PMRepository):
 	@property
 	def path(self):
 		return self._repo.location
+
+	def __iter__(self):
+		for c in self._repo.categories:
+			yield PkgCoreCategory(c, self)
