@@ -9,23 +9,21 @@ from gentoopm.basepm.repo import PMRepository, PMRepositoryDict
 
 class PaludisRepoDict(PMRepositoryDict):
 	def __iter__(self):
-		for l in self._shell.get_list('print-repositories',
-				'--format', 'e'):
-			yield PaludisRepository(l, self._shell)
+		for r in self._env.repositories:
+			if r.format_key().parse_value() == 'e':
+				yield PaludisRepository(r)
 
-	def __init__(self, shell):
-		self._shell = shell
+	def __init__(self, env):
+		self._env = env
 
 class PaludisRepository(PMRepository):
-	def __init__(self, repo_name, shell):
-		self._name = repo_name
-		self._shell = shell
+	def __init__(self, repo_obj):
+		self._repo = repo_obj
 
 	@property
 	def name(self):
-		return self._name
+		return str(self._repo.name)
 
 	@property
 	def path(self):
-		return self._shell.get_metadata('print-repository-metadata',
-				'location', self._name)
+		return self._repo.location_key().parse_value()
