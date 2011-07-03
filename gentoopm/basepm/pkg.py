@@ -61,5 +61,16 @@ class PMKeyedPackageDict(PMKeyedPackageBase):
 		"""
 		pass
 
+	def __getitem__(self, key):
+		"""
+		Get a sub-item matching the key.
+		"""
+		for i in self:
+			if i.key == key:
+				return i
+		else:
+			raise KeyError('No packages match keyset: (%s)' % \
+					', '.join(self.keys + [key]))
+
 class PMPackage(PMKeyedPackageBase):
 	pass
