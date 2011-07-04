@@ -46,3 +46,11 @@ class PaludisRepository(PMRepository):
 		A convenience wrapper for the category list.
 		"""
 		return IterDictWrapper(self)
+
+class PaludisInstalledRepo(PaludisRepository):
+	def __init__(self, env):
+		for r in self._env.repositories:
+			if str(r.name) == 'installed':
+				self._repo = r
+		else:
+			raise Exception('Unable to find installed repository.')
