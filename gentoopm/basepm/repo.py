@@ -9,7 +9,7 @@ from abc import abstractmethod, abstractproperty
 from gentoopm.basepm.pkg import PMKeyedPackageDict
 from gentoopm.util import ABCObject
 
-class PMRepositoryDict(ABCObject):
+class PMRepositoryDict(PMKeyedPackageDict):
 	"""
 	A dict-like object providing access to a set of repositories.
 
@@ -17,6 +17,10 @@ class PMRepositoryDict(ABCObject):
 	or iterated over. An access should result in an instantiated PMRepository
 	subclass.
 	"""
+
+	key = None
+	key_name = None
+	parent = None
 
 	def __getitem__(self, key):
 		"""
