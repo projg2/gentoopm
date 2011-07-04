@@ -47,7 +47,7 @@ class PMKeyedPackageBase(ABCObject):
 		key_names = []
 		keys = []
 		o = self
-		while o:
+		while o and o.key is not None:
 			keys.insert(0, o.key)
 			key_names.insert(0, o.key_name)
 			o = o.parent
