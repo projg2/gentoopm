@@ -8,7 +8,7 @@ from portage import create_trees
 
 from gentoopm.basepm import PackageManager
 from gentoopm.portagepm.repo import PortageRepoDict
-from gentoopm.portagepm.db import VDBRepository
+from gentoopm.portagepm.db import VDBRepository, PortDBRepository
 
 class PortagePM(PackageManager):
 	name = 'portage'
@@ -29,3 +29,7 @@ class PortagePM(PackageManager):
 	@property
 	def installed(self):
 		return VDBRepository(self._vardb)
+
+	@property
+	def stack(self):
+		return PortDBRepository(self._portdb)

@@ -47,3 +47,11 @@ class PackageManager(ABCObject):
 		Return a PMRepository for installed packages (vardb).
 		"""
 		pass
+
+	@abstractproperty
+	def stack(self):
+		"""
+		Return a PMRepository providing access to the stacked (overlaid)
+		packages in all ebuild repositories.
+		"""
+		pass

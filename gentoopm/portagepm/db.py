@@ -10,9 +10,9 @@ from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage, PMPackageMetadata
 from gentoopm.portagepm.pkg import PortageCategory, PortagePackage, PortageCPV
 from gentoopm.util import IterDictWrapper
 
-class VDBRepository(PMRepository):
-	def __init__(self, vardbapi):
-		self._dbapi = vardbapi
+class PortDBRepository(PMRepository):
+	def __init__(self, dbapi):
+		self._dbapi = dbapi
 
 	@property
 	def name(self):
@@ -24,7 +24,7 @@ class VDBRepository(PMRepository):
 
 	def __iter__(self):
 		for c in self._dbapi.categories:
-			pc = PortageVDBCategory(c, self, self._dbapi)
+			pc = PortageDBCategory(c, self, self._dbapi)
 			try:
 				next(iter(pc))
 			except StopIteration: # omit empty categories
@@ -38,20 +38,23 @@ class VDBRepository(PMRepository):
 		A convenience wrapper for the category list.
 		"""
 		return IterDictWrapper(self)
-	
-class PortageVDBCategory(PortageCategory):
+
+class VDBRepository(PortDBRepository):
+	pass
+
+class PortageDBCategory(PortageCategory):
 	def __iter__(self):
 		for p in self._dbapi.cp_all():
 			cat = portage.versions.catsplit(p)[0]
 			if cat == self.key:
-				yield PortageVDBPackage(p, self, self._dbapi)
+				yield PortageDBPackage(p, self, self._dbapi)
 
-class PortageVDBPackage(PortagePackage):
+class PortageDBPackage(PortagePackage):
 	def __iter__(self):
 		for p in self._dbapi.cp_list(self._qpn):
-			yield PortageVDBCPV(p, self, self._dbapi)
+			yield PortageDBCPV(p, self, self._dbapi)
 
-class PortageVDBCPV(PortageCPV):
+class PortageDBCPV(PortageCPV):
 	key_name = 'PVR'
 	def __init__(self, cpv, parent, dbapi):
 		version = portage.versions.cpv_getversion(cpv)
@@ -61,9 +64,9 @@ class PortageVDBCPV(PortageCPV):
 
 	@property
 	def metadata(self):
-		return PortageVDBMetadata(self._cpv, self._dbapi)
+		return PortageDBMetadata(self._cpv, self._dbapi)
 
-class PortageVDBMetadata(PMPackageMetadata):
+class PortageDBMetadata(PMPackageMetadata):
 	def __init__(self, cpv, dbapi):
 		self._cpv = cpv
 		self._dbapi = dbapi
