@@ -6,6 +6,8 @@
 import os.path
 
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict
+from gentoopm.portagepm.pkg import PortageCategory
+from gentoopm.util import IterDictWrapper
 
 class PortageRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -39,3 +41,20 @@ class PortDBRepository(PMRepository):
 	@property
 	def path(self):
 		return self._repo.location
+
+	def __iter__(self):
+		for c in self._dbapi.categories:
+			pc = PortageCategory(c, self, self._dbapi)
+			try:
+				next(iter(pc))
+			except StopIteration: # omit empty categories
+				pass
+			else:
+				yield pc
+
+	@property
+	def categories(self):
+		"""
+		A convenience wrapper for the category list.
+		"""
+		return IterDictWrapper(self)
