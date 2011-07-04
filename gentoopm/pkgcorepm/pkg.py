@@ -3,10 +3,11 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage
-
 from pkgcore.restrictions.packages import PackageRestriction, AndRestriction
 from pkgcore.restrictions.values import StrExactMatch
+
+from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage
+from gentoopm.util import IterDictWrapper
 
 class PkgCoreCategory(PMKeyedPackageDict):
 	key_name = 'CATEGORY'
@@ -14,6 +15,13 @@ class PkgCoreCategory(PMKeyedPackageDict):
 		repo = self.parent
 		for p in repo._repo.packages[self.key]:
 			yield PkgCorePackage(p, self)
+
+	@property
+	def packages(self):
+		"""
+		A convenience wrapper for the package list.
+		"""
+		return IterDictWrapper(self)
 
 class PkgCorePackage(PMKeyedPackageDict):
 	key_name = 'PN'
@@ -26,6 +34,13 @@ class PkgCorePackage(PMKeyedPackageDict):
 		repo = self.parent.parent
 		for p in repo._repo.itermatch(r):
 			yield PkgCoreEbuild(p, self)
+
+	@property
+	def versions(self):
+		"""
+		A convenience wrapper for the version list.
+		"""
+		return IterDictWrapper(self)
 
 class PkgCoreEbuild(PMPackage):
 	key_name = 'PVR'

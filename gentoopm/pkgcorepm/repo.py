@@ -7,6 +7,7 @@ import os.path
 
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict
 from gentoopm.pkgcorepm.pkg import PkgCoreCategory
+from gentoopm.util import IterDictWrapper
 
 class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -32,3 +33,10 @@ class PkgCoreRepository(PMRepository):
 	def __iter__(self):
 		for c in self._repo.categories:
 			yield PkgCoreCategory(c, self)
+
+	@property
+	def categories(self):
+		"""
+		A convenience wrapper for the category list.
+		"""
+		return IterDictWrapper(self)
