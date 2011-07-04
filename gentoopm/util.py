@@ -21,3 +21,20 @@ class ABCObject(object):
 	""" A portably-defined object with ABCMeta metaclass. """
 	__metaclass__ = ABCMeta
 ''')
+
+class IterDictWrapper(object):
+	"""
+	A wrapper to a class providing an iterator & dict interface.
+	"""
+
+	def __init__(self, subobj):
+		"""
+		Instantiate the IterDictWrapper with subobj instance.
+		"""
+		self._subobj = subobj
+
+	def __iter__(self):
+		return iter(self._subobj)
+
+	def __getitem__(self, k):
+		return self._subobj[k]
