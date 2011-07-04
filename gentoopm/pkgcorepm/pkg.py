@@ -65,4 +65,7 @@ class PkgCoreMetadata(PMPackageMetadata):
 		elif key == 'INHERITED':
 			return ' '.join(self._pkg.data['_eclasses_'].keys())
 		else:
-			return self._pkg.data[key]
+			try:
+				return self._pkg.data[key]
+			except KeyError:
+				return ''
