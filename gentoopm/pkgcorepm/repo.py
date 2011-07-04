@@ -5,7 +5,8 @@
 
 import os.path
 
-from gentoopm.basepm.repo import PMRepository, PMRepositoryDict
+from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
+		PMEbuildRepository
 from gentoopm.pkgcorepm.pkg import PkgCoreCategory
 from gentoopm.util import IterDictWrapper
 
@@ -13,7 +14,7 @@ class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):
 		for k in self._config.repo:
 			if os.path.isabs(k):
-				yield PkgCoreRepository(self._config.repo[k])
+				yield PkgCoreEbuildRepo(self._config.repo[k])
 
 	def __init__(self, config):
 		self._config = config
@@ -21,14 +22,6 @@ class PkgCoreRepoDict(PMRepositoryDict):
 class PkgCoreRepository(PMRepository):
 	def __init__(self, repo_obj):
 		self._repo = repo_obj
-
-	@property
-	def name(self):
-		return self._repo.repo_id
-
-	@property
-	def path(self):
-		return self._repo.location
 
 	def __iter__(self):
 		for c in self._repo.categories:
@@ -41,9 +34,18 @@ class PkgCoreRepository(PMRepository):
 		"""
 		return IterDictWrapper(self)
 
+class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository):
+	@property
+	def name(self):
+		return self._repo.repo_id
+
+	@property
+	def path(self):
+		return self._repo.location
+
 class PkgCoreInstalledRepo(PkgCoreRepository):
 	def __init__(self, config):
-		self._repo = config.repo['installed']
+		self._repo = config.repo['vdb']
 
 class PkgCoreRepoStack(PkgCoreRepository):
 	def __init__(self, config):

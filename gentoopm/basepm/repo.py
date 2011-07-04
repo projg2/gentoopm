@@ -51,13 +51,23 @@ class PMRepositoryDict(PMKeyedPackageDict):
 
 class PMRepository(PMKeyedPackageDict):
 	"""
-	Base abstract class for a single ebuild repository.
+	Base abstract class for a single repository.
 	"""
-	key_name = 'REPOSITORY'
+	key_name = None
 
 	@property
 	def parent(self):
 		return None
+
+	@property
+	def key(self):
+		return None
+
+class PMEbuildRepository(PMRepository):
+	"""
+	Base abstract class for an ebuild repository (on livefs).
+	"""
+	key_name = 'REPOSITORY'
 
 	@property
 	def key(self):

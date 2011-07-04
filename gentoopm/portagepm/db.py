@@ -10,38 +10,6 @@ from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage, PMPackageMetadata
 from gentoopm.portagepm.pkg import PortageCategory, PortagePackage, PortageCPV
 from gentoopm.util import IterDictWrapper
 
-class PortDBRepository(PMRepository):
-	def __init__(self, dbapi):
-		self._dbapi = dbapi
-
-	@property
-	def name(self):
-		return None
-
-	@property
-	def path(self):
-		return None
-
-	def __iter__(self):
-		for c in self._dbapi.categories:
-			pc = PortageDBCategory(c, self, self._dbapi)
-			try:
-				next(iter(pc))
-			except StopIteration: # omit empty categories
-				pass
-			else:
-				yield pc
-
-	@property
-	def categories(self):
-		"""
-		A convenience wrapper for the category list.
-		"""
-		return IterDictWrapper(self)
-
-class VDBRepository(PortDBRepository):
-	pass
-
 class PortageDBCategory(PortageCategory):
 	def __iter__(self):
 		for p in self._dbapi.cp_all():
@@ -73,3 +41,28 @@ class PortageDBMetadata(PMPackageMetadata):
 
 	def __getitem__(self, key):
 		return self._dbapi.aux_get(self._cpv, [key])[0]
+	
+class PortDBRepository(PMRepository):
+	def __init__(self, dbapi):
+		self._dbapi = dbapi
+
+	_category_class = PortageDBCategory
+	def __iter__(self):
+		for c in self._dbapi.categories:
+			pc = self._category_class(c, self, self._dbapi)
+			try:
+				next(iter(pc))
+			except StopIteration: # omit empty categories
+				pass
+			else:
+				yield pc
+
+	@property
+	def categories(self):
+		"""
+		A convenience wrapper for the category list.
+		"""
+		return IterDictWrapper(self)
+
+class VDBRepository(PortDBRepository):
+	pass

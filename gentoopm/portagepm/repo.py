@@ -5,14 +5,15 @@
 
 import os.path
 
-from gentoopm.basepm.repo import PMRepository, PMRepositoryDict
+from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, PMEbuildRepository
+from gentoopm.portagepm.db import PortDBRepository
 from gentoopm.portagepm.pkg import PortageCategory
 from gentoopm.util import IterDictWrapper
 
 class PortageRepoDict(PMRepositoryDict):
 	def __iter__(self):
 		for p_repo in self._dbapi.repositories:
-			yield PortDBRepository(p_repo, self._dbapi)
+			yield PortageRepository(p_repo, self._dbapi)
 
 	def __getitem__(self, key):
 		try:
@@ -24,15 +25,15 @@ class PortageRepoDict(PMRepositoryDict):
 		except KeyError:
 			raise KeyError('No repository matched key %s' % key)
 		else:
-			return PortDBRepository(r, self._dbapi)
+			return PortageRepository(r, self._dbapi)
 
 	def __init__(self, portdbapi):
 		self._dbapi = portdbapi
 
-class PortDBRepository(PMRepository):
+class PortageRepository(PortDBRepository, PMEbuildRepository):
 	def __init__(self, repo_obj, portdbapi):
 		self._repo = repo_obj
-		self._dbapi = portdbapi
+		PortDBRepository.__init__(self, portdbapi)
 
 	@property
 	def name(self):
@@ -42,19 +43,4 @@ class PortDBRepository(PMRepository):
 	def path(self):
 		return self._repo.location
 
-	def __iter__(self):
-		for c in self._dbapi.categories:
-			pc = PortageCategory(c, self, self._dbapi)
-			try:
-				next(iter(pc))
-			except StopIteration: # omit empty categories
-				pass
-			else:
-				yield pc
-
-	@property
-	def categories(self):
-		"""
-		A convenience wrapper for the category list.
-		"""
-		return IterDictWrapper(self)
+	_category_class = PortageCategory
