@@ -40,3 +40,7 @@ class PkgCoreRepository(PMRepository):
 		A convenience wrapper for the category list.
 		"""
 		return IterDictWrapper(self)
+
+class PkgCoreInstalledRepo(PkgCoreRepository):
+	def __init__(self, config):
+		self._repo = config.repo['installed']

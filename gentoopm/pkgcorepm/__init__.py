@@ -6,7 +6,7 @@
 from pkgcore.config import load_config
 
 from gentoopm.basepm import PackageManager
-from gentoopm.pkgcorepm.repo import PkgCoreRepoDict
+from gentoopm.pkgcorepm.repo import PkgCoreRepoDict, PkgCoreInstalledRepo
 
 class PkgCorePM(PackageManager):
 	name = 'pkgcore'
@@ -17,3 +17,7 @@ class PkgCorePM(PackageManager):
 	@property
 	def repositories(self):
 		return PkgCoreRepoDict(self._config)
+
+	@property
+	def installed(self):
+		return PkgCoreInstalledRepo(self._config)
