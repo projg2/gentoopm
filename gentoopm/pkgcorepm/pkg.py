@@ -6,7 +6,7 @@
 from pkgcore.restrictions.packages import PackageRestriction, AndRestriction
 from pkgcore.restrictions.values import StrExactMatch
 
-from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage
+from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage, PMPackageMetadata
 from gentoopm.util import IterDictWrapper
 
 class PkgCoreCategory(PMKeyedPackageDict):
@@ -50,3 +50,19 @@ class PkgCoreEbuild(PMPackage):
 		if pkg.revision:
 			pvr += '-r%d' % pkg.revision
 		PMPackage.__init__(self, pvr, parent)
+
+	@property
+	def metadata(self):
+		return PkgCoreMetadata(self._pkg)
+
+class PkgCoreMetadata(PMPackageMetadata):
+	def __init__(self, pkg):
+		self._pkg = pkg
+
+	def __getitem__(self, key):
+		if key == 'EAPI':
+			return self._pkg.eapi
+		elif key == 'INHERITED':
+			return ' '.join(self._pkg.data['_eclasses_'].keys())
+		else:
+			return self._pkg.data[key]
