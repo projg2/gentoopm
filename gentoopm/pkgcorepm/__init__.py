@@ -6,7 +6,8 @@
 from pkgcore.config import load_config
 
 from gentoopm.basepm import PackageManager
-from gentoopm.pkgcorepm.repo import PkgCoreRepoDict, PkgCoreInstalledRepo
+from gentoopm.pkgcorepm.repo import PkgCoreRepoDict, \
+		PkgCoreInstalledRepo, PkgCoreRepoStack
 
 class PkgCorePM(PackageManager):
 	name = 'pkgcore'
@@ -21,3 +22,7 @@ class PkgCorePM(PackageManager):
 	@property
 	def installed(self):
 		return PkgCoreInstalledRepo(self._config)
+
+	@property
+	def stack(self):
+		return PkgCoreRepoStack(self._config)

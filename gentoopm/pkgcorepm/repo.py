@@ -44,3 +44,15 @@ class PkgCoreRepository(PMRepository):
 class PkgCoreInstalledRepo(PkgCoreRepository):
 	def __init__(self, config):
 		self._repo = config.repo['installed']
+
+class PkgCoreRepoStack(PkgCoreRepository):
+	def __init__(self, config):
+		self._repo = config.repo['repo-stack']
+
+	@property
+	def name(self):
+		return None
+
+	@property
+	def path(self):
+		return None
