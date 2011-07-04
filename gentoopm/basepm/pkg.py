@@ -97,9 +97,84 @@ class PMKeyedPackageDict(PMKeyedPackageBase):
 			else:
 				yield i
 
+	def filter(self, *args, **kwargs):
+		"""
+		Filter the packages based on keys passed as arguments. Positional
+		arguments refer to keys by their level (with first arg being the
+		top-level key), None means match-all. Keyword arguments refer to keys
+		by their names.
+
+		If an argument doesn't match any key (i.e. too many args are passed),
+		a KeyError or IndexError will be raised. If the same key is referred
+		through positional and keyword arguments, a TypeError will be raised.
+
+		The filtering will result in an iterable of PMKeyedPackageDicts
+		or PMPackages, depending on whether the filtering criteria are able
+		to uniquely identify packages.
+
+		The '==' operator is used to match packages. To extend matching, you
+		can provide a class with __eq__() redefined as an argument.
+		"""
+
+		myargs = collections.defaultdict(lambda: None, enumerate(args))
+		mykwargs = collections.defaultdict(lambda: None, **kwargs)
+
+		unused_pos = set(myargs)
+		unused_kws = set(kwargs)
+
+		i = 0
+		try:
+			el = next(iter(self))
+		except StopIteration:
+			pass
+		else:
+			k = el.key_name
+			if myargs[i] is not None:
+				if mykwargs[k] is not None:
+					raise TypeError('args[%d] and kwargs[%s] refer to the same key.' % \
+							(i, k))
+				m = myargs[i]
+				unused_pos.remove(i)
+			else:
+				m = mykwargs[k]
+				unused_kws.discard(k)
+
+		for el in self:
+			if m is None or m == el.key:
+				if unused_pos or unused_kws:
+					newargs = args[1:]
+					newkwargs = kwargs.copy()
+					try:
+						del newkwargs[k]
+					except KeyError:
+						pass
+					for i in el.filter(*newargs, **newkwargs):
+						yield i
+				else:
+					yield el
+
 class PMPackage(PMKeyedPackageBase):
 	"""
 	An abstract class representing a single, uniquely-keyed package
 	in the package tree.
 	"""
-	pass
+
+	@property
+	def flattened(self):
+		"""
+		A convenience property. Returns the package itself, as an iterator.
+		"""
+		yield self
+
+	def filter(self, *args, **kwargs):
+		"""
+		A convenience method. Raises an IndexError if args is not empty,
+		or an KeyError if kwargs is not empty. Otherwise, returns itself
+		as an iterator.
+		"""
+
+		if args:
+			raise IndexError('Unused positional arguments: %s' % args)
+		if kwargs:
+			raise KeyError('Unused keyword arguments: %s' % kwargs)
+		yield self
