@@ -58,12 +58,15 @@ class PortageCPV(PMPackage):
 
 	@property
 	def metadata(self):
-		return PortageMetadata(self._cpv, self._dbapi)
+		return PortageMetadata(self._cpv, self._dbapi,
+				self.parent.parent.parent.path)
 
 class PortageMetadata(PMPackageMetadata):
-	def __init__(self, cpv, dbapi):
+	def __init__(self, cpv, dbapi, tree):
 		self._cpv = cpv
 		self._dbapi = dbapi
+		self._tree = tree
 
 	def __getitem__(self, key):
-		return self._dbapi.aux_get(self._cpv, [key])[0]
+		return self._dbapi.aux_get(self._cpv, [key],
+				mytree = self._tree)[0]
