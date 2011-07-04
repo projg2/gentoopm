@@ -3,6 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import collections
 from abc import abstractmethod, abstractproperty
 
 from gentoopm.util import ABCObject
@@ -30,18 +31,29 @@ class PMKeyedPackageBase(ABCObject):
 		"""
 		return self._key
 
+	@abstractproperty
+	def key_name(self):
+		"""
+		The metadata key name for this key.
+		"""
+		pass
+
 	@property
 	def keys(self):
 		"""
 		The set of keys uniquely identifying the package set (i.e. the parent
 		keys and this one).
 		"""
+		key_names = []
 		keys = []
 		o = self
 		while o:
 			keys.insert(0, o.key)
+			key_names.insert(0, o.key_name)
 			o = o.parent
-		return keys
+		t = collections.namedtuple('%sKeyTuple' % self.__class__.__name__,
+				' '.join(key_names))
+		return t(*keys)
 
 class PMKeyedPackageDict(PMKeyedPackageBase):
 	"""
@@ -73,4 +85,8 @@ class PMKeyedPackageDict(PMKeyedPackageBase):
 					', '.join(self.keys + [key]))
 
 class PMPackage(PMKeyedPackageBase):
+	"""
+	An abstract class representing a single, uniquely-keyed package
+	in the package tree.
+	"""
 	pass

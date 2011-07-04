@@ -49,6 +49,7 @@ class PMRepository(PMKeyedPackageDict):
 	"""
 	Base abstract class for a single ebuild repository.
 	"""
+	key_name = 'REPOSITORY'
 
 	@property
 	def parent(self):
