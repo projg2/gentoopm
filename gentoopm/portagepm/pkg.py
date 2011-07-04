@@ -5,7 +5,7 @@
 
 import portage.versions
 
-from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage
+from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage, PMPackageMetadata
 from gentoopm.util import IterDictWrapper
 
 class PortageCategory(PMKeyedPackageDict):
@@ -55,3 +55,15 @@ class PortageCPV(PMPackage):
 		PMPackage.__init__(self, version, parent)
 		self._cpv = cpv
 		self._dbapi = dbapi
+
+	@property
+	def metadata(self):
+		return PortageMetadata(self._cpv, self._dbapi)
+
+class PortageMetadata(PMPackageMetadata):
+	def __init__(self, cpv, dbapi):
+		self._cpv = cpv
+		self._dbapi = dbapi
+
+	def __getitem__(self, key):
+		return self._dbapi.aux_get(self._cpv, [key])[0]
