@@ -40,3 +40,10 @@ class PackageManager(ABCObject):
 		subclass referring to the currently enabled ebuild repositories.
 		"""
 		pass
+
+	@abstractproperty
+	def installed(self):
+		"""
+		Return a PMRepository for installed packages (vardb).
+		"""
+		pass
