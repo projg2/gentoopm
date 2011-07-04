@@ -7,7 +7,6 @@ import paludis
 
 from gentoopm.basepm import PackageManager
 from gentoopm.paludispm.repo import PaludisRepoDict
-from gentoopm.paludispm.shell import CaveShell
 
 class PaludisPM(PackageManager):
 	name = 'paludis'
