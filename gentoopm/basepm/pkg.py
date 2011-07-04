@@ -84,6 +84,19 @@ class PMKeyedPackageDict(PMKeyedPackageBase):
 			raise KeyError('No packages match keyset: (%s)' % \
 					', '.join(self.keys + [key]))
 
+	@property
+	def flattened(self):
+		"""
+		Flatten the package set and iterate over it. Yield PMPackages.
+		"""
+
+		for i in self:
+			if isinstance(i, PMKeyedPackageDict):
+				for hi in i.flattened:
+					yield hi
+			else:
+				yield i
+
 class PMPackage(PMKeyedPackageBase):
 	"""
 	An abstract class representing a single, uniquely-keyed package
