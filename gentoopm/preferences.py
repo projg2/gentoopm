@@ -6,7 +6,8 @@
 import os
 
 # portage comes last as it is often installed aside anyway
-default_preference_list = ('paludis', 'pkgcore', 'portage')
+# pkgcore is best supported and fastest ATM
+default_preference_list = ('pkgcore', 'paludis', 'portage')
 
 def get_preferred_pms():
 	"""
