@@ -55,34 +55,12 @@ class PMKeyedPackageBase(ABCObject):
 				' '.join(key_names))
 		return t(*keys)
 
-class PMKeyedPackageDict(PMKeyedPackageBase):
-	"""
-	A dict-like object representing a set of packages matched by a N-level key.
-	If it's a last-level key, the dict evaluates to PMPackage subclass
-	instances. Otherwise, it evaluates to lower-level PMKeyedPackageDicts.
-
-	Usually, the highest level PMKeyedPackageDict is PMRepository. Then dicts
-	refer to the category, package name and finally version (where they
-	transform into PMPackages).
-	"""
-
+class PMPackageSet(ABCObject):
 	@abstractmethod
 	def __iter__(self):
 		"""
-		Iterate over child PMKeyedPackageDicts or PMPackages when bottom-level.
+		Iterate over the packages (or sets) in a set.
 		"""
-		pass
-
-	def __getitem__(self, key):
-		"""
-		Get a sub-item matching the key.
-		"""
-		for i in self:
-			if i.key == key:
-				return i
-		else:
-			raise KeyError('No packages match keyset: (%s)' % \
-					', '.join(self.keys + [key]))
 
 	@property
 	def flattened(self):
@@ -134,20 +112,49 @@ class PMKeyedPackageDict(PMKeyedPackageBase):
 			else:
 				m = mykwargs[k]
 
+			newargs = args[1:]
+			newkwargs = kwargs.copy()
+			try:
+				del newkwargs[k]
+			except KeyError:
+				pass
+
 		for el in self:
 			if m is None or m == el.key:
-				newargs = args[1:]
-				newkwargs = kwargs.copy()
-				try:
-					del newkwargs[k]
-				except KeyError:
-					pass
-
 				if newargs or newkwargs:
 					for i in el.filter(*newargs, **newkwargs):
 						yield i
 				else:
 					yield el
+
+class PMKeyedPackageDict(PMKeyedPackageBase, PMPackageSet):
+	"""
+	A dict-like object representing a set of packages matched by a N-level key.
+	If it's a last-level key, the dict evaluates to PMPackage subclass
+	instances. Otherwise, it evaluates to lower-level PMKeyedPackageDicts.
+
+	Usually, the highest level PMKeyedPackageDict is PMRepository. Then dicts
+	refer to the category, package name and finally version (where they
+	transform into PMPackages).
+	"""
+
+	@abstractmethod
+	def __iter__(self):
+		"""
+		Iterate over child PMKeyedPackageDicts or PMPackages when bottom-level.
+		"""
+		pass
+
+	def __getitem__(self, key):
+		"""
+		Get a sub-item matching the key.
+		"""
+		for i in self:
+			if i.key == key:
+				return i
+		else:
+			raise KeyError('No packages match keyset: (%s)' % \
+					', '.join(self.keys + [key]))
 
 class PMPackage(PMKeyedPackageBase):
 	"""
