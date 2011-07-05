@@ -116,6 +116,19 @@ class PMPackageSet(ABCObject):
 
 			return PMFilteredPackageSet(iter(self), m, newargs, newkwargs)
 
+	@property
+	def best(self):
+		"""
+		Return the best-matching package in the set (i.e. flatten it, sort
+		the results and return the first one).
+		"""
+		try:
+			return sorted(self.flattened, reverse = True)[0]
+		except IndexError:
+			raise TypeError('.best called on an empty set')
+		except TypeError:
+			raise TypeError('.best called on a set of differently-named packages')
+
 class PMFilteredPackageSet(PMPackageSet):
 	def __init__(self, it, key, newargs, newkwargs):
 		self._iter = it
