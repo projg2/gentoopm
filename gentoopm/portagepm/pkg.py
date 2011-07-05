@@ -57,9 +57,16 @@ class PortageCPV(PMPackage):
 		self._dbapi = dbapi
 
 	@property
+	def _repo_path(self):
+		return self.parent.parent.parent.path
+
+	@property
 	def metadata(self):
-		return PortageMetadata(self._cpv, self._dbapi,
-				self.parent.parent.parent.path)
+		return PortageMetadata(self._cpv, self._dbapi, self._repo_path)
+
+	@property
+	def path(self):
+		return self._dbapi.findname(self._cpv, self._repo_path)
 
 	def __cmp__(self, other):
 		if not isinstance(other, PortageCPV):

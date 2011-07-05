@@ -53,6 +53,10 @@ class PaludisID(PMPackage):
 	def metadata(self):
 		return PaludisMetadata(self._pkg)
 
+	@property
+	def path(self):
+		return self._pkg.fs_location_key().parse_value()
+
 	def __cmp__(self, other):
 		if not isinstance(other, PaludisID):
 			raise TypeError('Unable to compare %s against %s' % \

@@ -58,6 +58,10 @@ class PkgCoreEbuild(PMPackage):
 	def metadata(self):
 		return PkgCoreMetadata(self._pkg)
 
+	@property
+	def path(self):
+		return self._pkg.path
+
 	def __cmp__(self, other):
 		if not isinstance(other, PkgCoreEbuild):
 			raise TypeError('Unable to compare %s against %s' % \

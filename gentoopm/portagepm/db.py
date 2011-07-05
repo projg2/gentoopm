@@ -3,6 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import os.path
 import portage.versions
 
 from gentoopm.basepm.repo import PMRepository
@@ -33,6 +34,11 @@ class PortageDBCPV(PortageCPV):
 	@property
 	def metadata(self):
 		return PortageDBMetadata(self._cpv, self._dbapi)
+
+	@property
+	def path(self):
+		# .findname() gives .ebuild path
+		return self._dbapi.getpath(self._cpv)
 
 class PortageDBMetadata(PMPackageMetadata):
 	def __init__(self, cpv, dbapi):

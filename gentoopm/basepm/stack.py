@@ -30,6 +30,10 @@ class PMPackageWrapper(PMPackage):
 			p = p.parent
 		return p
 
+	@property
+	def path(self):
+		return self._wrapped.path
+
 	def __cmp__(self, other):
 		r = cmp(self._wrapped, other._wrapped)
 		if r == 0:

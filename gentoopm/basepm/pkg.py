@@ -237,6 +237,14 @@ class PMPackage(PMKeyedPackageBase):
 		yield self
 
 	@abstractproperty
+	def path(self):
+		"""
+		Return path to the ebuild file (or vardb entry) if appropriate.
+		If not available, just return None.
+		"""
+		pass
+
+	@abstractproperty
 	def metadata(self):
 		"""
 		Return PMPackageMetadata object for the package.
