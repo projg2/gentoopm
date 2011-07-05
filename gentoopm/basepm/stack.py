@@ -21,10 +21,20 @@ class PMPackageWrapper(PMPackage):
 
 	@property
 	def key(self):
+		return self._repo.key
+
+	@property
+	def _repo(self):
 		p = self._wrapped.parent
 		while p.key_name != 'REPOSITORY':
 			p = p.parent
-		return p.key
+		return p
+
+	def __cmp__(self, other):
+		r = cmp(self._wrapped, other._wrapped)
+		if r == 0:
+			return cmp(self._repo, other._repo)
+		return r
 
 class PMStackWrapper(PMKeyedPackageDict):
 	def __init__(self, wrapped, parent):
