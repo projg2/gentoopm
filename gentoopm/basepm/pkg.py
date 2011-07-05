@@ -181,15 +181,26 @@ class PMPackage(PMKeyedPackageBase):
 
 	def filter(self, *args, **kwargs):
 		"""
-		A convenience method. Raises an IndexError if args is not empty,
-		or an KeyError if kwargs is not empty. Otherwise, returns itself
-		as an iterator.
+		Filter packages on metadata. This is mostly to extend superclass
+		.filter() method.
+
+		If args are non-empty, raises an IndexError (unused args). If kwargs
+		contains keys not matching metadata, raises a KeyError. Otherwise,
+		returns an iterator -- either over the package itself or an empty one.
 		"""
 
 		if args:
 			raise IndexError('Unused positional arguments: %s' % args)
-		if kwargs:
-			raise KeyError('Unused keyword arguments: %s' % kwargs)
+
+		for k, m in kwargs.items():
+			try:
+				v = self.metadata[k]
+			except KeyError:
+				raise KeyError('Unmatched keyword argument: %s' % k)
+			else:
+				if not m == v:
+					return
+
 		yield self
 
 	@abstractproperty
