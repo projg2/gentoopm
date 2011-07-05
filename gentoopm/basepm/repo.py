@@ -18,9 +18,9 @@ class PMRepositoryDict(PMKeyedPackageDict):
 	subclass.
 	"""
 
-	key = None
-	key_name = None
-	parent = None
+	_key = None
+	_key_name = None
+	_parent = None
 
 	def __getitem__(self, key):
 		"""
@@ -53,24 +53,18 @@ class PMRepository(PMKeyedPackageDict):
 	"""
 	Base abstract class for a single repository.
 	"""
-	key_name = None
-
-	@property
-	def parent(self):
-		return None
-
-	@property
-	def key(self):
-		return None
+	_key_name = None
+	_parent = None
+	_key = None
 
 class PMEbuildRepository(PMRepository):
 	"""
 	Base abstract class for an ebuild repository (on livefs).
 	"""
-	key_name = 'REPOSITORY'
+	_key_name = 'REPOSITORY'
 
 	@property
-	def key(self):
+	def _key(self):
 		return self.name
 
 	@abstractproperty

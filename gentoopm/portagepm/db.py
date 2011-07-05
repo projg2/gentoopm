@@ -15,7 +15,7 @@ class PortageDBCategory(PortageCategory):
 	def __iter__(self):
 		for p in self._dbapi.cp_all():
 			cat = portage.versions.catsplit(p)[0]
-			if cat == self.key:
+			if cat == self._key:
 				yield PortageDBPackage(p, self, self._dbapi)
 
 class PortageDBPackage(PortagePackage):
@@ -24,7 +24,7 @@ class PortageDBPackage(PortagePackage):
 			yield PortageDBCPV(p, self, self._dbapi)
 
 class PortageDBCPV(PortageCPV):
-	key_name = 'PVR'
+	_key_name = 'PVR'
 	def __init__(self, cpv, parent, dbapi):
 		version = portage.versions.cpv_getversion(cpv)
 		PMPackage.__init__(self, version, parent)

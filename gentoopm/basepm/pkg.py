@@ -14,32 +14,32 @@ class PMKeyedPackageBase(ABCObject):
 	"""
 
 	def __init__(self, key, parent):
-		self._key = key
-		self._parent = parent
+		self._key_ = key
+		self._parent_ = parent
 
 	@property
-	def parent(self):
+	def _parent(self):
 		"""
 		A parent (higher level) PMKeyedPackageDict or None if top-level.
 		"""
-		return self._parent
+		return self._parent_
 
 	@property
-	def key(self):
+	def _key(self):
 		"""
 		The key for this level of PMKeyedPackageDict.
 		"""
-		return self._key
+		return self._key_
 
 	@abstractproperty
-	def key_name(self):
+	def _key_name(self):
 		"""
 		The metadata key name for this key.
 		"""
 		pass
 
 	@property
-	def keys(self):
+	def key(self):
 		"""
 		The set of keys uniquely identifying the package set (i.e. the parent
 		keys and this one).
@@ -47,10 +47,10 @@ class PMKeyedPackageBase(ABCObject):
 		key_names = []
 		keys = []
 		o = self
-		while o and o.key is not None:
-			keys.insert(0, o.key)
-			key_names.insert(0, o.key_name)
-			o = o.parent
+		while o and o._key is not None:
+			keys.insert(0, o._key)
+			key_names.insert(0, o._key_name)
+			o = o._parent
 		t = collections.namedtuple('%sKeyTuple' % self.__class__.__name__,
 				' '.join(key_names))
 		return t(*keys)
@@ -98,7 +98,7 @@ class PMPackageSet(ABCObject):
 		except StopIteration:
 			return PMFilteredPackageSet((), None, None, None)
 		else:
-			k = el.key_name
+			k = el._key_name
 			if myargs[i] is not None:
 				if mykwargs[k] is not None:
 					raise TypeError('args[%d] and kwargs[%s] refer to the same key.' % \
@@ -151,7 +151,7 @@ class PMFilteredPackageSet(PMPackageSet):
 
 	def __iter__(self):
 		for el in self._iter:
-			if self._key is None or self._key == el.key:
+			if self._key is None or self._key == el._key:
 				if self._newargs or self._newkwargs:
 					for i in el.filter(*self._newargs, **self._newkwargs):
 						yield i
@@ -193,11 +193,11 @@ class PMKeyedPackageDict(PMKeyedPackageBase, PMPackageSet):
 		Get a sub-item matching the key.
 		"""
 		for i in self:
-			if i.key == key:
+			if i._key == key:
 				return i
 		else:
 			raise KeyError('No packages match keyset: (%s)' % \
-					', '.join(self.keys + [key]))
+					', '.join(self.key + [key]))
 
 class PMPackage(PMKeyedPackageBase):
 	"""

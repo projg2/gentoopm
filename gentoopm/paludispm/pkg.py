@@ -9,13 +9,13 @@ from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage, PMPackageMetadata
 from gentoopm.util import IterDictWrapper
 
 class PaludisCategory(PMKeyedPackageDict):
-	key_name = 'CATEGORY'
+	_key_name = 'CATEGORY'
 	def __init__(self, category, parent):
 		PMKeyedPackageDict.__init__(self, str(category), parent)
 
 	def __iter__(self):
-		repo = self.parent
-		for p in repo._repo.package_names(self.key, []):
+		repo = self._parent
+		for p in repo._repo.package_names(self._key, []):
 			yield PaludisPackage(p, self)
 
 	@property
@@ -26,13 +26,13 @@ class PaludisCategory(PMKeyedPackageDict):
 		return IterDictWrapper(self)
 
 class PaludisPackage(PMKeyedPackageDict):
-	key_name = 'PN'
+	_key_name = 'PN'
 	def __init__(self, qpn, parent):
 		PMKeyedPackageDict.__init__(self, str(qpn.package), parent)
 		self._qpn = qpn
 
 	def __iter__(self):
-		repo = self.parent.parent
+		repo = self._parent._parent
 		for p in repo._repo.package_ids(self._qpn, []):
 			yield PaludisID(p, self)
 
@@ -44,7 +44,7 @@ class PaludisPackage(PMKeyedPackageDict):
 		return IterDictWrapper(self)
 
 class PaludisID(PMPackage):
-	key_name = 'PVR'
+	_key_name = 'PVR'
 	def __init__(self, pkg, parent):
 		self._pkg = pkg
 		PMPackage.__init__(self, str(pkg.version), parent)

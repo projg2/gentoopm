@@ -10,11 +10,11 @@ from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage, PMPackageMetadata
 from gentoopm.util import IterDictWrapper
 
 class PkgCoreCategory(PMKeyedPackageDict):
-	key_name = 'CATEGORY'
+	_key_name = 'CATEGORY'
 	def __iter__(self):
-		repo = self.parent
+		repo = self._parent
 		try:
-			for p in repo._repo.packages[self.key]:
+			for p in repo._repo.packages[self._key]:
 				yield PkgCorePackage(p, self)
 		except KeyError:
 			pass
@@ -27,14 +27,14 @@ class PkgCoreCategory(PMKeyedPackageDict):
 		return IterDictWrapper(self)
 
 class PkgCorePackage(PMKeyedPackageDict):
-	key_name = 'PN'
+	_key_name = 'PN'
 	def __iter__(self):
 		r = AndRestriction(
-			PackageRestriction("category", StrExactMatch(self.parent.key)),
-			PackageRestriction("package", StrExactMatch(self.key))
+			PackageRestriction("category", StrExactMatch(self._parent._key)),
+			PackageRestriction("package", StrExactMatch(self._key))
 		)
 
-		repo = self.parent.parent
+		repo = self._parent._parent
 		for p in repo._repo.itermatch(r):
 			yield PkgCoreEbuild(p, self)
 
@@ -46,7 +46,7 @@ class PkgCorePackage(PMKeyedPackageDict):
 		return IterDictWrapper(self)
 
 class PkgCoreEbuild(PMPackage):
-	key_name = 'PVR'
+	_key_name = 'PVR'
 	def __init__(self, pkg, parent):
 		self._pkg = pkg
 		pvr = pkg.version

@@ -9,15 +9,15 @@ from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage, PMPackageMetadata
 from gentoopm.util import IterDictWrapper
 
 class PortageCategory(PMKeyedPackageDict):
-	key_name = 'CATEGORY'
+	_key_name = 'CATEGORY'
 	def __init__(self, category, parent, dbapi):
 		PMKeyedPackageDict.__init__(self, category, parent)
 		self._dbapi = dbapi
 
 	def __iter__(self):
-		repo = self.parent.path
+		repo = self._parent.path
 
-		for p in self._dbapi.cp_all(categories=(self.key,), trees=(repo,)):
+		for p in self._dbapi.cp_all(categories=(self._key,), trees=(repo,)):
 			yield PortagePackage(p, self, self._dbapi)
 
 	@property
@@ -28,7 +28,7 @@ class PortageCategory(PMKeyedPackageDict):
 		return IterDictWrapper(self)
 
 class PortagePackage(PMKeyedPackageDict):
-	key_name = 'PN'
+	_key_name = 'PN'
 	def __init__(self, qpn, parent, dbapi):
 		pn = portage.versions.catsplit(qpn)[1]
 		PMKeyedPackageDict.__init__(self, pn, parent)
@@ -36,7 +36,7 @@ class PortagePackage(PMKeyedPackageDict):
 		self._dbapi = dbapi
 
 	def __iter__(self):
-		repo = self.parent.parent.path
+		repo = self._parent._parent.path
 
 		for p in self._dbapi.cp_list(self._qpn, mytree=repo):
 			yield PortageCPV(p, self, self._dbapi)
@@ -49,7 +49,7 @@ class PortagePackage(PMKeyedPackageDict):
 		return IterDictWrapper(self)
 
 class PortageCPV(PMPackage):
-	key_name = 'PVR'
+	_key_name = 'PVR'
 	def __init__(self, cpv, parent, dbapi):
 		version = portage.versions.cpv_getversion(cpv)
 		PMPackage.__init__(self, version, parent)
@@ -58,7 +58,7 @@ class PortageCPV(PMPackage):
 
 	@property
 	def _repo_path(self):
-		return self.parent.parent.parent.path
+		return self._parent._parent._parent.path
 
 	@property
 	def metadata(self):
