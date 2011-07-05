@@ -61,6 +61,17 @@ class PortageCPV(PMPackage):
 		return PortageMetadata(self._cpv, self._dbapi,
 				self.parent.parent.parent.path)
 
+	def __cmp__(self, other):
+		if not isinstance(other, PortageCPV):
+			raise TypeError('Unable to compare %s against %s' % \
+					self, other)
+		if portage.versions.cpv_getkey(self._cpv) != \
+				portage.versions.cpv_getkey(other._cpv):
+			raise TypeError('Unable to compare CPVs with different PNs')
+		return portage.versions.vercmp(
+				portage.versions.cpv_getversion(self._cpv),
+				portage.versions.cpv_getversion(other._cpv))
+
 class PortageMetadata(PMPackageMetadata):
 	def __init__(self, cpv, dbapi, tree):
 		self._cpv = cpv

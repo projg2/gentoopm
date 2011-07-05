@@ -58,6 +58,14 @@ class PkgCoreEbuild(PMPackage):
 	def metadata(self):
 		return PkgCoreMetadata(self._pkg)
 
+	def __cmp__(self, other):
+		if not isinstance(other, PkgCoreEbuild):
+			raise TypeError('Unable to compare %s against %s' % \
+					self, other)
+		if self._pkg.key != other._pkg.key:
+			raise TypeError('Unable to compare ebuilds with different PNs')
+		return self._pkg.__cmp__(other._pkg)
+
 class PkgCoreMetadata(PMPackageMetadata):
 	def __init__(self, pkg):
 		self._pkg = pkg

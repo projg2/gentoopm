@@ -53,6 +53,14 @@ class PaludisID(PMPackage):
 	def metadata(self):
 		return PaludisMetadata(self._pkg)
 
+	def __cmp__(self, other):
+		if not isinstance(other, PaludisID):
+			raise TypeError('Unable to compare %s against %s' % \
+					self, other)
+		if self._pkg.name != other._pkg.name:
+			raise TypeError('Unable to compare IDs with different PNs')
+		return self._pkg.version.__cmp__(other._pkg.version)
+
 class PaludisMetadata(PMPackageMetadata):
 	def __init__(self, pkg):
 		self._pkg = pkg
