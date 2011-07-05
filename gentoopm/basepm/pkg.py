@@ -127,7 +127,20 @@ class PMPackageSet(ABCObject):
 		except IndexError:
 			raise TypeError('.best called on an empty set')
 		except TypeError:
-			raise TypeError('.best called on a set of differently-named packages')
+			raise KeyError('.best called on a set of differently-named packages')
+
+	def select(self, *args, **kwargs):
+		"""
+		Select a single package matching keys in positional and keyword
+		arguments. This is a convenience wrapper for filter(*args,
+		**kwargs).best.
+		"""
+		try:
+			return self.filter(*args, **kwargs).best
+		except TypeError:
+			raise KeyError('No packages match the filters.')
+		except KeyError:
+			raise ValueError('Ambiguous filter (matches more than a single package name).')
 
 class PMFilteredPackageSet(PMPackageSet):
 	def __init__(self, it, key, newargs, newkwargs):
