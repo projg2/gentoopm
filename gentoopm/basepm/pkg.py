@@ -61,19 +61,14 @@ class PMPackageSet(ABCObject):
 		"""
 		Iterate over the packages (or sets) in a set.
 		"""
+		pass
 
 	@property
 	def flattened(self):
 		"""
 		Flatten the package set and iterate over it. Yield PMPackages.
 		"""
-
-		for i in self:
-			if isinstance(i, PMKeyedPackageDict):
-				for hi in i.flattened:
-					yield hi
-			else:
-				yield i
+		return PMFlattenedPackageSet(iter(self))
 
 	def filter(self, *args, **kwargs):
 		"""
@@ -136,6 +131,18 @@ class PMFilteredPackageSet(PMPackageSet):
 						yield i
 				else:
 					yield el
+
+class PMFlattenedPackageSet(PMPackageSet):
+	def __init__(self, it):
+		self._iter = it
+	
+	def __iter__(self):
+		for i in self._iter:
+			if isinstance(i, PMKeyedPackageDict):
+				for hi in i.flattened:
+					yield hi
+			else:
+				yield i
 
 class PMKeyedPackageDict(PMKeyedPackageBase, PMPackageSet):
 	"""
