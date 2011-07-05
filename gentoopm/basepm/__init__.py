@@ -5,6 +5,7 @@
 
 from abc import abstractmethod, abstractproperty
 
+from gentoopm.basepm.stack import PMRepoStackWrapper
 from gentoopm.util import ABCObject
 
 class PackageManager(ABCObject):
@@ -48,10 +49,11 @@ class PackageManager(ABCObject):
 		"""
 		pass
 
-	@abstractproperty
+	@property
 	def stack(self):
 		"""
-		Return a PMRepository providing access to the stacked (overlaid)
-		packages in all ebuild repositories.
+		Return a PMRepository providing access to the stacked packages in all
+		ebuild repositories. It returns packages from all the repos, with
+		the repo being the lowest-level key.
 		"""
-		pass
+		return PMRepoStackWrapper(self.repositories)

@@ -22,7 +22,3 @@ class PkgCorePM(PackageManager):
 	@property
 	def installed(self):
 		return PkgCoreInstalledRepo(self._config)
-
-	@property
-	def stack(self):
-		return PkgCoreRepoStack(self._config)

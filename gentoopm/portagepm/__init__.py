@@ -29,7 +29,3 @@ class PortagePM(PackageManager):
 	@property
 	def installed(self):
 		return VDBRepository(self._vardb)
-
-	@property
-	def stack(self):
-		return PortDBRepository(self._portdb)
