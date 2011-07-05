@@ -119,9 +119,6 @@ class PMKeyedPackageDict(PMKeyedPackageBase):
 		myargs = collections.defaultdict(lambda: None, enumerate(args))
 		mykwargs = collections.defaultdict(lambda: None, **kwargs)
 
-		unused_pos = set(myargs)
-		unused_kws = set(kwargs)
-
 		i = 0
 		try:
 			el = next(iter(self))
@@ -134,20 +131,19 @@ class PMKeyedPackageDict(PMKeyedPackageBase):
 					raise TypeError('args[%d] and kwargs[%s] refer to the same key.' % \
 							(i, k))
 				m = myargs[i]
-				unused_pos.remove(i)
 			else:
 				m = mykwargs[k]
-				unused_kws.discard(k)
 
 		for el in self:
 			if m is None or m == el.key:
-				if unused_pos or unused_kws:
-					newargs = args[1:]
-					newkwargs = kwargs.copy()
-					try:
-						del newkwargs[k]
-					except KeyError:
-						pass
+				newargs = args[1:]
+				newkwargs = kwargs.copy()
+				try:
+					del newkwargs[k]
+				except KeyError:
+					pass
+
+				if newargs or newkwargs:
 					for i in el.filter(*newargs, **newkwargs):
 						yield i
 				else:
