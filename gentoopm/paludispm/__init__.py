@@ -21,7 +21,3 @@ class PaludisPM(PackageManager):
 	@property
 	def installed(self):
 		return PaludisInstalledRepo(self._env)
-
-	@property
-	def stack(self):
-		pass
