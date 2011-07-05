@@ -7,18 +7,19 @@ from pkgcore.config import load_config
 
 from gentoopm.basepm import PackageManager
 from gentoopm.pkgcorepm.repo import PkgCoreRepoDict, \
-		PkgCoreInstalledRepo, PkgCoreRepoStack
+		PkgCoreInstalledRepo
 
 class PkgCorePM(PackageManager):
 	name = 'pkgcore'
 
 	def reload_config(self):
-		self._config = load_config()
+		c = load_config()
+		self._domain = c.get_default('domain')
 
 	@property
 	def repositories(self):
-		return PkgCoreRepoDict(self._config)
+		return PkgCoreRepoDict(self._domain.named_repos['repo-stack'])
 
 	@property
 	def installed(self):
-		return PkgCoreInstalledRepo(self._config)
+		return PkgCoreInstalledRepo(self._domain.named_repos['vdb'])

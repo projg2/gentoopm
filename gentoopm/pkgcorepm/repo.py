@@ -12,12 +12,11 @@ from gentoopm.util import IterDictWrapper
 
 class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):
-		for k in self._config.repo:
-			if os.path.isabs(k):
-				yield PkgCoreEbuildRepo(self._config.repo[k])
+		for r in self._stack.trees:
+			yield PkgCoreEbuildRepo(r)
 
-	def __init__(self, config):
-		self._config = config
+	def __init__(self, stack):
+		self._stack = stack
 
 class PkgCoreRepository(PMRepository):
 	def __init__(self, repo_obj):
@@ -44,17 +43,4 @@ class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository):
 		return self._repo.location
 
 class PkgCoreInstalledRepo(PkgCoreRepository):
-	def __init__(self, config):
-		self._repo = config.repo['vdb']
-
-class PkgCoreRepoStack(PkgCoreRepository):
-	def __init__(self, config):
-		self._repo = config.repo['repo-stack']
-
-	@property
-	def name(self):
-		return None
-
-	@property
-	def path(self):
-		return None
+	pass
