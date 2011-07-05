@@ -13,8 +13,11 @@ class PkgCoreCategory(PMKeyedPackageDict):
 	key_name = 'CATEGORY'
 	def __iter__(self):
 		repo = self.parent
-		for p in repo._repo.packages[self.key]:
-			yield PkgCorePackage(p, self)
+		try:
+			for p in repo._repo.packages[self.key]:
+				yield PkgCorePackage(p, self)
+		except KeyError:
+			pass
 
 	@property
 	def packages(self):
