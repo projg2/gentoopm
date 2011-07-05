@@ -101,7 +101,7 @@ class PMPackageSet(ABCObject):
 		try:
 			el = next(iter(self))
 		except StopIteration:
-			pass
+			return PMFilteredPackageSet((), None, None, None)
 		else:
 			k = el.key_name
 			if myargs[i] is not None:
@@ -119,10 +119,20 @@ class PMPackageSet(ABCObject):
 			except KeyError:
 				pass
 
-		for el in self:
-			if m is None or m == el.key:
-				if newargs or newkwargs:
-					for i in el.filter(*newargs, **newkwargs):
+			return PMFilteredPackageSet(iter(self), m, newargs, newkwargs)
+
+class PMFilteredPackageSet(PMPackageSet):
+	def __init__(self, it, key, newargs, newkwargs):
+		self._iter = it
+		self._key = key
+		self._newargs = newargs
+		self._newkwargs = newkwargs
+
+	def __iter__(self):
+		for el in self._iter:
+			if self._key is None or self._key == el.key:
+				if self._newargs or self._newkwargs:
+					for i in el.filter(*self._newargs, **self._newkwargs):
 						yield i
 				else:
 					yield el
