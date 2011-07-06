@@ -70,7 +70,9 @@ class PaludisMetadata(PMPackageMetadata):
 	def __init__(self, pkg):
 		self._pkg = pkg
 
-	def __getitem__(self, key):
+	def __getattr__(self, key):
+		if key not in self:
+			raise AttributeError('Unsupported metadata key: %s' % key)
 		m = self._pkg.find_metadata(key)
 		if m is None:
 			return ''

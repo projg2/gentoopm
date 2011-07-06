@@ -28,11 +28,25 @@ class PMPackageMetadata(ABCObject):
 	A dict-like object providing access to a package's metadata.
 	"""
 
-	@abstractmethod
 	def __getitem__(self, key):
 		"""
 		Get the value of a metadata key. Return it as a string, or an empty
 		string when unset.
+		"""
+		try:
+			return getattr(self, key)
+		except NameError:
+			raise KeyError('No metadata key named %s' % key)
+
+	def __contains__(self, key):
+		return key in metadata_keys
+
+	@abstractmethod
+	def __getattr__(self, key):
+		"""
+		Get the value of a metadata key through an attribute. Return it
+		as a string, or an empty string when unset. Should raise
+		an AttributeError if the key is not in self.
 		"""
 		pass
 

@@ -75,7 +75,9 @@ class PkgCoreMetadata(PMPackageMetadata):
 	def __init__(self, pkg):
 		self._pkg = pkg
 
-	def __getitem__(self, key):
+	def __getattr__(self, key):
+		if key not in self:
+			raise AttributeError('Unsupported metadata key: %s' % key)
 		if key == 'EAPI':
 			return self._pkg.eapi
 		elif key == 'INHERITED':

@@ -86,6 +86,8 @@ class PortageMetadata(PMPackageMetadata):
 		self._dbapi = dbapi
 		self._tree = tree
 
-	def __getitem__(self, key):
+	def __getattr__(self, key):
+		if key not in self:
+			raise AttributeError('Unsupported metadata key: %s' % key)
 		return self._dbapi.aux_get(self._cpv, [key],
 				mytree = self._tree)[0]
