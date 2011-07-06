@@ -22,6 +22,10 @@ class PaludisID(PMPackage):
 	def path(self):
 		return self._pkg.fs_location_key().parse_value()
 
+	@property
+	def id(self):
+		return str(self._pkg)
+
 	def __cmp__(self, other):
 		if not isinstance(other, PaludisID):
 			raise TypeError('Unable to compare %s against %s' % \

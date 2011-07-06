@@ -23,6 +23,10 @@ class PortageDBCPV(PMPackage):
 		# .findname() gives .ebuild path
 		return self._dbapi.getpath(self._cpv)
 
+	@property
+	def id(self):
+		return self._cpv
+
 class PortageCPV(PortageDBCPV):
 	def __init__(self, cpv, dbapi, tree, repo_prio):
 		PortageDBCPV.__init__(self, cpv, dbapi)
@@ -36,6 +40,10 @@ class PortageCPV(PortageDBCPV):
 	@property
 	def path(self):
 		return self._dbapi.findname(self._cpv, self._tree)
+
+	@property
+	def id(self):
+		return '%s::%s' % (self._cpv, self._dbapi.getRepositoryName(self._tree))
 
 	def __cmp__(self, other):
 		if not isinstance(other, PortageCPV):

@@ -19,6 +19,10 @@ class PkgCorePackage(PMPackage):
 	def path(self):
 		return self._pkg.path
 
+	@property
+	def id(self):
+		return '%s::%s' % (self._pkg.cpvstr, self._pkg.repo.repo_id)
+
 	def __cmp__(self, other):
 		if not isinstance(other, PkgCorePackage):
 			raise TypeError('Unable to compare %s against %s' % \

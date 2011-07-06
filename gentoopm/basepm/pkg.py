@@ -101,6 +101,13 @@ class PMPackage(ABCObject):
 		yield self
 
 	@abstractproperty
+	def id(self):
+		"""
+		Return an unique identifier for the package.
+		"""
+		pass
+
+	@abstractproperty
 	def path(self):
 		"""
 		Return path to the ebuild file (or vardb entry) if appropriate.
@@ -114,3 +121,6 @@ class PMPackage(ABCObject):
 		Return PMPackageMetadata object for the package.
 		"""
 		pass
+
+	def __repr__(self):
+		return '%s(%s)' % (self.__class__.__name__, repr(self.id))
