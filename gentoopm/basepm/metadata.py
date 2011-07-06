@@ -20,7 +20,11 @@ metadata_keys = (
 	# deprecated ebuild-defined vars (not in PMS anymore)
 	'PROVIDE',
 	# magic ebuild-defined vars (PMS 7.4)
-	'INHERITED', 'DEFINED_PHASES'
+	'INHERITED', 'DEFINED_PHASES',
+
+	# other useful ebuild vars
+	'CATEGORY', 'PN', 'PV', 'PR',
+	'P', 'PVR', 'PF'
 )
 
 class PMPackageMetadata(ABCObject):
@@ -55,3 +59,19 @@ class PMPackageMetadata(ABCObject):
 		Iterate over possible metadata keys.
 		"""
 		return iter(metadata_keys)
+
+	# Other useful ebuild vars.
+
+	CATEGORY = abstractproperty()
+	PN = abstractproperty()
+	PV = abstractproperty()
+	PR = abstractproperty()
+	PVR = abstractproperty()
+
+	@property
+	def P(self):
+		return '%s-%s' % (self.PN, self.PV) # XXX?
+
+	@property
+	def PF(self):
+		return '%s-%s' % (self.PN, self.PVR) # XXX?

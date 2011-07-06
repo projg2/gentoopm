@@ -91,3 +91,23 @@ class PortageMetadata(PMPackageMetadata):
 			raise AttributeError('Unsupported metadata key: %s' % key)
 		return self._dbapi.aux_get(self._cpv, [key],
 				mytree = self._tree)[0]
+
+	@property
+	def CATEGORY(self):
+		return portage.versions.catsplit(self._cpv)[0]
+
+	@property
+	def PN(self):
+		return portage.versions.catpkgsplit(self._cpv)[1]
+
+	@property
+	def PV(self):
+		return portage.versions.pkgsplit(self._cpv)[1]
+
+	@property
+	def PR(self):
+		return portage.versions.pkgsplit(self._cpv)[2]
+
+	@property
+	def PVR(self):
+		return portage.versions.cpv_getversion(self._cpv)

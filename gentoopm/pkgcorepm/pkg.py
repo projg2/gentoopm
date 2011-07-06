@@ -50,10 +50,7 @@ class PkgCoreEbuild(PMPackage):
 	_key_name = 'PVR'
 	def __init__(self, pkg, parent):
 		self._pkg = pkg
-		pvr = pkg.version
-		if pkg.revision:
-			pvr += '-r%d' % pkg.revision
-		PMPackage.__init__(self, pvr, parent)
+		PMPackage.__init__(self, pkg.fullver, parent)
 
 	@property
 	def metadata(self):
@@ -90,3 +87,31 @@ class PkgCoreMetadata(PMPackageMetadata):
 			return self._pkg.data[key]
 		except KeyError:
 			return ''
+
+	@property
+	def CATEGORY(self):
+		return self._pkg.category
+
+	@property
+	def PN(self):
+		return self._pkg.PN
+
+	@property
+	def PV(self):
+		return self._pkg.version
+
+	@property
+	def PR(self):
+		return 'r%d' % self._pkg.PR
+
+	@property
+	def P(self):
+		return self._pkg.P
+
+	@property
+	def PVR(self):
+		return self._pkg.fullver
+
+	@property
+	def PF(self):
+		return self._pkg.PF
