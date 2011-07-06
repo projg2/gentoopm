@@ -9,8 +9,10 @@ from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage
 
 class PaludisID(PMPackage):
-	def __init__(self, pkg):
+	def __init__(self, pkg, num = 0, enum_id = None):
 		self._pkg = pkg
+		self._num = num
+		self._enum_id = enum_id
 
 	@property
 	def metadata(self):
@@ -24,9 +26,9 @@ class PaludisID(PMPackage):
 		if not isinstance(other, PaludisID):
 			raise TypeError('Unable to compare %s against %s' % \
 					self, other)
-		if self._pkg.name != other._pkg.name:
-			raise TypeError('Unable to compare IDs with different PNs')
-		return self._pkg.version.__cmp__(other._pkg.version)
+		if self._enum_id != other._enum_id:
+			raise TypeError('Unable to compare results of two enumerations')
+		return cmp(self._num, other._num)
 
 class PaludisMetadata(PMPackageMetadata):
 	def __init__(self, pkg):

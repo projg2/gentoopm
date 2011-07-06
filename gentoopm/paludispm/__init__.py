@@ -6,7 +6,8 @@
 import paludis
 
 from gentoopm.basepm import PackageManager
-from gentoopm.paludispm.repo import PaludisRepoDict, PaludisInstalledRepo
+from gentoopm.paludispm.repo import PaludisRepoDict, PaludisInstalledRepo, \
+		PaludisStackRepo
 
 class PaludisPM(PackageManager):
 	name = 'paludis'
@@ -21,3 +22,7 @@ class PaludisPM(PackageManager):
 	@property
 	def installed(self):
 		return PaludisInstalledRepo(self._env)
+
+	@property
+	def stack(self):
+		return PaludisStackRepo(self._env)

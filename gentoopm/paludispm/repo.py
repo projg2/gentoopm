@@ -18,13 +18,29 @@ class PaludisRepoDict(PMRepositoryDict):
 	def __init__(self, env):
 		self._env = env
 
+class PaludisEnumID(object):
+	pass
+
 class PaludisRepository(PMRepository):
+	def __init__(self, env):
+		self._env = env
+
 	def __iter__(self):
-		for p in self._env[paludis.Selection.AllVersionsSorted(
+		enum = PaludisEnumID()
+		for i, p in enumerate(self._env[paludis.Selection.AllVersionsSorted(
 				paludis.FilteredGenerator(
 					paludis.Generator.InRepository(self._repo.name),
-					paludis.Filter.All()))]:
-			yield PaludisID(p)
+					paludis.Filter.All()))]):
+			yield PaludisID(p, i, enum)
+
+class PaludisStackRepo(PaludisRepository):
+	def __iter__(self):
+		enum = PaludisEnumID()
+		for i, p in enumerate(self._env[paludis.Selection.AllVersionsSorted(
+				paludis.FilteredGenerator(
+					paludis.Generator.All(),
+					paludis.Filter.SupportsInstallAction()))]):
+			yield PaludisID(p, i, enum)
 
 class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
 	def __init__(self, repo_obj, env):
