@@ -45,6 +45,10 @@ class PMRepositoryDict(ABCObject):
 		"""
 		pass
 
+	def __repr__(self):
+		return '%s([\n%s])' % (self.__class__.__name__,
+				',\n'.join(['\t%s' % repr(x) for x in self]))
+
 class PMRepository(PMPackageSet):
 	"""
 	Base abstract class for a single repository.
@@ -69,3 +73,6 @@ class PMEbuildRepository(PMRepository):
 		Return the canonical path to the ebuild repository.
 		"""
 		pass
+
+	def __repr__(self):
+		return '%s(%s)' % (self.__class__.__name__, repr(self.name))
