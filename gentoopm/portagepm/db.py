@@ -6,8 +6,9 @@
 import os.path
 import portage.versions
 
+from gentoopm.basepm.metadata import PMPackageMetadata
+from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage
 from gentoopm.basepm.repo import PMRepository
-from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage, PMPackageMetadata
 from gentoopm.portagepm.pkg import PortageCategory, PortagePackage, PortageCPV
 from gentoopm.util import IterDictWrapper
 

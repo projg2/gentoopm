@@ -7,7 +7,6 @@ import os.path
 from abc import abstractmethod, abstractproperty
 
 from gentoopm.basepm.pkg import PMKeyedPackageDict
-from gentoopm.util import ABCObject
 
 class PMRepositoryDict(PMKeyedPackageDict):
 	"""

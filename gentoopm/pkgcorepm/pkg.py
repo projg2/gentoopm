@@ -6,7 +6,8 @@
 from pkgcore.restrictions.packages import PackageRestriction, AndRestriction
 from pkgcore.restrictions.values import StrExactMatch
 
-from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage, PMPackageMetadata
+from gentoopm.basepm.metadata import PMPackageMetadata
+from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage
 from gentoopm.util import IterDictWrapper
 
 class PkgCoreCategory(PMKeyedPackageDict):
