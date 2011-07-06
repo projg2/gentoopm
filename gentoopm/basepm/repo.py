@@ -6,9 +6,10 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.basepm.pkg import PMKeyedPackageDict
+from gentoopm.basepm.pkg import PMPackageSet
+from gentoopm.util import ABCObject
 
-class PMRepositoryDict(PMKeyedPackageDict):
+class PMRepositoryDict(ABCObject):
 	"""
 	A dict-like object providing access to a set of repositories.
 
@@ -16,10 +17,6 @@ class PMRepositoryDict(PMKeyedPackageDict):
 	or iterated over. An access should result in an instantiated PMRepository
 	subclass.
 	"""
-
-	_key = None
-	_key_name = None
-	_parent = None
 
 	def __getitem__(self, key):
 		"""
@@ -48,23 +45,15 @@ class PMRepositoryDict(PMKeyedPackageDict):
 		"""
 		pass
 
-class PMRepository(PMKeyedPackageDict):
+class PMRepository(PMPackageSet):
 	"""
 	Base abstract class for a single repository.
 	"""
-	_key_name = None
-	_parent = None
-	_key = None
 
 class PMEbuildRepository(PMRepository):
 	"""
 	Base abstract class for an ebuild repository (on livefs).
 	"""
-	_key_name = 'REPOSITORY'
-
-	@property
-	def _key(self):
-		return self.name
 
 	@abstractproperty
 	def name(self):

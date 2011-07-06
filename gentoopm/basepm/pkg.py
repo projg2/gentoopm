@@ -3,57 +3,9 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import collections
 from abc import abstractmethod, abstractproperty
 
 from gentoopm.util import ABCObject
-
-class PMKeyedPackageBase(ABCObject):
-	"""
-	Base class for key-identified package sets.
-	"""
-
-	def __init__(self, key, parent):
-		self._key_ = key
-		self._parent_ = parent
-
-	@property
-	def _parent(self):
-		"""
-		A parent (higher level) PMKeyedPackageDict or None if top-level.
-		"""
-		return self._parent_
-
-	@property
-	def _key(self):
-		"""
-		The key for this level of PMKeyedPackageDict.
-		"""
-		return self._key_
-
-	@abstractproperty
-	def _key_name(self):
-		"""
-		The metadata key name for this key.
-		"""
-		pass
-
-	@property
-	def key(self):
-		"""
-		The set of keys uniquely identifying the package set (i.e. the parent
-		keys and this one).
-		"""
-		key_names = []
-		keys = []
-		o = self
-		while o and o._key is not None:
-			keys.insert(0, o._key)
-			key_names.insert(0, o._key_name)
-			o = o._parent
-		t = collections.namedtuple('%sKeyTuple' % self.__class__.__name__,
-				' '.join(key_names))
-		return t(*keys)
 
 class PMPackageSet(ABCObject):
 	@abstractmethod
@@ -62,13 +14,6 @@ class PMPackageSet(ABCObject):
 		Iterate over the packages (or sets) in a set.
 		"""
 		pass
-
-	@property
-	def flattened(self):
-		"""
-		Flatten the package set and iterate over it. Yield PMPackages.
-		"""
-		return PMFlattenedPackageSet(iter(self))
 
 	def filter(self, *args, **kwargs):
 		"""
@@ -89,32 +34,7 @@ class PMPackageSet(ABCObject):
 		can provide a class with __eq__() redefined as an argument.
 		"""
 
-		myargs = collections.defaultdict(lambda: None, enumerate(args))
-		mykwargs = collections.defaultdict(lambda: None, **kwargs)
-
-		i = 0
-		try:
-			el = next(iter(self))
-		except StopIteration:
-			return PMFilteredPackageSet((), None, None, None)
-		else:
-			k = el._key_name
-			if myargs[i] is not None:
-				if mykwargs[k] is not None:
-					raise TypeError('args[%d] and kwargs[%s] refer to the same key.' % \
-							(i, k))
-				m = myargs[i]
-			else:
-				m = mykwargs[k]
-
-			newargs = args[1:]
-			newkwargs = kwargs.copy()
-			try:
-				del newkwargs[k]
-			except KeyError:
-				pass
-
-			return PMFilteredPackageSet(iter(self), m, newargs, newkwargs)
+		return PMFilteredPackageSet(iter(self), args, kwargs)
 
 	@property
 	def best(self):
@@ -123,7 +43,7 @@ class PMPackageSet(ABCObject):
 		the results and return the first one).
 		"""
 		try:
-			return sorted(self.flattened, reverse = True)[0]
+			return sorted(self, reverse = True)[0]
 		except IndexError:
 			raise TypeError('.best called on an empty set')
 		except TypeError:
@@ -143,76 +63,23 @@ class PMPackageSet(ABCObject):
 			raise ValueError('Ambiguous filter (matches more than a single package name).')
 
 class PMFilteredPackageSet(PMPackageSet):
-	def __init__(self, it, key, newargs, newkwargs):
+	def __init__(self, it, args, kwargs):
 		self._iter = it
-		self._key = key
-		self._newargs = newargs
-		self._newkwargs = newkwargs
+		self._args = args
+		self._kwargs = kwargs
 
 	def __iter__(self):
 		for el in self._iter:
-			if self._key is None or self._key == el._key:
-				if self._newargs or self._newkwargs:
-					for i in el.filter(*self._newargs, **self._newkwargs):
-						yield i
-				else:
-					yield el
+			for x in el.filter(*self._args, **self._kwargs):
+				yield x
 
-class PMFlattenedPackageSet(PMPackageSet):
-	def __init__(self, it):
-		self._iter = it
-	
-	def __iter__(self):
-		for i in self._iter:
-			if isinstance(i, PMKeyedPackageDict):
-				for hi in i.flattened:
-					yield hi
-			else:
-				yield i
-
-class PMKeyedPackageDict(PMKeyedPackageBase, PMPackageSet):
-	"""
-	A dict-like object representing a set of packages matched by a N-level key.
-	If it's a last-level key, the dict evaluates to PMPackage subclass
-	instances. Otherwise, it evaluates to lower-level PMKeyedPackageDicts.
-
-	Usually, the highest level PMKeyedPackageDict is PMRepository. Then dicts
-	refer to the category, package name and finally version (where they
-	transform into PMPackages).
-	"""
-
-	@abstractmethod
-	def __iter__(self):
-		"""
-		Iterate over child PMKeyedPackageDicts or PMPackages when bottom-level.
-		"""
-		pass
-
-	def __getitem__(self, key):
-		"""
-		Get a sub-item matching the key.
-		"""
-		for i in self:
-			if i._key == key:
-				return i
-		else:
-			raise KeyError('No packages match keyset: (%s)' % \
-					', '.join(self.key + [key]))
-
-class PMPackage(PMKeyedPackageBase):
+class PMPackage(ABCObject):
 	"""
 	An abstract class representing a single, uniquely-keyed package
 	in the package tree.
 	"""
 
-	@property
-	def flattened(self):
-		"""
-		A convenience property. Returns the package itself, as an iterator.
-		"""
-		yield self
-
-	def filter(self, *args, **kwargs):
+	def filter(self, **kwargs):
 		"""
 		Filter packages on metadata. This is mostly to extend superclass
 		.filter() method.
@@ -221,9 +88,6 @@ class PMPackage(PMKeyedPackageBase):
 		contains keys not matching metadata, raises a KeyError. Otherwise,
 		returns an iterator -- either over the package itself or an empty one.
 		"""
-
-		if args:
-			raise IndexError('Unused positional arguments: %s' % args)
 
 		for k, m in kwargs.items():
 			try:

@@ -3,42 +3,32 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import collections, os.path
+import paludis
 
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
-from gentoopm.paludispm.pkg import PaludisCategory
-from gentoopm.util import IterDictWrapper
+from gentoopm.paludispm.pkg import PaludisID
 
 class PaludisRepoDict(PMRepositoryDict):
 	def __iter__(self):
 		for r in self._env.repositories:
 			if r.format_key().parse_value() == 'e':
-				yield PaludisLivefsRepository(r)
+				yield PaludisLivefsRepository(r, self._env)
 
 	def __init__(self, env):
 		self._env = env
 
 class PaludisRepository(PMRepository):
 	def __iter__(self):
-		for c in self._repo.category_names([]):
-			pc = PaludisCategory(c, self)
-			try:
-				next(iter(pc))
-			except StopIteration: # omit empty categories
-				pass
-			else:
-				yield pc
-
-	@property
-	def categories(self):
-		"""
-		A convenience wrapper for the category list.
-		"""
-		return IterDictWrapper(self)
+		for p in self._env[paludis.Selection.AllVersionsSorted(
+				paludis.FilteredGenerator(
+					paludis.Generator.InRepository(self._repo.name),
+					paludis.Filter.All()))]:
+			yield PaludisID(p)
 
 class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
-	def __init__(self, repo_obj):
+	def __init__(self, repo_obj, env):
+		self._env = env
 		self._repo = repo_obj
 
 	@property
@@ -51,6 +41,7 @@ class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
 
 class PaludisInstalledRepo(PaludisRepository):
 	def __init__(self, env):
+		self._env = env
 		for r in env.repositories:
 			if str(r.name) == 'installed': # XXX
 				self._repo = r

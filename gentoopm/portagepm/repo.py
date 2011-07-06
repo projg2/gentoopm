@@ -5,10 +5,9 @@
 
 import os.path
 
-from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, PMEbuildRepository
+from gentoopm.basepm.repo import PMRepositoryDict, PMEbuildRepository
 from gentoopm.portagepm.db import PortDBRepository
-from gentoopm.portagepm.pkg import PortageCategory
-from gentoopm.util import IterDictWrapper
+from gentoopm.portagepm.pkg import PortageCPV
 
 class PortageRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -35,6 +34,12 @@ class PortageRepository(PortDBRepository, PMEbuildRepository):
 		self._repo = repo_obj
 		PortDBRepository.__init__(self, portdbapi)
 
+	def __iter__(self):
+		path = self.path
+		for cp in self._dbapi.cp_all(trees = (path,)):
+			for p in self._dbapi.cp_list(cp, mytree = path):
+				yield PortageCPV(p, self._dbapi, path)
+
 	@property
 	def name(self):
 		return self._repo.name
@@ -45,5 +50,3 @@ class PortageRepository(PortDBRepository, PMEbuildRepository):
 
 	def __cmp__(self, other):
 		return cmp(self._repo.priority, other._repo.priority)
-
-	_category_class = PortageCategory

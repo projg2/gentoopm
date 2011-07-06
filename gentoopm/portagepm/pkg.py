@@ -6,68 +6,23 @@
 import portage.versions
 
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage
-from gentoopm.util import IterDictWrapper
+from gentoopm.basepm.pkg import PMPackage
 
-class PortageCategory(PMKeyedPackageDict):
-	_key_name = 'CATEGORY'
-	def __init__(self, category, parent, dbapi):
-		PMKeyedPackageDict.__init__(self, category, parent)
-		self._dbapi = dbapi
-
-	def __iter__(self):
-		repo = self._parent.path
-
-		for p in self._dbapi.cp_all(categories=(self._key,), trees=(repo,)):
-			yield PortagePackage(p, self, self._dbapi)
-
-	@property
-	def packages(self):
-		"""
-		A convenience wrapper for the package list.
-		"""
-		return IterDictWrapper(self)
-
-class PortagePackage(PMKeyedPackageDict):
-	_key_name = 'PN'
-	def __init__(self, qpn, parent, dbapi):
-		pn = portage.versions.catsplit(qpn)[1]
-		PMKeyedPackageDict.__init__(self, pn, parent)
-		self._qpn = qpn
-		self._dbapi = dbapi
-
-	def __iter__(self):
-		repo = self._parent._parent.path
-
-		for p in self._dbapi.cp_list(self._qpn, mytree=repo):
-			yield PortageCPV(p, self, self._dbapi)
-
-	@property
-	def versions(self):
-		"""
-		A convenience wrapper for the version list.
-		"""
-		return IterDictWrapper(self)
+# XXX: cleanup all this mess!
 
 class PortageCPV(PMPackage):
-	_key_name = 'PVR'
-	def __init__(self, cpv, parent, dbapi):
-		version = portage.versions.cpv_getversion(cpv)
-		PMPackage.__init__(self, version, parent)
+	def __init__(self, cpv, dbapi, tree):
 		self._cpv = cpv
 		self._dbapi = dbapi
-
-	@property
-	def _repo_path(self):
-		return self._parent._parent._parent.path
+		self._tree = tree
 
 	@property
 	def metadata(self):
-		return PortageMetadata(self._cpv, self._dbapi, self._repo_path)
+		return PortageMetadata(self._cpv, self._dbapi, self._tree)
 
 	@property
 	def path(self):
-		return self._dbapi.findname(self._cpv, self._repo_path)
+		return self._dbapi.findname(self._cpv, self._tree)
 
 	def __cmp__(self, other):
 		if not isinstance(other, PortageCPV):

@@ -3,12 +3,9 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import os.path
-
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
-from gentoopm.pkgcorepm.pkg import PkgCoreCategory
-from gentoopm.util import IterDictWrapper
+from gentoopm.pkgcorepm.pkg import PkgCorePackage
 
 class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -23,15 +20,8 @@ class PkgCoreRepository(PMRepository):
 		self._repo = repo_obj
 
 	def __iter__(self):
-		for c in self._repo.categories:
-			yield PkgCoreCategory(c, self)
-
-	@property
-	def categories(self):
-		"""
-		A convenience wrapper for the category list.
-		"""
-		return IterDictWrapper(self)
+		for pkg in self._repo:
+			yield PkgCorePackage(pkg)
 
 class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository):
 	def __init__(self, repo_obj, index):

@@ -3,54 +3,12 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from pkgcore.restrictions.packages import PackageRestriction, AndRestriction
-from pkgcore.restrictions.values import StrExactMatch
-
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage
-from gentoopm.util import IterDictWrapper
+from gentoopm.basepm.pkg import PMPackage
 
-class PkgCoreCategory(PMKeyedPackageDict):
-	_key_name = 'CATEGORY'
-	def __iter__(self):
-		repo = self._parent
-		try:
-			for p in repo._repo.packages[self._key]:
-				yield PkgCorePackage(p, self)
-		except KeyError:
-			pass
-
-	@property
-	def packages(self):
-		"""
-		A convenience wrapper for the package list.
-		"""
-		return IterDictWrapper(self)
-
-class PkgCorePackage(PMKeyedPackageDict):
-	_key_name = 'PN'
-	def __iter__(self):
-		r = AndRestriction(
-			PackageRestriction("category", StrExactMatch(self._parent._key)),
-			PackageRestriction("package", StrExactMatch(self._key))
-		)
-
-		repo = self._parent._parent
-		for p in repo._repo.itermatch(r):
-			yield PkgCoreEbuild(p, self)
-
-	@property
-	def versions(self):
-		"""
-		A convenience wrapper for the version list.
-		"""
-		return IterDictWrapper(self)
-
-class PkgCoreEbuild(PMPackage):
-	_key_name = 'PVR'
-	def __init__(self, pkg, parent):
+class PkgCorePackage(PMPackage):
+	def __init__(self, pkg):
 		self._pkg = pkg
-		PMPackage.__init__(self, pkg.fullver, parent)
 
 	@property
 	def metadata(self):
@@ -61,7 +19,7 @@ class PkgCoreEbuild(PMPackage):
 		return self._pkg.path
 
 	def __cmp__(self, other):
-		if not isinstance(other, PkgCoreEbuild):
+		if not isinstance(other, PkgCorePackage):
 			raise TypeError('Unable to compare %s against %s' % \
 					self, other)
 		if self._pkg.key != other._pkg.key:

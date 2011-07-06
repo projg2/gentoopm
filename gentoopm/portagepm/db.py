@@ -3,32 +3,16 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import os.path
 import portage.versions
 
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMKeyedPackageDict, PMPackage
 from gentoopm.basepm.repo import PMRepository
-from gentoopm.portagepm.pkg import PortageCategory, PortagePackage, PortageCPV
-from gentoopm.util import IterDictWrapper
+from gentoopm.portagepm.pkg import PortageCPV
 
-class PortageDBCategory(PortageCategory):
-	def __iter__(self):
-		for p in self._dbapi.cp_all():
-			cat = portage.versions.catsplit(p)[0]
-			if cat == self._key:
-				yield PortageDBPackage(p, self, self._dbapi)
-
-class PortageDBPackage(PortagePackage):
-	def __iter__(self):
-		for p in self._dbapi.cp_list(self._qpn):
-			yield PortageDBCPV(p, self, self._dbapi)
+# XXX: cleanup all this mess!
 
 class PortageDBCPV(PortageCPV):
-	_key_name = 'PVR'
-	def __init__(self, cpv, parent, dbapi):
-		version = portage.versions.cpv_getversion(cpv)
-		PMPackage.__init__(self, version, parent)
+	def __init__(self, cpv, dbapi):
 		self._cpv = cpv
 		self._dbapi = dbapi
 
@@ -46,30 +30,36 @@ class PortageDBMetadata(PMPackageMetadata):
 		self._cpv = cpv
 		self._dbapi = dbapi
 
-	def __getitem__(self, key):
+	def __getattr__(self, key):
 		return self._dbapi.aux_get(self._cpv, [key])[0]
-	
+
+	@property
+	def CATEGORY(self):
+		return portage.versions.catsplit(self._cpv)[0]
+
+	@property
+	def PN(self):
+		return portage.versions.catpkgsplit(self._cpv)[1]
+
+	@property
+	def PV(self):
+		return portage.versions.pkgsplit(self._cpv)[1]
+
+	@property
+	def PR(self):
+		return portage.versions.pkgsplit(self._cpv)[2]
+
+	@property
+	def PVR(self):
+		return portage.versions.cpv_getversion(self._cpv)
+
 class PortDBRepository(PMRepository):
 	def __init__(self, dbapi):
 		self._dbapi = dbapi
 
-	_category_class = PortageDBCategory
 	def __iter__(self):
-		for c in self._dbapi.categories:
-			pc = self._category_class(c, self, self._dbapi)
-			try:
-				next(iter(pc))
-			except StopIteration: # omit empty categories
-				pass
-			else:
-				yield pc
-
-	@property
-	def categories(self):
-		"""
-		A convenience wrapper for the category list.
-		"""
-		return IterDictWrapper(self)
+		for p in self._dbapi.cpv_all(): # XXX
+			yield PortageDBCPV(p, self._dbapi)
 
 class VDBRepository(PortDBRepository):
 	pass
