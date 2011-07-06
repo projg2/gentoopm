@@ -10,10 +10,23 @@ from gentoopm.basepm.pkg import PMPackage
 
 # XXX: cleanup all this mess!
 
-class PortageCPV(PMPackage):
-	def __init__(self, cpv, dbapi, tree):
+class PortageDBCPV(PMPackage):
+	def __init__(self, cpv, dbapi):
 		self._cpv = cpv
 		self._dbapi = dbapi
+
+	@property
+	def metadata(self):
+		return PortageDBMetadata(self._cpv, self._dbapi)
+
+	@property
+	def path(self):
+		# .findname() gives .ebuild path
+		return self._dbapi.getpath(self._cpv)
+
+class PortageCPV(PortageDBCPV):
+	def __init__(self, cpv, dbapi, tree = None):
+		PortageDBCPV.__init__(self, cpv, dbapi)
 		self._tree = tree
 
 	@property
@@ -35,17 +48,15 @@ class PortageCPV(PMPackage):
 				portage.versions.cpv_getversion(self._cpv),
 				portage.versions.cpv_getversion(other._cpv))
 
-class PortageMetadata(PMPackageMetadata):
-	def __init__(self, cpv, dbapi, tree):
+class PortageDBMetadata(PMPackageMetadata):
+	def __init__(self, cpv, dbapi):
 		self._cpv = cpv
 		self._dbapi = dbapi
-		self._tree = tree
 
 	def __getattr__(self, key):
 		if key not in self:
 			raise AttributeError('Unsupported metadata key: %s' % key)
-		return self._dbapi.aux_get(self._cpv, [key],
-				mytree = self._tree)[0]
+		return self._dbapi.aux_get(self._cpv, [key])[0]
 
 	@property
 	def CATEGORY(self):
@@ -66,3 +77,14 @@ class PortageMetadata(PMPackageMetadata):
 	@property
 	def PVR(self):
 		return portage.versions.cpv_getversion(self._cpv)
+
+class PortageMetadata(PortageDBMetadata):
+	def __init__(self, cpv, dbapi, tree):
+		PortageDBMetadata.__init__(self, cpv, dbapi)
+		self._tree = tree
+
+	def __getattr__(self, key):
+		if key not in self:
+			raise AttributeError('Unsupported metadata key: %s' % key)
+		return self._dbapi.aux_get(self._cpv, [key],
+				mytree = self._tree)[0]
