@@ -3,12 +3,11 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import portage.versions
+from portage.versions import cpv_getkey, cpv_getversion, vercmp, \
+		catsplit, catpkgsplit, pkgsplit
 
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage
-
-# XXX: cleanup all this mess!
 
 class PortageDBCPV(PMPackage):
 	def __init__(self, cpv, dbapi):
@@ -25,9 +24,10 @@ class PortageDBCPV(PMPackage):
 		return self._dbapi.getpath(self._cpv)
 
 class PortageCPV(PortageDBCPV):
-	def __init__(self, cpv, dbapi, tree = None):
+	def __init__(self, cpv, dbapi, tree, repo_prio):
 		PortageDBCPV.__init__(self, cpv, dbapi)
 		self._tree = tree
+		self._repo_prio = repo_prio
 
 	@property
 	def metadata(self):
@@ -41,12 +41,9 @@ class PortageCPV(PortageDBCPV):
 		if not isinstance(other, PortageCPV):
 			raise TypeError('Unable to compare %s against %s' % \
 					self, other)
-		if portage.versions.cpv_getkey(self._cpv) != \
-				portage.versions.cpv_getkey(other._cpv):
-			raise TypeError('Unable to compare CPVs with different PNs')
-		return portage.versions.vercmp(
-				portage.versions.cpv_getversion(self._cpv),
-				portage.versions.cpv_getversion(other._cpv))
+		return cmp(cpv_getkey(self._cpv), cpv_getkey(other._cpv)) \
+				or vercmp(cpv_getversion(self._cpv), cpv_getversion(other._cpv)) \
+				or cmp(self._repo_prio, other._repo_prio)
 
 class PortageDBMetadata(PMPackageMetadata):
 	def __init__(self, cpv, dbapi):
@@ -60,23 +57,23 @@ class PortageDBMetadata(PMPackageMetadata):
 
 	@property
 	def CATEGORY(self):
-		return portage.versions.catsplit(self._cpv)[0]
+		return catsplit(self._cpv)[0]
 
 	@property
 	def PN(self):
-		return portage.versions.catpkgsplit(self._cpv)[1]
+		return catpkgsplit(self._cpv)[1]
 
 	@property
 	def PV(self):
-		return portage.versions.pkgsplit(self._cpv)[1]
+		return pkgsplit(self._cpv)[1]
 
 	@property
 	def PR(self):
-		return portage.versions.pkgsplit(self._cpv)[2]
+		return pkgsplit(self._cpv)[2]
 
 	@property
 	def PVR(self):
-		return portage.versions.cpv_getversion(self._cpv)
+		return cpv_getversion(self._cpv)
 
 class PortageMetadata(PortageDBMetadata):
 	def __init__(self, cpv, dbapi, tree):

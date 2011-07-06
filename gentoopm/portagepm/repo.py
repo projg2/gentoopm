@@ -44,9 +44,10 @@ class PortageRepository(PortDBRepository, PMEbuildRepository):
 
 	def __iter__(self):
 		path = self.path
+		prio = self._repo.priority
 		for cp in self._dbapi.cp_all(trees = (path,)):
 			for p in self._dbapi.cp_list(cp, mytree = path):
-				yield PortageCPV(p, self._dbapi, path)
+				yield PortageCPV(p, self._dbapi, path, prio)
 
 	@property
 	def name(self):
