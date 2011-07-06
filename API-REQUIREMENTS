@@ -1,0 +1,19 @@
+diffmask:
+- atom matching,
+- masking status/reason,
+- USER_CONFIG_PATH?
+
+flaggie:
+- atom matching,
+- getting all atoms from LICENSE (use_reduce()),
+- grabdict()/grabfile()?,
+- USER_CONFIG_PATH?
+
+pms-test-suite:
+- atom matching (__contains__()),
+- install, uninstall, manifest...
+
+smart-live-rebuild:
+- userpriv checks, uid/gid,
+- environment.bz2 parsing,
+- getting atoms; maybe install cmdline?
