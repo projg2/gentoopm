@@ -16,12 +16,14 @@ class PkgCoreRepoDict(PMRepositoryDict):
 		self._stack = stack
 
 class PkgCoreRepository(PMRepository):
+	_index = 0
 	def __init__(self, repo_obj):
 		self._repo = repo_obj
 
 	def __iter__(self):
+		index = self._index
 		for pkg in self._repo:
-			yield PkgCorePackage(pkg)
+			yield PkgCorePackage(pkg, index)
 
 class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository):
 	def __init__(self, repo_obj, index):

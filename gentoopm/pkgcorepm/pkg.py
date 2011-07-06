@@ -7,8 +7,9 @@ from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage
 
 class PkgCorePackage(PMPackage):
-	def __init__(self, pkg):
+	def __init__(self, pkg, repo_index = 0):
 		self._pkg = pkg
+		self._repo_index = repo_index
 
 	@property
 	def metadata(self):
@@ -21,10 +22,9 @@ class PkgCorePackage(PMPackage):
 	def __cmp__(self, other):
 		if not isinstance(other, PkgCorePackage):
 			raise TypeError('Unable to compare %s against %s' % \
-					self, other)
-		if self._pkg.key != other._pkg.key:
-			raise TypeError('Unable to compare ebuilds with different PNs')
-		return self._pkg.__cmp__(other._pkg)
+					(self, other))
+		return cmp(self._pkg, other._pkg) \
+				or cmp(other._repo_index, self._repo_index)
 
 class PkgCoreMetadata(PMPackageMetadata):
 	def __init__(self, pkg):
