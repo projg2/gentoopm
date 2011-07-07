@@ -5,6 +5,7 @@
 
 from abc import abstractmethod, abstractproperty
 
+from gentoopm.basepm.atom import PMAtom
 from gentoopm.util import ABCObject
 
 class PMPackageSet(ABCObject):
@@ -21,7 +22,7 @@ class PMPackageSet(ABCObject):
 		evaluating to a number of PMPackages.
 
 		The positional arguments can provide a number of PMPackageMatchers (see
-		gentoopm.basepm.filter) and/or an atom string. The keyword arguments
+		gentoopm.basepm.filter) and/or a PMAtom instance. The keyword arguments
 		match metadata keys using '==' comparison with passed string
 		(or PMKeywordMatchers).
 
@@ -92,7 +93,15 @@ class PMPackage(ABCObject):
 		If kwargs reference incorrect metadata keys, a KeyError will be raised.
 		"""
 
-		# XXX: apply filters
+		for f in args:
+			if callable(f): # a matcher
+				if not f(self):
+					return False
+			elif isinstance(f, PMAtom): # an atom
+				if not self in f:
+					return False
+			else:
+				raise ValueError('Incorrect positional argument: %s' % f)
 
 		for k, m in kwargs.items():
 			try:
