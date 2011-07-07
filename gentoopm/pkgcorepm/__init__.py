@@ -6,6 +6,7 @@
 from pkgcore.config import load_config
 
 from gentoopm.basepm import PackageManager
+from gentoopm.pkgcorepm.atom import PkgCoreAtom
 from gentoopm.pkgcorepm.repo import PkgCoreRepoDict, \
 		PkgCoreInstalledRepo
 
@@ -23,3 +24,7 @@ class PkgCorePM(PackageManager):
 	@property
 	def installed(self):
 		return PkgCoreInstalledRepo(self._domain.named_repos['vdb'])
+
+	@property
+	def Atom(self):
+		return PkgCoreAtom

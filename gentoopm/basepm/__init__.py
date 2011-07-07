@@ -57,3 +57,10 @@ class PackageManager(ABCObject):
 		the repo being the lowest-level key.
 		"""
 		return PMRepoStackWrapper(self.repositories)
+
+	@abstractproperty
+	def Atom(self):
+		"""
+		Return the PM-specific atom class.
+		"""
+		pass
