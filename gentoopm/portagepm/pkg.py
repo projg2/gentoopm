@@ -24,6 +24,10 @@ class PortageDBCPV(PMPackage):
 		return self._dbapi.getpath(self._cpv)
 
 	@property
+	def key(self):
+		return cpv_getkey(self._cpv)
+
+	@property
 	def id(self):
 		return self._cpv
 
@@ -40,10 +44,6 @@ class PortageCPV(PortageDBCPV):
 	@property
 	def path(self):
 		return self._dbapi.findname(self._cpv, self._tree)
-
-	@property
-	def key(self):
-		return cpv_getkey(self._cpv)
 
 	@property
 	def id(self):

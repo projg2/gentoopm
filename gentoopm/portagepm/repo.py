@@ -7,7 +7,7 @@ import os.path
 
 from gentoopm.basepm.repo import PMRepositoryDict, PMEbuildRepository, \
 		PMRepository
-from gentoopm.portagepm.pkg import PortageCPV
+from gentoopm.portagepm.pkg import PortageCPV, PortageDBCPV
 
 class PortageRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -35,7 +35,7 @@ class PortDBRepository(PMRepository):
 
 	def __iter__(self):
 		for p in self._dbapi.cpv_all(): # XXX
-			yield PortageCPV(p, self._dbapi)
+			yield PortageDBCPV(p, self._dbapi)
 
 class PortageRepository(PortDBRepository, PMEbuildRepository):
 	def __init__(self, repo_obj, portdbapi):
