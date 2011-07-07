@@ -11,4 +11,18 @@ class PMAtom(ABCObject):
 	"""
 	A base class for PM-specific atom (dependency specification).
 	"""
-	pass
+
+	@abstractmethod
+	def __init__(self, s):
+		"""
+		Create a new atom from string.
+		"""
+		pass
+
+	@abstractmethod
+	def __contains__(self, pkg):
+		"""
+		Check whether a package matches the atom (is contained in the set
+		of packages matched by atom).
+		"""
+		pass
