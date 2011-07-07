@@ -52,7 +52,7 @@ class PortageCPV(PortageDBCPV):
 	def __cmp__(self, other):
 		if not isinstance(other, PortageCPV):
 			raise TypeError('Unable to compare %s against %s' % \
-					self, other)
+					(self, other))
 		return cmp(cpv_getkey(self._cpv), cpv_getkey(other._cpv)) \
 				or vercmp(cpv_getversion(self._cpv), cpv_getversion(other._cpv)) \
 				or cmp(self._repo_prio, other._repo_prio)
