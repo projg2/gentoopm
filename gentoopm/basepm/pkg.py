@@ -17,21 +17,19 @@ class PMPackageSet(ABCObject):
 
 	def filter(self, *args, **kwargs):
 		"""
-		Filter the packages based on keys passed as arguments. Positional
-		arguments refer to keys by their level (with first arg being the
-		top-level key), None means match-all. Keyword arguments refer to keys
-		by their names.
+		Filter the packages based on arguments. Return a PMFilteredPackageSet
+		evaluating to a number of PMPackages.
 
-		If an argument doesn't match any key (i.e. too many args are passed),
-		a KeyError or IndexError will be raised. If the same key is referred
-		through positional and keyword arguments, a TypeError will be raised.
+		The positional arguments can provide a number of PMPackageMatchers (see
+		gentoopm.basepm.filter) and/or an atom string. The keyword arguments
+		match metadata keys using '==' comparison with passed values (objects).
 
-		The filtering will result in an iterable of PMKeyedPackageDicts
-		or PMPackages, depending on whether the filtering criteria are able
-		to uniquely identify packages.
+		Multiple filters will be AND-ed together. Same applies for .filter()
+		called multiple times. You should, however, avoid passing multiple
+		atoms as it is not supported by all PMs.
 
-		The '==' operator is used to match packages. To extend matching, you
-		can provide a class with __eq__() redefined as an argument.
+		This function can raise KeyError when a keyword argument does reference
+		an incorrect metadata key.
 		"""
 
 		return PMFilteredPackageSet(iter(self), args, kwargs)
@@ -70,8 +68,8 @@ class PMFilteredPackageSet(PMPackageSet):
 
 	def __iter__(self):
 		for el in self._iter:
-			for x in el.filter(*self._args, **self._kwargs):
-				yield x
+			if el._matches(*self._args, **self._kwargs):
+				yield el
 
 class PMPackage(ABCObject):
 	"""
@@ -79,15 +77,16 @@ class PMPackage(ABCObject):
 	in the package tree.
 	"""
 
-	def filter(self, **kwargs):
+	def _matches(self, *args, **kwargs):
 		"""
-		Filter packages on metadata. This is mostly to extend superclass
-		.filter() method.
+		Check whether the package matches passed filters. Please note that this
+		method may not be called at all if PM is capable of a more efficient
+		filtering.
 
-		If args are non-empty, raises an IndexError (unused args). If kwargs
-		contains keys not matching metadata, raises a KeyError. Otherwise,
-		returns an iterator -- either over the package itself or an empty one.
+		If kwargs reference incorrect metadata keys, a KeyError will be raised.
 		"""
+
+		# XXX: apply filters
 
 		for k, m in kwargs.items():
 			try:
@@ -96,9 +95,9 @@ class PMPackage(ABCObject):
 				raise KeyError('Unmatched keyword argument: %s' % k)
 			else:
 				if not m == v:
-					return
+					return False
 
-		yield self
+		return True
 
 	@abstractproperty
 	def id(self):
