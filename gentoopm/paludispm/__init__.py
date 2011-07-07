@@ -3,7 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import paludis
+import functools, paludis
 
 from gentoopm.basepm import PackageManager
 from gentoopm.paludispm.atom import PaludisAtom
@@ -30,4 +30,4 @@ class PaludisPM(PackageManager):
 
 	@property
 	def Atom(self):
-		return PaludisAtom
+		return functools.partial(PaludisAtom, pm = self)

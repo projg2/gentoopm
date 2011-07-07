@@ -3,7 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import os
+import functools, os
 from portage import create_trees
 
 from gentoopm.basepm import PackageManager
@@ -32,4 +32,4 @@ class PortagePM(PackageManager):
 
 	@property
 	def Atom(self):
-		return PortageAtom
+		return functools.partial(PortageAtom, pm = self)
