@@ -42,6 +42,10 @@ class PortageCPV(PortageDBCPV):
 		return self._dbapi.findname(self._cpv, self._tree)
 
 	@property
+	def key(self):
+		return cpv_getkey(self._cpv)
+
+	@property
 	def id(self):
 		return '%s::%s' % (self._cpv, self._dbapi.getRepositoryName(self._tree))
 

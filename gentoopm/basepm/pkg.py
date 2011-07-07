@@ -40,12 +40,17 @@ class PMPackageSet(ABCObject):
 		Return the best-matching package in the set (i.e. flatten it, sort
 		the results and return the first one).
 		"""
+
+		l = sorted(self, reverse = True)
 		try:
-			return sorted(self, reverse = True)[0]
+			best = l[0]
 		except IndexError:
 			raise TypeError('.best called on an empty set')
-		except TypeError:
-			raise KeyError('.best called on a set of differently-named packages')
+
+		for p in l:
+			if p.key != best.key:
+				raise KeyError('.best called on a set of differently-named packages')
+		return best
 
 	def select(self, *args, **kwargs):
 		"""
@@ -98,6 +103,14 @@ class PMPackage(ABCObject):
 					return False
 
 		return True
+
+	@abstractproperty
+	def key(self):
+		"""
+		Return the key identifying the package. This is used by .best, to check
+		whether the set doesn't reference more than one package.
+		"""
+		pass
 
 	@abstractproperty
 	def id(self):

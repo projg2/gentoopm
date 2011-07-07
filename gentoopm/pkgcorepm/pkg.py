@@ -20,6 +20,10 @@ class PkgCorePackage(PMPackage):
 		return self._pkg.path
 
 	@property
+	def key(self):
+		return self._pkg.key
+
+	@property
 	def id(self):
 		return '%s::%s' % (self._pkg.cpvstr, self._pkg.repo.repo_id)
 

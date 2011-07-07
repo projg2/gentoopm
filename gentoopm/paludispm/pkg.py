@@ -23,6 +23,10 @@ class PaludisID(PMPackage):
 		return self._pkg.fs_location_key().parse_value()
 
 	@property
+	def key(self):
+		return str(self._pkg.name)
+
+	@property
 	def id(self):
 		return str(self._pkg)
 
