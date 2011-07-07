@@ -25,7 +25,10 @@ class PkgCorePackage(PMPackage):
 
 	@property
 	def id(self):
-		return '%s::%s' % (self._pkg.cpvstr, self._pkg.repo.repo_id)
+		if self._repo_index != 0:
+			return '%s::%s' % (self._pkg.cpvstr, self._pkg.repo.repo_id)
+		else:
+			return self._pkg.cpvstr
 
 	def __cmp__(self, other):
 		if not isinstance(other, PkgCorePackage):
