@@ -22,7 +22,8 @@ class PMPackageSet(ABCObject):
 
 		The positional arguments can provide a number of PMPackageMatchers (see
 		gentoopm.basepm.filter) and/or an atom string. The keyword arguments
-		match metadata keys using '==' comparison with passed values (objects).
+		match metadata keys using '==' comparison with passed string
+		(or PMKeywordMatchers).
 
 		Multiple filters will be AND-ed together. Same applies for .filter()
 		called multiple times. You should, however, avoid passing multiple
