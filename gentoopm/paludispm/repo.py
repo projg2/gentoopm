@@ -40,6 +40,38 @@ class PaludisRepository(PMRepository, PaludisPackageSet):
 				paludis.FilteredGenerator(self._gen, self._filt))]):
 			yield PaludisID(p, i, enum)
 
+	def filter(self, *args, **kwargs):
+		pset = self
+		newargs = []
+
+		for f in args:
+			if not callable(f): # an atom!
+				pset = PaludisAtomFilteredRepo(pset, f)
+			else:
+				newargs.append(f)
+
+		if pset == self:
+			return PaludisPackageSet.filter(self, args, kwargs)
+		elif newargs or kwargs:
+			return pset.filter(self, newargs, kwargs)
+		else:
+			return pset
+
+class PaludisAtomFilteredRepo(PaludisRepository):
+	@property
+	def _gen(self):
+		return self._mygen
+
+	@property
+	def _filt(self):
+		return self._myfilt
+
+	def __init__(self, repo, atom):
+		PaludisRepository.__init__(self, repo._env)
+		self._myfilt = repo._filt
+		self._mygen = repo._gen & paludis.Generator.Matches(atom._atom,
+				paludis.MatchPackageOptions())
+
 class PaludisStackRepo(PaludisRepository):
 	@property
 	def _gen(self):
