@@ -34,7 +34,7 @@ class PMPackageSet(ABCObject):
 		an incorrect metadata key.
 		"""
 
-		return PMFilteredPackageSet(iter(self), args, kwargs)
+		return PMFilteredPackageSet(self, args, kwargs)
 
 	@property
 	def best(self):
@@ -81,13 +81,13 @@ class PMPackageSet(ABCObject):
 		return True
 
 class PMFilteredPackageSet(PMPackageSet):
-	def __init__(self, it, args, kwargs):
-		self._iter = it
+	def __init__(self, src, args, kwargs):
+		self._src = src
 		self._args = args
 		self._kwargs = kwargs
 
 	def __iter__(self):
-		for el in self._iter:
+		for el in self._src:
 			if el._matches(*self._args, **self._kwargs):
 				yield el
 
