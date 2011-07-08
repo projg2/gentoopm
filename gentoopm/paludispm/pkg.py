@@ -10,11 +10,35 @@ from gentoopm.basepm.pkg import PMPackageSet, PMPackage, \
 		PMFilteredPackageSet
 
 class PaludisPackageSet(PMPackageSet):
+	_sorted = False
+
 	def filter(self, *args, **kwargs):
 		return PaludisFilteredPackageSet(self, args, kwargs)
 
+	@property
+	def best(self):
+		if self._sorted:
+			it = iter(self)
+
+			try:
+				f = next(it)
+			except StopIteration:
+				raise TypeError('.best called on an empty set')
+			for p in it:
+				if p.key != f.key:
+					raise KeyError('.best called on a set of differently-named packages')
+
+			try:
+				return p
+			except NameError:
+				return f
+		else:
+			return PMPackageSet.best.fget(self)
+
 class PaludisFilteredPackageSet(PMFilteredPackageSet, PaludisPackageSet):
-	pass
+	def __init__(self, pset, args, kwargs):
+		self._sorted = pset._sorted
+		PMFilteredPackageSet.__init__(self, pset, args, kwargs)
 
 class PaludisID(PMPackage):
 	def __init__(self, pkg, num = 0, enum_id = None):

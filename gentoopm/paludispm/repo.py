@@ -24,6 +24,7 @@ class PaludisEnumID(object):
 class PaludisRepository(PMRepository, PaludisPackageSet):
 	def __init__(self, env):
 		self._env = env
+		self._sorted = True
 
 	def __iter__(self):
 		enum = PaludisEnumID()
@@ -44,7 +45,7 @@ class PaludisStackRepo(PaludisRepository):
 
 class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
 	def __init__(self, repo_obj, env):
-		self._env = env
+		PaludisRepository.__init__(self, env)
 		self._repo = repo_obj
 
 	@property
