@@ -10,18 +10,20 @@ from portage.versions import catsplit
 
 from gentoopm.basepm.atom import PMAtom
 
-class PortageAtom(PMAtom):
-	def __init__(self, s, pm):
+class PortageAtom(object):
+	def __new__(self, s, pm):
 		try:
-			a = dep_expand(s, mydb = pm._portdb,
-					settings = pm._portdb.settings)
-		except pe.AmbiguousPackageName:
-			raise KeyError('Ambiguous atom: %s' % s)
+			a = dep_expand(s, settings = pm._portdb.settings)
 		except pe.InvalidAtom:
 			raise ValueError('Incorrect atom: %s' % s)
 
 		if catsplit(a.cp)[0] == 'null':
-			raise KeyError('Unable to expand atom: %s' % s)
+			return UnexpandedPortageAtom(a)
+		else:
+			return CompletePortageAtom(a)
+
+class CompletePortageAtom(PMAtom):
+	def __init__(self, a):
 		self._atom = a
 
 	def __contains__(self, pkg):
@@ -30,3 +32,21 @@ class PortageAtom(PMAtom):
 			return False
 		return not self._atom.slot \
 				or self._atom.slot == pkg.metadata.SLOT
+
+class UncategorisedPackageWrapper(object):
+	def __init__(self, pkg):
+		self._pkg = pkg
+
+	@property
+	def id(self):
+		cpv = self._pkg.id
+		return 'null/%s' % catsplit(cpv)[1]
+				
+class UnexpandedPortageAtom(CompletePortageAtom):
+	"""
+	An atom without a category specified.
+	"""
+
+	def __contains__(self, pkg):
+		return CompletePortageAtom.__contains__(self,
+				UncategorisedPackageWrapper(pkg))
