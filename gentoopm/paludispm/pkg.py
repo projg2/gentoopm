@@ -6,7 +6,15 @@
 import paludis
 
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage
+from gentoopm.basepm.pkg import PMPackageSet, PMPackage, \
+		PMFilteredPackageSet
+
+class PaludisPackageSet(PMPackageSet):
+	def filter(self, *args, **kwargs):
+		return PaludisFilteredPackageSet(self, args, kwargs)
+
+class PaludisFilteredPackageSet(PMFilteredPackageSet, PaludisPackageSet):
+	pass
 
 class PaludisID(PMPackage):
 	def __init__(self, pkg, num = 0, enum_id = None):

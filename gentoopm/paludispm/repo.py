@@ -7,7 +7,7 @@ import paludis
 
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
-from gentoopm.paludispm.pkg import PaludisID
+from gentoopm.paludispm.pkg import PaludisID, PaludisPackageSet
 
 class PaludisRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -21,7 +21,7 @@ class PaludisRepoDict(PMRepositoryDict):
 class PaludisEnumID(object):
 	pass
 
-class PaludisRepository(PMRepository):
+class PaludisRepository(PMRepository, PaludisPackageSet):
 	def __init__(self, env):
 		self._env = env
 
