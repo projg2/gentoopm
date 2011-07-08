@@ -67,6 +67,31 @@ class PMPackageSet(ABCObject):
 		except KeyError:
 			raise ValueError('Ambiguous filter (matches more than a single package name).')
 
+	def __getitem__(self, filt):
+		"""
+		Select a single package matching an atom (or filter). Unlike .select(),
+		this one doesn't choose the best match but requires the filter to match
+		exactly one package.
+
+		Raises KeyError when no package matches. Raises ValueError if more than
+		a single package matches.
+		"""
+
+		it = iter(self.filter(filt))
+
+		try:
+			ret = next(it)
+		except StopIteration:
+			raise KeyError('No packages match the filter.')
+		try:
+			next(it)
+		except StopIteration:
+			pass
+		else:
+			raise ValueError('Filter matches more than one package.')
+
+		return ret
+
 	def __contains__(self, arg):
 		"""
 		Check whether the package set contains at least a single package
