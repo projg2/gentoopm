@@ -45,7 +45,7 @@ class PkgCoreFilteredRepo(PkgCoreRepository):
 
 	def __iter__(self):
 		index = self._index
-		for pkg in self._repo.matches(self._filt):
+		for pkg in self._repo._repo.match(self._filt):
 			yield PkgCorePackage(pkg, index)
 
 class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository):

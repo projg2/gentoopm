@@ -3,6 +3,10 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import pkgcore.restrictions.boolean as br
+
+from gentoopm.pkgcorepm.atom import PkgCoreAtom
+
 def transform_filters(args, kwargs):
 	"""
 	Transform our filters into pkgcore restrictions whenever possible. Takes
@@ -13,4 +17,20 @@ def transform_filters(args, kwargs):
 	and args & kwargs are returned unmodified.
 	"""
 
-	return (None, args, kwargs)
+	newargs = []
+	f = []
+
+	for a in args:
+		if isinstance(a, PkgCoreAtom):
+			f.append(a._r)
+		else:
+			newargs.append(a)
+
+	if not f:
+		f = None
+	elif len(f) == 1:
+		f = f[0]
+	else:
+		f = br.AndRestriction(*f)
+
+	return (f, newargs, kwargs)
