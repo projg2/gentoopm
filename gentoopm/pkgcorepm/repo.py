@@ -3,6 +3,8 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import pkgcore.restrictions.boolean as br
+
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
 from gentoopm.pkgcorepm.pkg import PkgCorePackage
@@ -47,6 +49,18 @@ class PkgCoreFilteredRepo(PkgCoreRepository):
 		index = self._index
 		for pkg in self._repo._repo.match(self._filt):
 			yield PkgCorePackage(pkg, index)
+
+	def filter(self, *args, **kwargs):
+		r = self
+		filt, newargs, newkwargs = transform_filters(args, kwargs)
+
+		if filt:
+			r = PkgCoreFilteredRepo(self._repo,
+					br.AndRestriction(self._filt, filt))
+		if newargs or newkwargs:
+			r = PMRepository.filter(r, *args, **kwargs)
+
+		return r
 
 class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository):
 	def __init__(self, repo_obj, index):
