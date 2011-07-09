@@ -7,6 +7,7 @@ import paludis
 
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
+from gentoopm.paludispm.atom import PaludisAtom
 from gentoopm.paludispm.pkg import PaludisID, PaludisPackageSet
 
 class PaludisRepoDict(PMRepositoryDict):
@@ -45,7 +46,7 @@ class PaludisRepository(PMRepository, PaludisPackageSet):
 		newargs = []
 
 		for f in args:
-			if not callable(f): # an atom!
+			if isinstance(f, PaludisAtom):
 				pset = PaludisAtomFilteredRepo(pset, f)
 			else:
 				newargs.append(f)
