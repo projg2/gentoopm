@@ -18,6 +18,8 @@ class PackageManager(ABCObject):
 		"""
 		Return the canonical name of the PM. The value should be static
 		and unique.
+
+		@type: string
 		"""
 		pass
 
@@ -27,7 +29,7 @@ class PackageManager(ABCObject):
 		(Re-)load the configuration of a particular package manager. Set up
 		internal variables.
 
-		Called by default __init__().
+		Called by default L{__init__()}.
 		"""
 		pass
 
@@ -37,15 +39,18 @@ class PackageManager(ABCObject):
 	@abstractproperty
 	def repositories(self):
 		"""
-		Return an PMRepositoryDict (gentoopm.basepm.repo.PMRepositoryDict)
-		subclass referring to the currently enabled ebuild repositories.
+		Currently enabled ebuild repositories.
+
+		@type: L{PMRepositoryDict}
 		"""
 		pass
 
 	@abstractproperty
 	def installed(self):
 		"""
-		Return a PMRepository for installed packages (vardb).
+		Repository with installed packages (vardb).
+
+		@type: L{PMRepository}
 		"""
 		pass
 
@@ -53,14 +58,17 @@ class PackageManager(ABCObject):
 	def stack(self):
 		"""
 		Return a PMRepository providing access to the stacked packages in all
-		ebuild repositories. It returns packages from all the repos, with
-		the repo being the lowest-level key.
+		ebuild repositories. It returns packages from all the repos.
+
+		@type: L{PMRepoStackWrapper}
 		"""
 		return PMRepoStackWrapper(self.repositories)
 
 	@abstractproperty
 	def Atom(self):
 		"""
-		Return the PM-specific atom class.
+		The PM-specific atom class.
+
+		@type: L{PMAtom}
 		"""
 		pass

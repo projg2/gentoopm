@@ -6,6 +6,10 @@
 from gentoopm.basepm.repo import PMRepository
 
 class PMRepoStackWrapper(PMRepository):
+	"""
+	A wrapper class providing access to all packages in all repositories.
+	"""
+
 	def __init__(self, repos):
 		self._repos = repos
 

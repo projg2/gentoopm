@@ -10,29 +10,37 @@ from gentoopm.exceptions import EmptyPackageSetError, AmbiguousPackageSetError
 from gentoopm.util import ABCObject
 
 class PMPackageSet(ABCObject):
+	""" A set of packages. """
+
 	@abstractmethod
 	def __iter__(self):
 		"""
 		Iterate over the packages (or sets) in a set.
+
+		@return: packages in the set
+		@rtype: iter(L{PMPackage})
 		"""
 		pass
 
 	def filter(self, *args, **kwargs):
 		"""
-		Filter the packages based on arguments. Return a PMFilteredPackageSet
-		evaluating to a number of PMPackages.
+		Filter the packages based on arguments. Return a filtered package set.
 
-		The positional arguments can provide a number of PMPackageMatchers (see
-		gentoopm.basepm.filter) and/or a PMAtom instance. The keyword arguments
-		match metadata keys using '==' comparison with passed string
-		(or PMKeywordMatchers).
+		The positional arguments can provide a number of L{PMPackageMatcher}s
+		and/or a L{PMAtom} instance. The keyword arguments match metadata keys
+		using '==' comparison with passed string (or L{PMKeywordMatcher}s).
 
 		Multiple filters will be AND-ed together. Same applies for .filter()
 		called multiple times. You should, however, avoid passing multiple
 		atoms as it is not supported by all PMs.
 
-		This function can raise KeyError when a keyword argument does reference
-		an incorrect metadata key.
+		@param args: list of package matchers
+		@type args: list(L{PMPackageMatcher},L{PMAtom})
+		@param kwargs: dict of keyword matchers
+		@type kwargs: dict(string -> L{PMKeywordMatcher})
+		@return: filtered package set
+		@rtype: L{PMFilteredPackageSet}
+		@raise KeyError: when invalid metadata key is referenced in kwargs
 		"""
 
 		return PMFilteredPackageSet(self, args, kwargs)
@@ -40,8 +48,12 @@ class PMPackageSet(ABCObject):
 	@property
 	def best(self):
 		"""
-		Return the best-matching package in the set (i.e. flatten it, sort
-		the results and return the first one).
+		Return the best-matching package in the set (the newest one).
+
+		@type: L{PMPackage}
+		@raise EmptyPackageSetError: when no packages match the condition
+		@raise AmbiguousPackageSetError: when packages with different keys
+			match the condition
 		"""
 
 		l = sorted(self, reverse = True)
@@ -58,8 +70,19 @@ class PMPackageSet(ABCObject):
 	def select(self, *args, **kwargs):
 		"""
 		Select a single package matching keys in positional and keyword
-		arguments. This is a convenience wrapper for filter(*args,
-		**kwargs).best.
+		arguments. This is a convenience wrapper for C{filter(*args,
+		**kwargs).best}.
+
+		@param args: list of package matchers
+		@type args: list(L{PMPackageMatcher},L{PMAtom})
+		@param kwargs: dict of keyword matchers
+		@type kwargs: dict(string -> L{PMKeywordMatcher})
+		@return: filtered package set
+		@rtype: L{PMFilteredPackageSet}
+		@raise KeyError: when invalid metadata key is referenced in kwargs
+		@raise EmptyPackageSetError: when no packages match the condition
+		@raise AmbiguousPackageSetError: when packages with different keys
+			match the condition
 		"""
 		try:
 			return self.filter(*args, **kwargs).best
@@ -70,12 +93,17 @@ class PMPackageSet(ABCObject):
 
 	def __getitem__(self, filt):
 		"""
-		Select a single package matching an atom (or filter). Unlike .select(),
+		Select a single package matching an atom (or filter). Unlike L{select()},
 		this one doesn't choose the best match but requires the filter to match
 		exactly one package.
 
-		Raises KeyError when no package matches. Raises ValueError if more than
-		a single package matches.
+		@param filt: a package matcher or an atom
+		@type filt: L{PMPackageMatcher}/L{PMAtom}
+		@return: matching package
+		@rtype: L{PMPackage}
+		@raise EmptyPackageSetError: when no packages match the condition
+		@raise AmbiguousPackageSetError: when packages with different keys
+			match the condition
 		"""
 
 		it = iter(self.filter(filt))
@@ -97,6 +125,11 @@ class PMPackageSet(ABCObject):
 		"""
 		Check whether the package set contains at least a single package
 		matching the filter or package atom passed as an argument.
+
+		@param arg: a package matcher or an atom
+		@type arg: L{PMPackageMatcher}/L{PMAtom}
+		@return: True if at least a single package matched
+		@rtype: bool
 		"""
 
 		i = iter(self.filter(arg))
@@ -119,7 +152,7 @@ class PMFilteredPackageSet(PMPackageSet):
 
 class PMPackage(ABCObject):
 	"""
-	An abstract class representing a single, uniquely-keyed package
+	An abstract class representing a single, uniquely-identified package
 	in the package tree.
 	"""
 
@@ -129,7 +162,13 @@ class PMPackage(ABCObject):
 		method may not be called at all if PM is capable of a more efficient
 		filtering.
 
-		If kwargs reference incorrect metadata keys, a KeyError will be raised.
+		@param args: list of package matchers
+		@type args: list(L{PMPackageMatcher},L{PMAtom})
+		@param kwargs: dict of keyword matchers
+		@type kwargs: dict(string -> L{PMKeywordMatcher})
+		@return: True if package matches
+		@rtype: bool
+		@raise KeyError: when invalid metadata key is referenced in kwargs
 		"""
 
 		for f in args:
@@ -156,8 +195,11 @@ class PMPackage(ABCObject):
 	@abstractproperty
 	def key(self):
 		"""
-		Return the key identifying the package. This is used by .best, to check
-		whether the set doesn't reference more than one package.
+		Return the key identifying the package. This is used by
+		L{PMPackageSet.best}, to check whether the set doesn't reference more
+		than one package.
+
+		@type: string
 		"""
 		pass
 
@@ -165,6 +207,8 @@ class PMPackage(ABCObject):
 	def id(self):
 		"""
 		Return an unique identifier for the package.
+
+		@type: string
 		"""
 		pass
 
@@ -173,13 +217,17 @@ class PMPackage(ABCObject):
 		"""
 		Return path to the ebuild file (or vardb entry) if appropriate.
 		If not available, just return None.
+
+		@type: string/None
 		"""
 		pass
 
 	@abstractproperty
 	def metadata(self):
 		"""
-		Return PMPackageMetadata object for the package.
+		Return the metadata accessor object for the package.
+
+		@type: L{PMPackageMetadata}
 		"""
 		pass
 

@@ -16,6 +16,9 @@ class PMAtom(ABCObject):
 	def __init__(self, s):
 		"""
 		Create a new atom from string.
+
+		@param s: atom-formatted string
+		@type s: string
 		"""
 		pass
 
@@ -24,5 +27,8 @@ class PMAtom(ABCObject):
 		"""
 		Check whether a package matches the atom (is contained in the set
 		of packages matched by atom).
+
+		@param pkg: a package to match
+		@type pkg: L{PMPackage}
 		"""
 		pass

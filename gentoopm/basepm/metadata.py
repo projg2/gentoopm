@@ -26,6 +26,7 @@ metadata_keys = (
 	'CATEGORY', 'PN', 'PV', 'PR',
 	'P', 'PVR', 'PF'
 )
+""" A common supported metadata key list. """
 
 class PMPackageMetadata(ABCObject):
 	"""
@@ -34,8 +35,13 @@ class PMPackageMetadata(ABCObject):
 
 	def __getitem__(self, key):
 		"""
-		Get the value of a metadata key. Return it as a string, or an empty
-		string when unset.
+		Get the value of a metadata key.
+
+		@param key: the metadata key to catch
+		@type key: string
+		@return: the value of a metadata key, or C{''} when unset
+		@rtype: string
+		@raise KeyError: when invalid metadata key referred
 		"""
 		try:
 			return getattr(self, key)
@@ -48,15 +54,22 @@ class PMPackageMetadata(ABCObject):
 	@abstractmethod
 	def __getattr__(self, key):
 		"""
-		Get the value of a metadata key through an attribute. Return it
-		as a string, or an empty string when unset. Should raise
-		an AttributeError if the key is not in self.
+		Get the value of a metadata key through an attribute.
+
+		@param key: the metadata key to catch
+		@type key: string
+		@return: the value of a metadata key, or C{''} when unset
+		@rtype: string
+		@raise AttributeError: when invalid metadata key referred
 		"""
 		pass
 
 	def __iter__(self):
 		"""
 		Iterate over possible metadata keys.
+
+		@return: available metadata keys
+		@rtype: iter(string)
 		"""
 		return iter(metadata_keys)
 

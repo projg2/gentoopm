@@ -25,6 +25,12 @@ class PMRepositoryDict(ABCObject):
 
 		By default, iterates over the repository list. Can be replaced with
 		something more optimal.
+
+		@param key: repository name or path
+		@type key: string
+		@return: matching repository
+		@rtype: L{PMEbuildRepository}
+		@raise KeyError: when no repository matches the key
 		"""
 		bypath = os.path.isabs(key)
 
@@ -42,6 +48,9 @@ class PMRepositoryDict(ABCObject):
 	def __iter__(self):
 		"""
 		Iterate over the repository list.
+
+		@return: iterator over repositories
+		@rtype: iter(L{PMEbuildRepository})
 		"""
 		pass
 
@@ -64,6 +73,8 @@ class PMEbuildRepository(PMRepository):
 		"""
 		Return the repository name (either from the repo_name file or PM
 		fallback name).
+
+		@type: string
 		"""
 		pass
 
@@ -71,6 +82,8 @@ class PMEbuildRepository(PMRepository):
 	def path(self):
 		"""
 		Return the canonical path to the ebuild repository.
+
+		@type: string
 		"""
 		pass
 
