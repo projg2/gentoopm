@@ -7,7 +7,7 @@ import os.path
 
 from gentoopm.basepm.repo import PMRepositoryDict, PMEbuildRepository, \
 		PMRepository
-from gentoopm.portagepm.pkg import PortageCPV, PortageDBCPV
+from gentoopm.portagepm.pkg import PortageCPV, PortageDBCPV, PortagePackageSet
 
 class PortageRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -29,7 +29,7 @@ class PortageRepoDict(PMRepositoryDict):
 	def __init__(self, portdbapi):
 		self._dbapi = portdbapi
 
-class PortDBRepository(PMRepository):
+class PortDBRepository(PortagePackageSet, PMRepository):
 	def __init__(self, dbapi):
 		self._dbapi = dbapi
 

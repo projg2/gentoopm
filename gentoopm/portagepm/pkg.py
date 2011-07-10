@@ -7,7 +7,15 @@ from portage.versions import cpv_getkey, cpv_getversion, vercmp, \
 		catsplit, catpkgsplit, pkgsplit
 
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage
+from gentoopm.basepm.pkg import PMPackage, PMPackageSet, \
+		PMFilteredPackageSet
+
+class PortagePackageSet(PMPackageSet):
+	def filter(self, *args, **kwargs):
+		return PortageFilteredPackageSet(self, args, kwargs)
+
+class PortageFilteredPackageSet(PortagePackageSet, PMFilteredPackageSet):
+	pass
 
 class PortageDBCPV(PMPackage):
 	def __init__(self, cpv, dbapi):
