@@ -13,6 +13,11 @@ def reponame(val):
 	"""
 	Check the value for correctness as repository name. In fact, it only ensures
 	it isn't a path so that it won't confuse pm.repositories[val].
+
+	@param val: the config option value
+	@type val: string
+	@return: whether the value is a correct repo name
+	@rtype: bool
 	"""
 	if os.path.isabs(val):
 		raise ValueError('Invalid repository name: %s' % val)
@@ -25,6 +30,9 @@ class PMQueryCommand(ABCObject):
 	def help(self):
 		"""
 		Return the help string for a sub-command.
+
+		@return: the help string
+		@rtype: string
 		"""
 		descdoc = ' '.join(self.__doc__.split())
 		descdoc = descdoc[0].lower() + descdoc[1:]
@@ -33,6 +41,9 @@ class PMQueryCommand(ABCObject):
 	def __init__(self, argparser):
 		"""
 		Instantiate the subcommand, setting argument parser as necessary.
+
+		@param argparser: sub-command argument parser
+		@type argparser: C{argparse.ArgumentParser}
 		"""
 		argparser.set_defaults(instance = self)
 		self._arg = argparser
@@ -43,6 +54,13 @@ class PMQueryCommand(ABCObject):
 		Call the sub-command, passing pm (a working PackageManager instance)
 		and args (the result of argument parsing). Can return exit code
 		for the process if relevant. If it doesn't, 0 will be used.
+
+		@param pm: package manager instance
+		@type pm: L{PackageManager}
+		@param args: command arguments
+		@type args: C{argparse.Namespace}
+		@return: Process exit code or None if irrelevant
+		@rtype: bool/None
 		"""
 		pass
 

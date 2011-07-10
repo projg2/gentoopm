@@ -13,6 +13,9 @@ def get_preferred_pms():
 	"""
 	Find out what are the user's PM preferences and return the preferred PM
 	names as an iterable, with the most preferred one coming first.
+
+	@return: Preferred PMs, in order
+	@rtype: iterable(string)
 	"""
 
 	ret = []

@@ -5,11 +5,20 @@
 
 PV = '0'
 
+"""
+The package version.
+
+@type: string
+"""
+
 def get_package_manager():
 	"""
 	Get the PackageManager instance for the best package manager available.
-	Takes user preferences into consideration. Raises an exception if no PM
-	could be found.
+	Takes user preferences into consideration.
+
+	@return: Best package manager instance available
+	@rtype: L{PackageManager}
+	@raise Exception: No package manager could be imported.
 	"""
 
 	from gentoopm.preferences import get_preferred_pms

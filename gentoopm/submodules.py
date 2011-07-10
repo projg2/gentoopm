@@ -11,14 +11,15 @@ supported_pms = {
 
 def get_pm(pm_name):
 	"""
-	Get the PackageManager instance for a particularly named PM. Either returns
-	a PackageManager subclass instance or raises one of the following
-	exceptions:
+	Get the PackageManager instance for a particularly named PM.
 
-	- KeyError if pm_name doesn't refer to a supported PM,
-	- ImportError if modules required for a particular PM are not available,
-	- NameError if for some reason required class isn't provided by the module
-		(consider this an internal error).
+	@param pm_name: name of package manager to use
+	@type pm_name: string
+	@return: A package manager instance
+	@rtype: L{PackageManager}
+	@raise KeyError: pm_name doesn't refer to a supported PM
+	@raise ImportError: modules required for the PM are not available
+	@raise NameError: PM class is not available
 	"""
 
 	modname, clsname = supported_pms[pm_name]
@@ -28,8 +29,13 @@ def get_pm(pm_name):
 def get_any_pm(pm_list):
 	"""
 	Get the first working PackageManager from the pm_list. This function will
-	try to import them in order and either return the first succeeding or raise
-	an exception if all of them fail.
+	try to import them in order and return the first succeeding.
+
+	@param pm_list: list of preferred package manager names, in order
+	@type pm_list: iterable(string)
+	@return: Best available package manager instance
+	@rtype: L{PackageManager}
+	@raise Exception: if none of the PMs are available
 	"""
 
 	for pm_name in pm_list:
