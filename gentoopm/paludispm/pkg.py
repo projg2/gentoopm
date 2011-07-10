@@ -8,6 +8,7 @@ import paludis
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackageSet, PMPackage, \
 		PMFilteredPackageSet
+from gentoopm.exceptions import EmptyPackageSetError, AmbiguousPackageSetError
 
 class PaludisPackageSet(PMPackageSet):
 	_sorted = False
@@ -23,10 +24,10 @@ class PaludisPackageSet(PMPackageSet):
 			try:
 				f = next(it)
 			except StopIteration:
-				raise TypeError('.best called on an empty set')
+				raise EmptyPackageSetError('.best called on an empty set')
 			for p in it:
 				if p.key != f.key:
-					raise KeyError('.best called on a set of differently-named packages')
+					raise AmbiguousPackageSetError('.best called on a set of differently-named packages')
 
 			try:
 				return p

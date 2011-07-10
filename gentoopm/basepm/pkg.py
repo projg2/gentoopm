@@ -6,6 +6,7 @@
 from abc import abstractmethod, abstractproperty
 
 from gentoopm.basepm.atom import PMAtom
+from gentoopm.exceptions import EmptyPackageSetError, AmbiguousPackageSetError
 from gentoopm.util import ABCObject
 
 class PMPackageSet(ABCObject):
@@ -47,11 +48,11 @@ class PMPackageSet(ABCObject):
 		try:
 			best = l[0]
 		except IndexError:
-			raise TypeError('.best called on an empty set')
+			raise EmptyPackageSetError('.best called on an empty set')
 
 		for p in l:
 			if p.key != best.key:
-				raise KeyError('.best called on a set of differently-named packages')
+				raise AmbiguousPackageSetError('.best called on a set of differently-named packages')
 		return best
 
 	def select(self, *args, **kwargs):
@@ -62,10 +63,10 @@ class PMPackageSet(ABCObject):
 		"""
 		try:
 			return self.filter(*args, **kwargs).best
-		except TypeError:
-			raise KeyError('No packages match the filters.')
-		except KeyError:
-			raise ValueError('Ambiguous filter (matches more than a single package name).')
+		except EmptyPackageSetError:
+			raise EmptyPackageSetError('No packages match the filters.')
+		except AmbiguousPackageSetError:
+			raise AmbiguousPackageSetError('Ambiguous filter (matches more than a single package name).')
 
 	def __getitem__(self, filt):
 		"""
@@ -82,13 +83,13 @@ class PMPackageSet(ABCObject):
 		try:
 			ret = next(it)
 		except StopIteration:
-			raise KeyError('No packages match the filter.')
+			raise EmptyPackageSetError('No packages match the filter.')
 		try:
 			next(it)
 		except StopIteration:
 			pass
 		else:
-			raise ValueError('Filter matches more than one package.')
+			raise AmbiguousPackageSetError('Filter matches more than one package.')
 
 		return ret
 
