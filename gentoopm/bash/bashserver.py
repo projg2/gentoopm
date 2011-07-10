@@ -51,12 +51,23 @@ class BashServer(BashParser):
 		self._bashproc.stdin.write('\n'.encode('ASCII'))
 		self._bashproc.stdin.flush()
 
-	def __getitem__(self, k):
-		self._bashproc.stdin.write(('${%s}\n' % k).encode('ASCII'))
-		self._bashproc.stdin.flush()
-
+	def _read1(self):
 		f = self._bashproc.stdout
 		buf = ' '
 		while buf[-1] != '\0':
 			buf += f.read(1)
 		return buf[1:-1].decode('utf-8')
+
+	def __getitem__(self, k):
+		self._bashproc.stdin.write(('${%s}\n' % k).encode('ASCII'))
+		self._bashproc.stdin.flush()
+
+		return self._read1()
+
+	def get_env(self, *varlist):
+		q = ' '.join(['"${%s}"' % v for v in varlist])
+		self._bashproc.stdin.write(('%s\n' % q).encode('ASCII'))
+		self._bashproc.stdin.flush()
+
+		ret = [self._read1() for v in varlist]
+		return dict(zip(varlist, ret))
