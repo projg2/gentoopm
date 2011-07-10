@@ -33,3 +33,19 @@ class BashParser(ABCObject):
 		@rtype: string
 		"""
 		pass
+
+	def get_env(self, *varlist):
+		"""
+		Get values of multiple environment variables, and return them
+		as a dict.
+
+		@param varlist: environment variable names
+		@type varlist: list(string)
+		@return: environment variables with values
+		@rtype: dict(string -> string)
+		"""
+
+		out = {}
+		for v in varlist:
+			out[v] = self[v]
+		return out
