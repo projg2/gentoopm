@@ -21,6 +21,8 @@ def transform_filters(args, kwargs):
 	f = []
 
 	for a in args:
+		if isinstance(a, basestring):
+			a = PkgCoreAtom(a)
 		if isinstance(a, PkgCoreAtom):
 			f.append(a._r)
 		else:

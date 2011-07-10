@@ -4,7 +4,18 @@
 # Released under the terms of the 2-clause BSD license.
 
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage
+from gentoopm.basepm.pkg import PMPackage, PMPackageSet, PMFilteredPackageSet
+from gentoopm.pkgcorepm.atom import PkgCoreAtom
+
+class PkgCorePackageSet(PMPackageSet):
+	def filter(self, *args, **kwargs):
+		newargs = [(a if not isinstance(a, basestring)
+			else PkgCoreAtom(a)) for a in args]
+
+		return PkgCoreFilteredPackageSet(self, newargs, kwargs)
+
+class PkgCoreFilteredPackageSet(PkgCorePackageSet, PMFilteredPackageSet):
+	pass
 
 class PkgCorePackage(PMPackage):
 	def __init__(self, pkg, repo_index = 0):

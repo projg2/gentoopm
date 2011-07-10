@@ -7,7 +7,8 @@ import pkgcore.restrictions.boolean as br
 
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
-from gentoopm.pkgcorepm.pkg import PkgCorePackage
+from gentoopm.pkgcorepm.pkg import PkgCorePackage, PkgCorePackageSet, \
+		PkgCoreFilteredPackageSet
 from gentoopm.pkgcorepm.filter import transform_filters
 
 class PkgCoreRepoDict(PMRepositoryDict):
@@ -18,7 +19,7 @@ class PkgCoreRepoDict(PMRepositoryDict):
 	def __init__(self, stack):
 		self._stack = stack
 
-class PkgCoreRepository(PMRepository):
+class PkgCoreRepository(PkgCorePackageSet, PMRepository):
 	_index = 0
 	def __init__(self, repo_obj):
 		self._repo = repo_obj
@@ -35,7 +36,7 @@ class PkgCoreRepository(PMRepository):
 		if filt:
 			r = PkgCoreFilteredRepo(self, filt)
 		if newargs or newkwargs:
-			r = PMRepository.filter(r, *args, **kwargs)
+			r = PkgCoreFilteredPackageSet(r, args, kwargs)
 
 		return r
 
@@ -58,7 +59,7 @@ class PkgCoreFilteredRepo(PkgCoreRepository):
 			r = PkgCoreFilteredRepo(self._repo,
 					br.AndRestriction(self._filt, filt))
 		if newargs or newkwargs:
-			r = PMRepository.filter(r, *args, **kwargs)
+			r = PkgCoreFilteredPackageSet(r, args, kwargs)
 
 		return r
 
