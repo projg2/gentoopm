@@ -9,10 +9,14 @@ from portage.versions import cpv_getkey, cpv_getversion, vercmp, \
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageSet, \
 		PMFilteredPackageSet
+from gentoopm.portagepm.atom import PortageAtom
 
 class PortagePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):
-		return PortageFilteredPackageSet(self, args, kwargs)
+		newargs = [(a if not isinstance(a, basestring)
+			else PortageAtom(a)) for a in args]
+
+		return PortageFilteredPackageSet(self, newargs, kwargs)
 
 class PortageFilteredPackageSet(PortagePackageSet, PMFilteredPackageSet):
 	pass
