@@ -5,13 +5,28 @@
 
 from distutils.core import setup, Command
 
-import os.path, sys
+import os.path, subprocess, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 try:
 	from gentoopm import PV
 except ImportError:
 	PV = 'unknown'
+
+class DocCommand(Command):
+	description = 'create HTML docs'
+	user_options = []
+
+	def initialize_options(self):
+		pass
+
+	def finalize_options(self):
+		pass
+
+	def run(self):
+		print('Creating API docs')
+		subprocess.check_call(['epydoc', '--verbose', '--html',
+			'--output', 'doc', 'gentoopm'])
 
 class TestCommand(Command):
 	description = 'run tests'
@@ -61,6 +76,7 @@ setup(
 		],
 
 		cmdclass = {
+			'doc': DocCommand,
 			'test': TestCommand
 		}
 )
