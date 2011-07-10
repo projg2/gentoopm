@@ -30,4 +30,4 @@ class PaludisPM(PackageManager):
 
 	@property
 	def Atom(self):
-		return functools.partial(PaludisAtom, pm = self)
+		return functools.partial(PaludisAtom, env = self._env)

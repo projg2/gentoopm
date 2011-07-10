@@ -11,7 +11,7 @@ from gentoopm.exceptions import InvalidAtomStringError
 _category_wildcard_re = re.compile(r'\w')
 
 class PaludisAtom(PMAtom):
-	def _init_atom(self, s, pm, wildcards = False):
+	def _init_atom(self, s, env, wildcards = False):
 		opts = paludis.UserPackageDepSpecOptions() \
 				+ paludis.UserPackageDepSpecOption.NO_DISAMBIGUATION
 		if wildcards:
@@ -19,18 +19,18 @@ class PaludisAtom(PMAtom):
 
 		try:
 			self._atom = paludis.parse_user_package_dep_spec(
-					s, pm._env, opts,
+					s, env, opts,
 					paludis.Filter.All())
 		except (paludis.BadVersionOperatorError, paludis.PackageDepSpecError,
 				paludis.RepositoryNameError):
 			raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
-	def __init__(self, s, pm):
+	def __init__(self, s, env):
 		try:
-			self._init_atom(s, pm)
+			self._init_atom(s, env)
 		except InvalidAtomStringError:
 			# try */ for the category
-			self._init_atom(_category_wildcard_re.sub(r'*/\g<0>', s, 1), pm, True)
+			self._init_atom(_category_wildcard_re.sub(r'*/\g<0>', s, 1), env, True)
 
 	def __contains__(self, pkg):
 		raise NotImplementedError('Direct atom matching not implemented in Paludis')
