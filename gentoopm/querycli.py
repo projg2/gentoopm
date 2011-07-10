@@ -9,7 +9,7 @@ from abc import abstractmethod
 from gentoopm import get_package_manager
 from gentoopm.util import ABCObject
 
-def reponame(val):
+def _reponame(val):
 	"""
 	Check the value for correctness as repository name. In fact, it only ensures
 	it isn't a path so that it won't confuse pm.repositories[val].
@@ -87,7 +87,7 @@ class PMQueryCommands(object):
 		"""
 		def __init__(self, argparser):
 			PMQueryCommand.__init__(self, argparser)
-			argparser.add_argument('repo_name', type=reponame,
+			argparser.add_argument('repo_name', type=_reponame,
 				help='The repository name to look up')
 
 		def __call__(self, pm, args):

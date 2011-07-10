@@ -3,7 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-supported_pms = {
+_supported_pms = {
 	'paludis': ('gentoopm.paludispm', 'PaludisPM'),
 	'pkgcore': ('gentoopm.pkgcorepm', 'PkgCorePM'),
 	'portage': ('gentoopm.portagepm', 'PortagePM')
@@ -22,7 +22,7 @@ def get_pm(pm_name):
 	@raise NameError: PM class is not available
 	"""
 
-	modname, clsname = supported_pms[pm_name]
+	modname, clsname = _supported_pms[pm_name]
 	mod = __import__(modname, fromlist=[clsname], level=-1)
 	return getattr(mod, clsname)()
 
