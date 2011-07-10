@@ -32,4 +32,4 @@ class PortagePM(PackageManager):
 
 	@property
 	def Atom(self):
-		return functools.partial(PortageAtom, pm = self)
+		return PortageAtom

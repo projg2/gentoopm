@@ -3,6 +3,8 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import collections
+
 import portage.exception as pe
 from portage.dbapi.dep_expand import dep_expand
 from portage.dep import match_from_list
@@ -11,10 +13,18 @@ from portage.versions import catsplit
 from gentoopm.basepm.atom import PMAtom
 from gentoopm.exceptions import InvalidAtomStringError
 
+class FakeSettings(object):
+	"""
+	Fake settings object, to satisfy cpv_expand().
+	"""
+
+	def __getattr__(self, key):
+		return lambda: collections.defaultdict(lambda: '')
+
 class PortageAtom(object):
-	def __new__(self, s, pm):
+	def __new__(self, s):
 		try:
-			a = dep_expand(s, settings = pm._portdb.settings)
+			a = dep_expand(s, settings = FakeSettings())
 		except pe.InvalidAtom:
 			raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
