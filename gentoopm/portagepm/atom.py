@@ -5,17 +5,18 @@
 
 import portage.exception as pe
 from portage.dbapi.dep_expand import dep_expand
-from portage.dep import Atom, match_from_list
+from portage.dep import match_from_list
 from portage.versions import catsplit
 
 from gentoopm.basepm.atom import PMAtom
+from gentoopm.exceptions import InvalidAtomStringError
 
 class PortageAtom(object):
 	def __new__(self, s, pm):
 		try:
 			a = dep_expand(s, settings = pm._portdb.settings)
 		except pe.InvalidAtom:
-			raise ValueError('Incorrect atom: %s' % s)
+			raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
 		if catsplit(a.cp)[0] == 'null':
 			return UnexpandedPortageAtom(a)

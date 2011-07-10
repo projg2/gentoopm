@@ -6,6 +6,7 @@
 import paludis, re
 
 from gentoopm.basepm.atom import PMAtom
+from gentoopm.exceptions import InvalidAtomStringError
 
 _category_wildcard_re = re.compile(r'\w')
 
@@ -22,12 +23,12 @@ class PaludisAtom(PMAtom):
 					paludis.Filter.All())
 		except (paludis.BadVersionOperatorError, paludis.PackageDepSpecError,
 				paludis.RepositoryNameError):
-			raise ValueError('Incorrect atom: %s' % s)
+			raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
 	def __init__(self, s, pm):
 		try:
 			self._init_atom(s, pm)
-		except ValueError:
+		except InvalidAtomStringError:
 			# try */ for the category
 			self._init_atom(_category_wildcard_re.sub(r'*/\g<0>', s, 1), pm, True)
 

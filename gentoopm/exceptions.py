@@ -21,3 +21,8 @@ class AmbiguousPackageSetError(PMException):
 	consistenly-named set was expected.
 	"""
 	pass
+
+class InvalidAtomStringError(PMException):
+	"""
+	An invalid string was passed to the atom constructor.
+	"""
