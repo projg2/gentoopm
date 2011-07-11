@@ -64,7 +64,7 @@ class BashServer(BashParser):
 
 		return self._read1()
 
-	def get_env(self, *varlist):
+	def copy(self, *varlist):
 		q = ' '.join(['"${%s}"' % v for v in varlist])
 		self._bashproc.stdin.write(('%s\n' % q).encode('ASCII'))
 		self._bashproc.stdin.flush()

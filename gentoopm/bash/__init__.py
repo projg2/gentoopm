@@ -34,10 +34,10 @@ class BashParser(ABCObject):
 		"""
 		pass
 
-	def get_env(self, *varlist):
+	def copy(self, *varlist):
 		"""
 		Get values of multiple environment variables, and return them
-		as a dict.
+		as a dict (a 'local copy' of the environment).
 
 		@param varlist: environment variable names
 		@type varlist: list(string)
@@ -49,3 +49,13 @@ class BashParser(ABCObject):
 		for v in varlist:
 			out[v] = self[v]
 		return out
+
+def get_any_bashparser():
+	"""
+	Get any BashParser implementation (the best one available).
+
+	@return: a BashParser instance
+	@rtype: L{BashParser}
+	"""
+	from gentoopm.bash.bashserver import BashServer
+	return BashServer()

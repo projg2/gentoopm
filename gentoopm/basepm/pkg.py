@@ -3,10 +3,11 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import bz2, os.path
+import os.path
 from abc import abstractmethod, abstractproperty
 
 from gentoopm.basepm.atom import PMAtom
+from gentoopm.basepm.environ import PMPackageEnvironment
 from gentoopm.exceptions import EmptyPackageSetError, AmbiguousPackageSetError
 from gentoopm.util import ABCObject
 
@@ -249,9 +250,3 @@ class PMPackage(ABCObject):
 
 	def __repr__(self):
 		return '%s(%s)' % (self.__class__.__name__, repr(self.id))
-
-class PMPackageEnvironment(object):
-	def __init__(self, f, bzipped2 = False):
-		self._f = f
-		self._open_func = bz2.BZ2File if bzipped2 else open
-		print (self._f, self._open_func)
