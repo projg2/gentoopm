@@ -12,5 +12,4 @@ pms-test-suite:
 
 smart-live-rebuild:
 - userpriv checks, uid/gid,
-- environment.bz2 parsing,
 - getting atoms; maybe install cmdline?
