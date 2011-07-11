@@ -3,6 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import bz2, os.path
 from abc import abstractmethod, abstractproperty
 
 from gentoopm.basepm.atom import PMAtom
@@ -231,5 +232,26 @@ class PMPackage(ABCObject):
 		"""
 		pass
 
+	@property
+	def environ(self):
+		"""
+		Return the environment accessor object for the package.
+
+		@type: L{PMPackageEnvironment}
+		"""
+		p = self.path
+		bz2 = False
+		if os.path.isdir(p):
+			# XXX: look for .bz2 and plain, take the newer one
+			p = os.path.join(p, 'environment.bz2')
+			bz2 = True
+		return PMPackageEnvironment(p, bzipped2 = bz2)
+
 	def __repr__(self):
 		return '%s(%s)' % (self.__class__.__name__, repr(self.id))
+
+class PMPackageEnvironment(object):
+	def __init__(self, f, bzipped2 = False):
+		self._f = f
+		self._open_func = bz2.BZ2File if bzipped2 else open
+		print (self._f, self._open_func)
