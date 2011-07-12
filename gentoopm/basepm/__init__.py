@@ -72,3 +72,12 @@ class PackageManager(ABCObject):
 		@type: L{PMAtom}
 		"""
 		pass
+
+	@abstractproperty
+	def config(self):
+		"""
+		The PM config instance.
+
+		@type: L{PMConfig}
+		"""
+		pass

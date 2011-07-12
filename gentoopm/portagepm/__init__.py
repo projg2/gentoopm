@@ -8,6 +8,7 @@ from portage import create_trees
 
 from gentoopm.basepm import PackageManager
 from gentoopm.portagepm.atom import PortageAtom
+from gentoopm.portagepm.config import PortageConfig
 from gentoopm.portagepm.repo import PortageRepoDict, VDBRepository
 
 class PortagePM(PackageManager):
@@ -33,3 +34,7 @@ class PortagePM(PackageManager):
 	@property
 	def Atom(self):
 		return PortageAtom
+
+	@property
+	def config(self):
+		return PortageConfig(self._portdb.settings)

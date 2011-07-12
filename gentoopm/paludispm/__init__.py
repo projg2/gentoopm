@@ -7,6 +7,7 @@ import functools, paludis
 
 from gentoopm.basepm import PackageManager
 from gentoopm.paludispm.atom import PaludisAtom
+from gentoopm.paludispm.config import PaludisConfig
 from gentoopm.paludispm.repo import PaludisRepoDict, PaludisInstalledRepo, \
 		PaludisStackRepo
 
@@ -31,3 +32,7 @@ class PaludisPM(PackageManager):
 	@property
 	def Atom(self):
 		return functools.partial(PaludisAtom, env = self._env)
+
+	@property
+	def config(self):
+		return PaludisConfig(self._env)

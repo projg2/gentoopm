@@ -7,6 +7,7 @@ from pkgcore.config import load_config
 
 from gentoopm.basepm import PackageManager
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
+from gentoopm.pkgcorepm.config import PkgCoreConfig
 from gentoopm.pkgcorepm.repo import PkgCoreRepoDict, \
 		PkgCoreInstalledRepo
 
@@ -28,3 +29,7 @@ class PkgCorePM(PackageManager):
 	@property
 	def Atom(self):
 		return PkgCoreAtom
+
+	@property
+	def config(self):
+		return PkgCoreConfig(self._domain)
