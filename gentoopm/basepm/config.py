@@ -8,4 +8,29 @@ from abc import abstractproperty
 from gentoopm.util import ABCObject
 
 class PMConfig(ABCObject):
-	pass
+	@abstractproperty
+	def userpriv_enabled(self):
+		"""
+		Check whether root privileges are dropped for build-time.
+
+		@type: bool
+		"""
+		pass
+
+	@abstractproperty
+	def userpriv_uid(self):
+		"""
+		The UID used for userpriv.
+
+		@type: string/numeric
+		"""
+		pass
+
+	@abstractproperty
+	def userpriv_gid(self):
+		"""
+		The GID used for userpriv.
+
+		@type: string/numeric
+		"""
+		pass
