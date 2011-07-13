@@ -44,6 +44,9 @@ class CompletePortageAtom(PMAtom):
 		return not self._atom.slot \
 				or self._atom.slot == pkg.metadata.SLOT
 
+	def __str__(self):
+		return str(self._atom)
+
 class UncategorisedPackageWrapper(object):
 	def __init__(self, pkg):
 		self._pkg = pkg
@@ -52,7 +55,7 @@ class UncategorisedPackageWrapper(object):
 	def id(self):
 		cpv = self._pkg.id
 		return 'null/%s' % catsplit(cpv)[1]
-				
+
 class UnexpandedPortageAtom(CompletePortageAtom):
 	"""
 	An atom without a category specified.
@@ -61,3 +64,6 @@ class UnexpandedPortageAtom(CompletePortageAtom):
 	def __contains__(self, pkg):
 		return CompletePortageAtom.__contains__(self,
 				UncategorisedPackageWrapper(pkg))
+
+	def __str__(self):
+		raise ValueError('Unable to stringify incomplete atom')

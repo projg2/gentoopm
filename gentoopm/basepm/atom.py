@@ -32,3 +32,13 @@ class PMAtom(ABCObject):
 		@type pkg: L{PMPackage}
 		"""
 		pass
+
+	@abstractmethod
+	def __str__(self):
+		"""
+		Return the string representation of the atom.
+
+		If the atom is incomplete (misses a category), the result is undefined.
+		It can raise an exception then.
+		"""
+		pass

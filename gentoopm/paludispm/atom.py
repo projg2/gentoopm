@@ -31,6 +31,14 @@ class PaludisAtom(PMAtom):
 		except InvalidAtomStringError:
 			# try */ for the category
 			self._init_atom(_category_wildcard_re.sub(r'*/\g<0>', s, 1), env, True)
+			self._incomplete = True
+		else:
+			self._incomplete = False
 
 	def __contains__(self, pkg):
 		raise NotImplementedError('Direct atom matching not implemented in Paludis')
+
+	def __str__(self):
+		if self._incomplete:
+			raise ValueError('Unable to stringify incomplete atom')
+		return str(self._atom)
