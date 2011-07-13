@@ -39,7 +39,7 @@ class PaludisRepository(PMRepository, PaludisPackageSet):
 		enum = PaludisEnumID()
 		for i, p in enumerate(self._env[paludis.Selection.AllVersionsSorted(
 				paludis.FilteredGenerator(self._gen, self._filt))]):
-			yield PaludisID(p, i, enum)
+			yield PaludisID(p, i, enum, self._env)
 
 	def filter(self, *args, **kwargs):
 		pset = self

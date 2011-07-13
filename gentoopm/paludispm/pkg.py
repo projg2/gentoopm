@@ -42,10 +42,11 @@ class PaludisFilteredPackageSet(PMFilteredPackageSet, PaludisPackageSet):
 		PMFilteredPackageSet.__init__(self, pset, args, kwargs)
 
 class PaludisID(PMPackage):
-	def __init__(self, pkg, num = 0, enum_id = None):
+	def __init__(self, pkg, num = 0, enum_id = None, env = None):
 		self._pkg = pkg
 		self._num = num
 		self._enum_id = enum_id
+		self._env = env
 
 	@property
 	def metadata(self):
@@ -62,6 +63,11 @@ class PaludisID(PMPackage):
 	@property
 	def id(self):
 		return str(self._pkg)
+
+	@property
+	def atom(self):
+		# XXX: newer version wraps getting atom
+		return PaludisAtom('=%s' % self.id, self._env)
 
 	def __cmp__(self, other):
 		if not isinstance(other, PaludisID):

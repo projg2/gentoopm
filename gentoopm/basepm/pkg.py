@@ -215,6 +215,15 @@ class PMPackage(ABCObject):
 		pass
 
 	@abstractproperty
+	def atom(self):
+		"""
+		Return an atom matching the package uniquely.
+
+		@type: L{PMAtom}
+		"""
+		pass
+
+	@abstractproperty
 	def path(self):
 		"""
 		Return path to the ebuild file (or vardb entry) if appropriate.

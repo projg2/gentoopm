@@ -41,6 +41,10 @@ class PkgCorePackage(PMPackage):
 		else:
 			return self._pkg.cpvstr
 
+	@property
+	def atom(self):
+		return PkgCoreAtom('=%s' % self.id)
+
 	def __cmp__(self, other):
 		if not isinstance(other, PkgCorePackage):
 			raise TypeError('Unable to compare %s against %s' % \
