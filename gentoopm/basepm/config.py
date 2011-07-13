@@ -22,6 +22,9 @@ class PMConfig(ABCObject):
 		"""
 		The UID used for userpriv.
 
+		If userpriv is disabled, the result of calling this method is
+		undefined. It can result in an exception.
+
 		@type: string/numeric
 		"""
 		pass
@@ -30,6 +33,9 @@ class PMConfig(ABCObject):
 	def userpriv_gid(self):
 		"""
 		The GID used for userpriv.
+
+		If userpriv is disabled, the result of calling this method is
+		undefined. It can result in an exception.
 
 		@type: string/numeric
 		"""
