@@ -62,7 +62,12 @@ class PkgCoreMetadata(PMPackageMetadata):
 
 	@property
 	def INHERITED(self):
-		return ' '.join(self._pkg.data['_eclasses_'].keys())
+		# vdb uses INHERITED
+		# ebuilds use _eclasses_
+		try:
+			return self._pkg.data['INHERITED']
+		except KeyError:
+			return ' '.join(self._pkg.data['_eclasses_'].keys())
 
 	def __getattr__(self, key):
 		if key not in self:
