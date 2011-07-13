@@ -57,6 +57,7 @@ setup(
 		packages = [
 			'gentoopm',
 			'gentoopm.basepm',
+			'gentoopm.bash',
 			'gentoopm.paludispm',
 			'gentoopm.pkgcorepm',
 			'gentoopm.portagepm'
@@ -66,7 +67,7 @@ setup(
 		],
 		
 		classifiers = [
-			'Development Status :: 1 - Planning',
+			'Development Status :: 2 - Pre-Alpha',
 			'Environment :: Console',
 			'Intended Audience :: System Administrators',
 			'License :: OSI Approved :: BSD License',
