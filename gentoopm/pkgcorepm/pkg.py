@@ -67,7 +67,11 @@ class PkgCoreMetadata(PMPackageMetadata):
 		try:
 			return self._pkg.data['INHERITED']
 		except KeyError:
+			pass
+		try:
 			return ' '.join(self._pkg.data['_eclasses_'].keys())
+		except KeyError:
+			return ''
 
 	def __getattr__(self, key):
 		if key not in self:
