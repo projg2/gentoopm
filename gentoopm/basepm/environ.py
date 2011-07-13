@@ -52,9 +52,6 @@ class LazyBashParser(object):
 	def copy(self, *v):
 		return self._parser.copy(*v)
 
-	def __del__(self):
-		del self._parser
-
 _bp = LazyBashParser()
 
 class PMPackageEnvironment(object):
