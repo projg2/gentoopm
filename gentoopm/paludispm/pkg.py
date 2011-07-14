@@ -9,6 +9,7 @@ from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackageSet, PMPackage, \
 		PMFilteredPackageSet
 from gentoopm.exceptions import EmptyPackageSetError, AmbiguousPackageSetError
+from gentoopm.paludispm.atom import PaludisAtom
 
 class PaludisPackageSet(PMPackageSet):
 	_sorted = False
