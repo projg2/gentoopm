@@ -48,6 +48,10 @@ class CompletePortageAtom(PMAtom):
 	def __str__(self):
 		return str(self._atom)
 
+	@property
+	def complete(self):
+		return True
+
 class UncategorisedPackageWrapper(object):
 	def __init__(self, pkg):
 		self._pkg = pkg
@@ -68,3 +72,7 @@ class UnexpandedPortageAtom(CompletePortageAtom):
 
 	def __str__(self):
 		raise ValueError('Unable to stringify incomplete atom')
+
+	@property
+	def complete(self):
+		return False

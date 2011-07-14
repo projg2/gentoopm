@@ -17,7 +17,11 @@ class PkgCoreAtom(PMAtom):
 		return self._r.match(pkg._pkg)
 
 	def __str__(self):
-		if isinstance(self._r, atom):
+		if self.complete:
 			return str(self._r)
 		else:
 			raise ValueError('Unable to stringify incomplete atom')
+
+	@property
+	def complete(self):
+		return isinstance(self._r, atom)

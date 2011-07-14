@@ -43,3 +43,7 @@ class PaludisAtom(PMAtom):
 		if self._incomplete:
 			raise ValueError('Unable to stringify incomplete atom')
 		return str(self._atom)
+
+	@property
+	def complete(self):
+		return not self._incomplete

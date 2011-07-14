@@ -42,3 +42,16 @@ class PMAtom(ABCObject):
 		It can raise an exception then.
 		"""
 		pass
+
+	@abstractproperty
+	def complete(self):
+		"""
+		Whether the atom is complete, i.e. whether the category is specified.
+
+		If an atom is incomplete, it is impossible to stringify it. Using such
+		an atom with L{PMPackageSet.select()} may result
+		in an L{AmbiguousPackageSetError}.
+
+		@type: bool
+		"""
+		pass
