@@ -35,7 +35,7 @@ class PortageAtom(object):
 			return CompletePortageAtom(a, pkg)
 
 class CompletePortageAtom(PMAtom):
-	def __init__(self, a, pkg):
+	def __init__(self, a, pkg = None):
 		self._atom = a
 		self._pkg = pkg
 
