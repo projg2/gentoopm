@@ -67,7 +67,7 @@ class PaludisID(PMPackage):
 
 	@property
 	def atom(self):
-		return PaludisAtom(self.uniquely_identifying_spec(),
+		return PaludisAtom(self._pkg.uniquely_identifying_spec(),
 				self._env, self)
 
 	def __cmp__(self, other):
