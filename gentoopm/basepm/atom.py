@@ -87,3 +87,30 @@ class PMAtom(ABCObject):
 			match the atom
 		"""
 		return repo.select(self).atom
+
+	@abstractproperty
+	def slotted(self):
+		"""
+		Return an atom matching all packages in the same slot as the associated
+		package.
+
+		This method should be used on associated atoms only. When called
+		on an unassociated atom, it should raise an exception.
+
+		@type: L{PMAtom}
+		"""
+		pass
+
+	@abstractproperty
+	def unversioned(self):
+		"""
+		Return an atom matching all packages with the same key as the
+		associated package.
+
+		This method should be used on associated atoms only. When called
+		on an unassociated atom, it should raise an exception.
+
+		@type: L{PMAtom}
+		"""
+		pass
+

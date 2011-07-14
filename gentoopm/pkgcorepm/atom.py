@@ -11,10 +11,13 @@ from gentoopm.exceptions import InvalidAtomStringError
 
 class PkgCoreAtom(PMAtom):
 	def __init__(self, s, pkg = None):
-		try:
-			self._r = parse_match(s)
-		except ParseError:
-			raise InvalidAtomStringError('Incorrect atom: %s' % s)
+		if isinstance(s, atom):
+			self._r = s
+		else:
+			try:
+				self._r = parse_match(s)
+			except ParseError:
+				raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
 		self._pkg = pkg
 
@@ -34,3 +37,13 @@ class PkgCoreAtom(PMAtom):
 	@property
 	def associated(self):
 		return self._pkg is not None
+
+	@property
+	def slotted(self):
+		assert(self.associated)
+		return PkgCoreAtom(self._pkg._pkg.slotted_atom, self._pkg)
+
+	@property
+	def unversioned(self):
+		assert(self.associated)
+		return PkgCoreAtom(self._pkg._pkg.unversioned_atom, self._pkg)

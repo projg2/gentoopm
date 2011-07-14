@@ -35,6 +35,7 @@ class PaludisAtom(PMAtom):
 		else:
 			self._incomplete = False
 		self._pkg = pkg
+		self._env = env
 
 	def __contains__(self, pkg):
 		raise NotImplementedError('Direct atom matching not implemented in Paludis')
@@ -51,3 +52,15 @@ class PaludisAtom(PMAtom):
 	@property
 	def associated(self):
 		return self._pkg is not None
+
+	@property
+	def slotted(self):
+		assert(self.associated)
+		cp = str(self._atom.package)
+		slot = self._pkg.metadata['SLOT']
+		return PaludisAtom('%s:%s' % (cp, slot), self._env)
+
+	@property
+	def unversioned(self):
+		assert(self.associated)
+		return PaludisAtom(str(self._atom.package), self._env)

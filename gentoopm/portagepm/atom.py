@@ -57,6 +57,18 @@ class CompletePortageAtom(PMAtom):
 	def associated(self):
 		return self._pkg is not None
 
+	@property
+	def slotted(self):
+		assert(self.associated)
+		cp = self._atom.cp
+		slot = self._pkg.metadata['SLOT']
+		return PortageAtom('%s:%s' % (cp, slot))
+
+	@property
+	def unversioned(self):
+		assert(self.associated)
+		return PortageAtom(self._atom.cp)
+
 class UncategorisedPackageWrapper(object):
 	def __init__(self, pkg):
 		self._pkg = pkg
