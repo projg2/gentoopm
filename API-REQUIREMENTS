@@ -11,5 +11,4 @@ pms-test-suite:
 - install, uninstall, manifest...
 
 smart-live-rebuild:
-- userpriv checks, uid/gid,
-- getting atoms; maybe install cmdline?
+- install (cmdline)
