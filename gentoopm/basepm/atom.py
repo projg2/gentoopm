@@ -43,6 +43,13 @@ class PMAtom(ABCObject):
 		"""
 		pass
 
+	def __repr__(self):
+		if self.complete:
+			s = repr(self.__str__())
+		else:
+			s = '<incomplete>'
+		return '%s(%s)' % (self.__class__.__name__, s)
+
 	@abstractproperty
 	def complete(self):
 		"""
