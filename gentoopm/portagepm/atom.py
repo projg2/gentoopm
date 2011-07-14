@@ -29,7 +29,8 @@ class PortageAtom(object):
 			raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
 		if catsplit(a.cp)[0] == 'null':
-			return UnexpandedPortageAtom(a, pkg)
+			assert(pkg is None)
+			return UnexpandedPortageAtom(a)
 		else:
 			return CompletePortageAtom(a, pkg)
 
