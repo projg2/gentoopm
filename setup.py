@@ -53,6 +53,7 @@ class TestCommand(Command):
 				l = gentoopm.tests.PMTestLoader(pm_inst)
 
 				testsuite = unittest.TestSuite()
+				testsuite.addTests(l.loadTestsFromModule('gentoopm.tests.atom'))
 				maintestsuite.addTests(testsuite)
 
 		r = unittest.TextTestRunner()
