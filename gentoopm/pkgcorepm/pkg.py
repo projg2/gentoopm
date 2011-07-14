@@ -84,27 +84,3 @@ class PkgCoreMetadata(PMPackageMetadata):
 	@property
 	def CATEGORY(self):
 		return self._pkg.category
-
-	@property
-	def PN(self):
-		return self._pkg.PN
-
-	@property
-	def PV(self):
-		return self._pkg.version
-
-	@property
-	def PR(self):
-		return 'r%d' % self._pkg.PR
-
-	@property
-	def P(self):
-		return self._pkg.P
-
-	@property
-	def PVR(self):
-		return self._pkg.fullver
-
-	@property
-	def PF(self):
-		return self._pkg.PF

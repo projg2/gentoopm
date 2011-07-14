@@ -99,19 +99,3 @@ class PaludisMetadata(PMPackageMetadata):
 	@property
 	def CATEGORY(self):
 		return str(self._pkg.name.category)
-
-	@property
-	def PN(self):
-		return str(self._pkg.name.package)
-
-	@property
-	def PV(self):
-		return str(self._pkg.version.remove_revision())
-
-	@property
-	def PR(self):
-		return str(self._pkg.version.revision_only())
-
-	@property
-	def PVR(self):
-		return str(self._pkg.version)

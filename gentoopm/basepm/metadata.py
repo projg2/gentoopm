@@ -23,8 +23,7 @@ metadata_keys = (
 	'INHERITED', 'DEFINED_PHASES',
 
 	# other useful ebuild vars
-	'CATEGORY', 'PN', 'PV', 'PR',
-	'P', 'PVR', 'PF'
+	'CATEGORY'
 )
 """ A common supported metadata key list. """
 
@@ -75,16 +74,11 @@ class PMPackageMetadata(ABCObject):
 
 	# Other useful ebuild vars.
 
-	CATEGORY = abstractproperty()
-	PN = abstractproperty()
-	PV = abstractproperty()
-	PR = abstractproperty()
-	PVR = abstractproperty()
+	@abstractproperty
+	def CATEGORY(self):
+		"""
+		Package category.
 
-	@property
-	def P(self):
-		return '%s-%s' % (self.PN, self.PV) # XXX?
-
-	@property
-	def PF(self):
-		return '%s-%s' % (self.PN, self.PVR) # XXX?
+		@type: string
+		"""
+		pass

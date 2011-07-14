@@ -87,22 +87,6 @@ class PortageDBMetadata(PMPackageMetadata):
 	def CATEGORY(self):
 		return catsplit(self._cpv)[0]
 
-	@property
-	def PN(self):
-		return catpkgsplit(self._cpv)[1]
-
-	@property
-	def PV(self):
-		return pkgsplit(self._cpv)[1]
-
-	@property
-	def PR(self):
-		return pkgsplit(self._cpv)[2]
-
-	@property
-	def PVR(self):
-		return cpv_getversion(self._cpv)
-
 class PortageMetadata(PortageDBMetadata):
 	def __init__(self, cpv, dbapi, tree):
 		PortageDBMetadata.__init__(self, cpv, dbapi)
