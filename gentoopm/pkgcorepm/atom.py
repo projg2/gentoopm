@@ -30,3 +30,7 @@ class PkgCoreAtom(PMAtom):
 	@property
 	def complete(self):
 		return isinstance(self._r, atom)
+
+	@property
+	def associated(self):
+		return self._pkg is not None

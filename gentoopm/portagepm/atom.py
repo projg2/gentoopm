@@ -53,6 +53,10 @@ class CompletePortageAtom(PMAtom):
 	def complete(self):
 		return True
 
+	@property
+	def associated(self):
+		return self._pkg is not None
+
 class UncategorisedPackageWrapper(object):
 	def __init__(self, pkg):
 		self._pkg = pkg

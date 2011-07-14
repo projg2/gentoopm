@@ -47,3 +47,7 @@ class PaludisAtom(PMAtom):
 	@property
 	def complete(self):
 		return not self._incomplete
+
+	@property
+	def associated(self):
+		return self._pkg is not None

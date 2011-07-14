@@ -55,3 +55,14 @@ class PMAtom(ABCObject):
 		@type: bool
 		"""
 		pass
+
+	@abstractproperty
+	def associated(self):
+		"""
+		Whether the atom is associated with a package.
+
+		If an atom is unassociated, it is impossible to transform it.
+
+		@type: bool
+		"""
+		pass
