@@ -9,8 +9,9 @@ from pkgcore.util.parserestrict import parse_match
 from gentoopm.basepm.atom import PMAtom
 
 class PkgCoreAtom(PMAtom):
-	def __init__(self, s):
+	def __init__(self, s, pkg = None):
 		self._r = parse_match(s)
+		self._pkg = pkg
 
 	def __contains__(self, pkg):
 		return self._r.match(pkg._pkg)

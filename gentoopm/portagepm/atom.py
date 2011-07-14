@@ -22,20 +22,21 @@ class FakeSettings(object):
 		return lambda: collections.defaultdict(lambda: '')
 
 class PortageAtom(object):
-	def __new__(self, s):
+	def __new__(self, s, pkg = None):
 		try:
 			a = dep_expand(s, settings = FakeSettings())
 		except pe.InvalidAtom:
 			raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
 		if catsplit(a.cp)[0] == 'null':
-			return UnexpandedPortageAtom(a)
+			return UnexpandedPortageAtom(a, pkg)
 		else:
-			return CompletePortageAtom(a)
+			return CompletePortageAtom(a, pkg)
 
 class CompletePortageAtom(PMAtom):
-	def __init__(self, a):
+	def __init__(self, a, pkg):
 		self._atom = a
+		self._pkg = pkg
 
 	def __contains__(self, pkg):
 		# SLOT matching requires metadata so delay it.

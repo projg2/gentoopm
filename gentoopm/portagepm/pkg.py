@@ -45,7 +45,7 @@ class PortageDBCPV(PMPackage):
 
 	@property
 	def atom(self):
-		return PkgCoreAtom('=%s' % self.id)
+		return PkgCoreAtom('=%s' % self.id, self)
 
 class PortageCPV(PortageDBCPV):
 	def __init__(self, cpv, dbapi, tree, repo_prio):

@@ -43,7 +43,7 @@ class PkgCorePackage(PMPackage):
 
 	@property
 	def atom(self):
-		return PkgCoreAtom('=%s' % self.id)
+		return PkgCoreAtom('=%s' % self.id, self)
 
 	def __cmp__(self, other):
 		if not isinstance(other, PkgCorePackage):

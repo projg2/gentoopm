@@ -25,7 +25,7 @@ class PaludisAtom(PMAtom):
 				paludis.RepositoryNameError):
 			raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
-	def __init__(self, s, env):
+	def __init__(self, s, env, pkg = None):
 		try:
 			self._init_atom(s, env)
 		except InvalidAtomStringError:
@@ -34,6 +34,7 @@ class PaludisAtom(PMAtom):
 			self._incomplete = True
 		else:
 			self._incomplete = False
+		self._pkg = pkg
 
 	def __contains__(self, pkg):
 		raise NotImplementedError('Direct atom matching not implemented in Paludis')
