@@ -26,14 +26,16 @@ class PaludisAtom(PMAtom):
 			raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
 	def __init__(self, s, env, pkg = None):
-		try:
-			self._init_atom(s, env)
-		except InvalidAtomStringError:
-			# try */ for the category
-			self._init_atom(_category_wildcard_re.sub(r'*/\g<0>', s, 1), env, True)
-			self._incomplete = True
+		self._incomplete = False
+		if isinstance(s, paludis.PackageDepSpec):
+			self._atom = s
 		else:
-			self._incomplete = False
+			try:
+				self._init_atom(s, env)
+			except InvalidAtomStringError:
+				# try */ for the category
+				self._init_atom(_category_wildcard_re.sub(r'*/\g<0>', s, 1), env, True)
+				self._incomplete = True
 		self._pkg = pkg
 		self._env = env
 

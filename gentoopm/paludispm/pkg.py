@@ -67,8 +67,8 @@ class PaludisID(PMPackage):
 
 	@property
 	def atom(self):
-		# XXX: newer version wraps getting atom
-		return PaludisAtom('=%s' % self.id, self._env, self)
+		return PaludisAtom(self.uniquely_identifying_spec(),
+				self._env, self)
 
 	def __cmp__(self, other):
 		if not isinstance(other, PaludisID):
