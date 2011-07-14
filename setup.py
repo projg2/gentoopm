@@ -39,12 +39,24 @@ class TestCommand(Command):
 		pass
 
 	def run(self):
-		import unittest
+		import unittest, doctest
+		import gentoopm.submodules, gentoopm.tests
 
-		tests = unittest.TestSuite()
+		maintestsuite = unittest.TestSuite()
+
+		for pm in gentoopm.submodules._supported_pms:
+			try:
+				pm_inst = gentoopm.submodules.get_pm(pm)
+			except ImportError:
+				print('%s not available, skipping tests.' % pm)
+			else:
+				l = gentoopm.tests.PMTestLoader(pm_inst)
+
+				testsuite = unittest.TestSuite()
+				maintestsuite.addTests(testsuite)
 
 		r = unittest.TextTestRunner()
-		res = r.run(tests)
+		res = r.run(maintestsuite)
 		sys.exit(0 if res.wasSuccessful() else 1)
 
 setup(
@@ -60,7 +72,8 @@ setup(
 			'gentoopm.bash',
 			'gentoopm.paludispm',
 			'gentoopm.pkgcorepm',
-			'gentoopm.portagepm'
+			'gentoopm.portagepm',
+			'gentoopm.tests'
 		],
 		scripts = [
 			'gentoopmq'
