@@ -82,7 +82,7 @@ class PaludisStackRepo(PaludisRepository):
 
 	@property
 	def _filt(self):
-		return paludis.Filter.SupportInstallAction()
+		return paludis.Filter.SupportsInstallAction()
 
 class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
 	def __init__(self, repo_obj, env):
