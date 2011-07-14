@@ -66,3 +66,17 @@ class PMAtom(ABCObject):
 		@type: bool
 		"""
 		pass
+
+	def get_associated(self, repo):
+		"""
+		Return an atom associated with a matching package in the repository.
+
+		@param repo: Repository to find a match in.
+		@type repo: L{PMRepository}
+		@return: An associated atom.
+		@rtype: L{PMAtom}
+		@raise EmptyPackageSetError: when no packages match the atom
+		@raise AmbiguousPackageSetError: when packages with different keys
+			match the atom
+		"""
+		return repo.select(self).atom
