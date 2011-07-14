@@ -4,13 +4,18 @@
 # Released under the terms of the 2-clause BSD license.
 
 from pkgcore.ebuild.atom import atom
-from pkgcore.util.parserestrict import parse_match
+from pkgcore.util.parserestrict import parse_match, ParseError
 
 from gentoopm.basepm.atom import PMAtom
+from gentoopm.exceptions import InvalidAtomStringError
 
 class PkgCoreAtom(PMAtom):
 	def __init__(self, s, pkg = None):
-		self._r = parse_match(s)
+		try:
+			self._r = parse_match(s)
+		except ParseError:
+			raise InvalidAtomStringError('Incorrect atom: %s' % s)
+
 		self._pkg = pkg
 
 	def __contains__(self, pkg):
