@@ -43,10 +43,10 @@ class PackageNames(object):
 	switch to another packages when one of them stops to work.
 	"""
 
-	single = 'portage'
+	single = 'coreutils'
 	""" Incomplete atom matching a single package. """
 
-	single_complete = 'sys-apps/portage'
+	single_complete = 'sys-apps/coreutils'
 	""" Complete atom matching a single package. """
 
 	multiple = 'pms'
