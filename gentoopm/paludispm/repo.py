@@ -53,7 +53,7 @@ class PaludisRepository(PMRepository, PaludisPackageSet):
 			else:
 				newargs.append(f)
 
-		if pset == self:
+		if id(pset) == id(self):
 			return PaludisPackageSet.filter(self, args, kwargs)
 		elif newargs or kwargs:
 			return pset.filter(self, newargs, kwargs)
