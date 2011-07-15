@@ -4,12 +4,12 @@
 # Released under the terms of the 2-clause BSD license.
 
 from gentoopm.exceptions import InvalidAtomStringError, AmbiguousPackageSetError
-from gentoopm.tests import PMTestCase
+from gentoopm.tests import PMTestCase, PackageNames
 
 class UserSpecifiedAtomTestCase(PMTestCase):
 	def setUp(self):
-		self._incomplete_atom = self.pm.Atom('portage')
-		self._complete_atom = self.pm.Atom('sys-apps/portage')
+		self._incomplete_atom = self.pm.Atom(PackageNames.single)
+		self._complete_atom = self.pm.Atom(PackageNames.single_complete)
 		self._associated_atom = self._complete_atom.get_associated(self.pm.stack)
 
 	def test_invalid_atoms(self):
@@ -42,8 +42,7 @@ class UserSpecifiedAtomTestCase(PMTestCase):
 		self.assertEqual(a.associated, True)
 
 	def test_ambiguous_atom_association(self):
-		# XXX: risky
-		ia = self.pm.Atom('pms')
+		ia = self.pm.Atom(PackageNames.multiple)
 		self.assertRaises(AmbiguousPackageSetError, ia.get_associated,
 				self.pm.stack)
 

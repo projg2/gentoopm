@@ -36,3 +36,18 @@ class PMTestLoader(unittest.TestLoader):
 		if isinstance(mod, basestring):
 			mod = __import__(mod, fromlist=['.'], level=-1)
 		return unittest.TestLoader.loadTestsFromModule(self, mod)
+
+class PackageNames(object):
+	"""
+	A container for package names used in tests. Supposed to allow simple
+	switch to another packages when one of them stops to work.
+	"""
+
+	single = 'portage'
+	""" Incomplete atom matching a single package. """
+
+	single_complete = 'sys-apps/portage'
+	""" Complete atom matching a single package. """
+
+	multiple = 'pms'
+	""" Incomplete atom matching multiple packages. """
