@@ -44,7 +44,7 @@ class PMPackageMetadata(ABCObject):
 		"""
 		try:
 			return getattr(self, key)
-		except NameError:
+		except AttributeError:
 			raise KeyError('No metadata key named %s' % key)
 
 	def __contains__(self, key):
