@@ -78,6 +78,12 @@ class PaludisID(PMPackage):
 			raise TypeError('Unable to compare results of two enumerations')
 		return cmp(self._num, other._num)
 
+	def __eq__(self, other):
+		if not isinstance(other, PaludisID):
+			raise TypeError('Unable to compare %s against %s' % \
+					self, other)
+		return self.id == other.id
+
 class PaludisMetadata(PMPackageMetadata):
 	def __init__(self, pkg):
 		self._pkg = pkg
