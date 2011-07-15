@@ -97,6 +97,9 @@ class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
 	def path(self):
 		return self._repo.location_key().parse_value()
 
+	def __eq__(self, other):
+		return self.name == other.name and self.path == other.path
+
 class PaludisInstalledRepo(PaludisRepository):
 	def __init__(self, env):
 		self._env = env
