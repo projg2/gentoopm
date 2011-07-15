@@ -43,6 +43,19 @@ class PMAtom(ABCObject):
 		"""
 		pass
 
+	def __eq__(self, other):
+		if not self.complete:
+			raise NotImplementedError('Unable to compare incomplete atoms')
+		return str(self) == str(other)
+
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
+	def __hash__(self):
+		if not self.complete:
+			raise NotImplementedError('Unable to hash incomplete atoms')
+		return hash(str(self))
+
 	def __repr__(self):
 		if self.complete:
 			s = repr(self.__str__())
