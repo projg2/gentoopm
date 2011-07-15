@@ -52,25 +52,25 @@ class PMPackage(ABCObject):
 
 		return True
 
-	@abstractproperty
+	@property
 	def key(self):
 		"""
 		Return the key identifying the package. This is used by
 		L{PMPackageSet.best}, to check whether the set doesn't reference more
 		than one package.
 
-		@type: string
+		@type: any
 		"""
-		pass
+		return self.atom.unversioned
 
-	@abstractproperty
+	@property
 	def id(self):
 		"""
 		Return an unique identifier for the package.
 
-		@type: string
+		@type: any
 		"""
-		pass
+		return self.atom
 
 	@abstractproperty
 	def atom(self):

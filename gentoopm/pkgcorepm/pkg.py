@@ -32,19 +32,12 @@ class PkgCorePackage(PMPackage):
 		return self._pkg.path
 
 	@property
-	def key(self):
-		return self._pkg.key
-
-	@property
-	def id(self):
-		if self._repo_index != 0:
-			return '%s::%s' % (self._pkg.cpvstr, self._pkg.repo.repo_id)
-		else:
-			return self._pkg.cpvstr
-
-	@property
 	def atom(self):
-		return PkgCoreAtom('=%s' % self.id, self)
+		if self._repo_index != 0:
+			s = '%s::%s' % (self._pkg.cpvstr, self._pkg.repo.repo_id)
+		else:
+			s = self._pkg.cpvstr
+		return PkgCoreAtom('=%s' % s, self)
 
 	def __lt__(self, other):
 		if not isinstance(other, PkgCorePackage):

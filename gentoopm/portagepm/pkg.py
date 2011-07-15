@@ -36,16 +36,8 @@ class PortageDBCPV(PMPackage):
 		return self._dbapi.getpath(self._cpv)
 
 	@property
-	def key(self):
-		return cpv_getkey(self._cpv)
-
-	@property
-	def id(self):
-		return self._cpv
-
-	@property
 	def atom(self):
-		return PortageAtom('=%s' % self.id, self)
+		return PortageAtom('=%s' % self._cpv, self)
 
 	def __lt__(self, other):
 		if not isinstance(other, PortageDBCPV):
@@ -69,8 +61,9 @@ class PortageCPV(PortageDBCPV):
 		return self._dbapi.findname(self._cpv, self._tree)
 
 	@property
-	def id(self):
-		return '%s::%s' % (self._cpv, self._dbapi.getRepositoryName(self._tree))
+	def atom(self):
+		return PortageAtom('=%s::%s' % (self._cpv,
+			self._dbapi.getRepositoryName(self._tree)), self)
 
 	def __lt__(self, other):
 		if not isinstance(other, PortageCPV):
