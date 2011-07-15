@@ -3,8 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from portage.versions import cpv_getkey, cpv_getversion, vercmp, \
-		catsplit
+from portage.versions import cpv_getkey, cpv_getversion, vercmp
 
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage
@@ -82,10 +81,6 @@ class PortageDBMetadata(PMPackageMetadata):
 		if key not in self:
 			raise AttributeError('Unsupported metadata key: %s' % key)
 		return self._dbapi.aux_get(self._cpv, [key])[0]
-
-	@property
-	def CATEGORY(self):
-		return catsplit(self._cpv)[0]
 
 class PortageMetadata(PortageDBMetadata):
 	def __init__(self, cpv, dbapi, tree):

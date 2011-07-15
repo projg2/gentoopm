@@ -18,10 +18,7 @@ metadata_keys = (
 	'RESTRICT', 'PROPERTIES',
 	'REQUIRED_USE',
 	# magic ebuild-defined vars (PMS 7.4)
-	'INHERITED', 'DEFINED_PHASES',
-
-	# other useful ebuild vars
-	'CATEGORY'
+	'INHERITED', 'DEFINED_PHASES'
 )
 """ A common supported metadata key list. """
 

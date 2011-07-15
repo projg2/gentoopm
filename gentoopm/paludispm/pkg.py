@@ -55,7 +55,3 @@ class PaludisMetadata(PMPackageMetadata):
 			raise NotImplementedError('Parsing %s is not supported yet.' % key)
 		else:
 			return str(m)
-
-	@property
-	def CATEGORY(self):
-		return str(self._pkg.name.category)

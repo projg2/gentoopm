@@ -50,7 +50,7 @@ class PackagesTestCase(PMTestCase):
 
 	def test_metadata_dict_attr(self):
 		""" Check whether metadata is accessible with dict & attrs. """
-		mks = ('EAPI', 'INHERITED', 'DESCRIPTION', 'CATEGORY')
+		mks = ('EAPI', 'INHERITED', 'DESCRIPTION')
 		for p in self._pkgs:
 			for k in mks:
 				self.assertEqual(p.metadata[k], getattr(p.metadata, k))
