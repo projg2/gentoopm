@@ -10,15 +10,8 @@ from gentoopm.bash import BashParser
 _bash_script = '''
 while true; do
 	(
-		source %s
 		while read -r __GENTOOPM_CMD; do
 			eval ${__GENTOOPM_CMD}
-			if [[ ${#} -eq 0 ]]; then
-				# reload env file
-				break
-			else
-				printf "%%s\\0" "${@}"
-			fi
 		done
 	)
 done
@@ -31,8 +24,7 @@ class BashServer(BashParser):
 
 	def __init__(self):
 		self._tmpf = tempfile.NamedTemporaryFile('w+b')
-		self._bashproc = subprocess.Popen(['bash', '-c',
-				_bash_script % repr(self._tmpf.name)],
+		self._bashproc = subprocess.Popen(['bash', '-c', _bash_script],
 			stdin = subprocess.PIPE, stdout = subprocess.PIPE,
 			env = {})
 
@@ -48,7 +40,8 @@ class BashServer(BashParser):
 		shutil.copyfileobj(envf, f)
 		f.flush()
 
-		self._write('set --')
+		self._write('break',
+				'source %s' % repr(f.name))
 
 	def _read1(self):
 		f = self._bashproc.stdout
@@ -64,7 +57,8 @@ class BashServer(BashParser):
 
 	def _cmd_print(self, *varlist):
 		q = ' '.join(['"${%s}"' % v for v in varlist])
-		self._write('set -- %s' % q)
+		self._write('set -- %s' % q,
+				'printf "%s\\0" "${@}"')
 		return [self._read1() for v in varlist]
 
 	def __getitem__(self, k):
