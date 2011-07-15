@@ -6,6 +6,7 @@
 import shutil, subprocess, tempfile
 
 from gentoopm.bash import BashParser
+from gentoopm.exceptions import InvalidBashCodeError
 
 _bash_script = '''
 while true; do
@@ -23,7 +24,6 @@ class BashServer(BashParser):
 	"""
 
 	def __init__(self):
-		self._tmpf = tempfile.NamedTemporaryFile('w+b')
 		self._bashproc = subprocess.Popen(['bash', '-c', _bash_script],
 			stdin = subprocess.PIPE, stdout = subprocess.PIPE,
 			env = {})
@@ -31,17 +31,19 @@ class BashServer(BashParser):
 	def __del__(self):
 		self._bashproc.terminate()
 		self._bashproc.communicate()
-		self._tmpf.close()
 
 	def load_file(self, envf):
-		f = self._tmpf
-		f.seek(0, 0)
-		f.truncate(0)
+		f = tempfile.NamedTemporaryFile('w+b')
 		shutil.copyfileobj(envf, f)
 		f.flush()
 
 		self._write('break',
-				'source %s' % repr(f.name))
+				'source %s && printf "OK\\0" || printf "FAIL\\0"' % repr(f.name))
+		resp = self._read1()
+		f.close()
+
+		if resp != 'OK':
+			raise InvalidBashCodeError()
 
 	def _read1(self):
 		f = self._bashproc.stdout

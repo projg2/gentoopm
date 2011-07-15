@@ -26,3 +26,10 @@ class InvalidAtomStringError(PMException):
 	"""
 	An invalid string was passed to the atom constructor.
 	"""
+	pass
+
+class InvalidBashCodeError(PMException):
+	"""
+	An invalid code has been passed to the bash parser.
+	"""
+	pass
