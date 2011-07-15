@@ -4,7 +4,7 @@
 # Released under the terms of the 2-clause BSD license.
 
 from gentoopm.basepm.repo import PMRepository
-from gentoopm.basepm.pkg import PMPackageSet
+from gentoopm.basepm.pkgset import PMPackageSet
 
 class PMRepoStackWrapper(PMRepository):
 	"""

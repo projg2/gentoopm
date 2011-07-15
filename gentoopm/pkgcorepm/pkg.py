@@ -4,7 +4,8 @@
 # Released under the terms of the 2-clause BSD license.
 
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage, PMPackageSet, PMFilteredPackageSet
+from gentoopm.basepm.pkg import PMPackage
+from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
 
 class PkgCorePackageSet(PMPackageSet):

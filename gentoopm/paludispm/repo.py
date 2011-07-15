@@ -8,7 +8,8 @@ import paludis
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
 from gentoopm.paludispm.atom import PaludisAtom
-from gentoopm.paludispm.pkg import PaludisID, PaludisPackageSet
+from gentoopm.paludispm.pkg import PaludisID
+from gentoopm.paludispm.pkgset import PaludisPackageSet
 
 class PaludisRepoDict(PMRepositoryDict):
 	def __iter__(self):

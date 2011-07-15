@@ -7,8 +7,8 @@ from portage.versions import cpv_getkey, cpv_getversion, vercmp, \
 		catsplit
 
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage, PMPackageSet, \
-		PMFilteredPackageSet
+from gentoopm.basepm.pkg import PMPackage
+from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.portagepm.atom import PortageAtom
 
 class PortagePackageSet(PMPackageSet):
