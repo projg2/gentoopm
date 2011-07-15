@@ -18,6 +18,36 @@ class PMTestCase(unittest.TestCase):
 		assert(self._pm is None)
 		self._pm = val
 
+	def assertEqual(self, *args):
+		try:
+			unittest.TestCase.assertEqual(self, *args)
+		except AssertionError as e:
+			raise AssertionError('[%s] %s' % (self._pm.name, e.message))
+
+	def assertNotEqual(self, *args):
+		try:
+			unittest.TestCase.assertNotEqual(self, *args)
+		except AssertionError as e:
+			raise AssertionError('[%s] %s' % (self._pm.name, e.message))
+
+	def assertTrue(self, *args):
+		try:
+			unittest.TestCase.assertTrue(self, *args)
+		except AssertionError as e:
+			raise AssertionError('[%s] %s' % (self._pm.name, e.message))
+
+	def assertFalse(self, *args):
+		try:
+			unittest.TestCase.assertFalse(self, *args)
+		except AssertionError as e:
+			raise AssertionError('[%s] %s' % (self._pm.name, e.message))
+
+	def assertRaises(self, *args):
+		try:
+			unittest.TestCase.assertRaises(self, *args)
+		except AssertionError as e:
+			raise AssertionError('[%s] %s' % (self._pm.name, e.message))
+
 class PMTestSuiteFactory(object):
 	def __init__(self, pm):
 		self._pm = pm
