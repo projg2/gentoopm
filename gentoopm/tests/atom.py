@@ -18,13 +18,13 @@ class UserSpecifiedAtomTestCase(PMTestCase):
 
 	def test_incomplete_atom(self):
 		a = self._incomplete_atom
-		self.assertEqual(a.complete, False)
-		self.assertEqual(a.associated, False)
+		self.assertFalse(a.complete)
+		self.assertFalse(a.associated)
 
 	def test_complete_atom(self):
 		a = self._complete_atom
-		self.assertEqual(a.complete, True)
-		self.assertEqual(a.associated, False)
+		self.assertTrue(a.complete)
+		self.assertFalse(a.associated)
 
 	def test_atom_stringification(self):
 		for atstr in ('foo/bar', '>=baz/bar-100', 'foo/baz:10',
@@ -33,13 +33,13 @@ class UserSpecifiedAtomTestCase(PMTestCase):
 
 	def test_atom_association(self):
 		a = self._associated_atom
-		self.assertEqual(a.complete, True)
-		self.assertEqual(a.associated, True)
+		self.assertTrue(a.complete)
+		self.assertTrue(a.associated)
 
 	def test_incomplete_atom_association(self):
 		a = self._incomplete_atom.get_associated(self.pm.stack)
-		self.assertEqual(a.complete, True)
-		self.assertEqual(a.associated, True)
+		self.assertTrue(a.complete)
+		self.assertTrue(a.associated)
 
 	def test_ambiguous_atom_association(self):
 		ia = self.pm.Atom(PackageNames.multiple)
