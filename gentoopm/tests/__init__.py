@@ -51,3 +51,6 @@ class PackageNames(object):
 
 	multiple = 'pms'
 	""" Incomplete atom matching multiple packages. """
+
+	repository = 'gentoo'
+	""" Repository name guaranteed to match. """
