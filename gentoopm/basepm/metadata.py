@@ -69,14 +69,3 @@ class PMPackageMetadata(ABCObject):
 		@rtype: iter(string)
 		"""
 		return iter(metadata_keys)
-
-	# Other useful ebuild vars.
-
-	@abstractproperty
-	def CATEGORY(self):
-		"""
-		Package category.
-
-		@type: string
-		"""
-		pass
