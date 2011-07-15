@@ -79,7 +79,7 @@ class PortDBRepository(PortagePackageSet, PMRepository):
 		newargs = []
 		filt = None
 		for a in args:
-			if isinstance(a, basestring):
+			if isinstance(a, str):
 				a = PortageAtom(a)
 			if isinstance(a, CompletePortageAtom) and filt is None:
 				filt = a

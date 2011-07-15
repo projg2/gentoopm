@@ -13,7 +13,7 @@ from gentoopm.portagepm.atom import PortageAtom
 
 class PortagePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):
-		newargs = [(a if not isinstance(a, basestring)
+		newargs = [(a if not isinstance(a, str)
 			else PortageAtom(a)) for a in args]
 
 		return PortageFilteredPackageSet(self, newargs, kwargs)

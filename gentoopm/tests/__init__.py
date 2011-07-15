@@ -33,7 +33,7 @@ class PMTestLoader(unittest.TestLoader):
 		unittest.TestLoader.__init__(self)
 
 	def loadTestsFromModule(self, mod):
-		if isinstance(mod, basestring):
+		if isinstance(mod, str):
 			mod = __import__(mod, fromlist=['.'], level=-1)
 		return unittest.TestLoader.loadTestsFromModule(self, mod)
 

@@ -9,7 +9,7 @@ from gentoopm.pkgcorepm.atom import PkgCoreAtom
 
 class PkgCorePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):
-		newargs = [(a if not isinstance(a, basestring)
+		newargs = [(a if not isinstance(a, str)
 			else PkgCoreAtom(a)) for a in args]
 
 		return PkgCoreFilteredPackageSet(self, newargs, kwargs)

@@ -46,7 +46,7 @@ class PaludisRepository(PMRepository, PaludisPackageSet):
 		newargs = []
 
 		for f in args:
-			if isinstance(f, basestring):
+			if isinstance(f, str):
 				f = PaludisAtom(f, self._env)
 			if isinstance(f, PaludisAtom):
 				pset = PaludisAtomFilteredRepo(pset, f)
