@@ -30,8 +30,8 @@ class PMKeywordMatcher(ABCObject):
 	Base class for a keyword matcher.
 
 	A keyword matcher is a condition passed as an keyword argument
-	to the L{pkg.PMPackageSet.filter()} function. It's basically an object which will
-	be compared against metadata value using C{==} operator.
+	to the L{pkgset.PMPackageSet.filter()} function. It's basically an object
+	which will be compared against metadata value using C{==} operator.
 	"""
 
 	@abstractmethod

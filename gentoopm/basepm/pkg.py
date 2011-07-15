@@ -56,8 +56,8 @@ class PMPackage(ABCObject):
 	def key(self):
 		"""
 		Return the key identifying the package. This is used by
-		L{PMPackageSet.best}, to check whether the set doesn't reference more
-		than one package.
+		L{pkgset.PMPackageSet.best}, to check whether the set doesn't reference
+		more than one package.
 
 		@type: any
 		"""

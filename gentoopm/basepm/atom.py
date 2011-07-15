@@ -169,7 +169,7 @@ class PMAtom(ABCObject):
 		Whether the atom is complete, i.e. whether the category is specified.
 
 		If an atom is incomplete, it is impossible to stringify it. Using such
-		an atom with L{pkg.PMPackageSet.select()} may result
+		an atom with L{pkgset.PMPackageSet.select()} may result
 		in an L{AmbiguousPackageSetError}.
 
 		@type: bool
