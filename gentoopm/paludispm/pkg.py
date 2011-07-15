@@ -70,19 +70,13 @@ class PaludisID(PMPackage):
 		return PaludisAtom(self._pkg.uniquely_identifying_spec(),
 				self._env, self)
 
-	def __cmp__(self, other):
+	def __lt__(self, other):
 		if not isinstance(other, PaludisID):
 			raise TypeError('Unable to compare %s against %s' % \
 					self, other)
 		if self._enum_id != other._enum_id:
 			raise TypeError('Unable to compare results of two enumerations')
-		return cmp(self._num, other._num)
-
-	def __eq__(self, other):
-		if not isinstance(other, PaludisID):
-			raise TypeError('Unable to compare %s against %s' % \
-					self, other)
-		return self.id == other.id
+		return self._num < other._num
 
 class PaludisMetadata(PMPackageMetadata):
 	def __init__(self, pkg):
