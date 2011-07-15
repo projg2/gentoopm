@@ -273,5 +273,10 @@ class PMPackage(ABCObject):
 			bz2 = True
 		return PMPackageEnvironment(p, bzipped2 = bz2)
 
+	def __eq__(self, other):
+		if not isinstance(other, self.__class__):
+			return False
+		return self.id == other.id
+
 	def __repr__(self):
 		return '%s(%s)' % (self.__class__.__name__, repr(self.id))
