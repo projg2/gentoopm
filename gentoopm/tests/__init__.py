@@ -57,3 +57,6 @@ class PackageNames(object):
 
 	repository = 'gentoo'
 	""" Repository name guaranteed to match. """
+
+	envsafe_metadata_key = 'DESCRIPTION'
+	""" Metadata key which should be safe to match with environment.bz2. """

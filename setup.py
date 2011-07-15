@@ -55,6 +55,7 @@ class TestCommand(Command):
 				testsuite = unittest.TestSuite()
 				testsuite.addTests(l.loadTestsFromModule('gentoopm.tests.atom'))
 				testsuite.addTests(l.loadTestsFromModule('gentoopm.tests.config'))
+				testsuite.addTests(l.loadTestsFromModule('gentoopm.tests.pkg'))
 				testsuite.addTests(l.loadTestsFromModule('gentoopm.tests.psets'))
 				testsuite.addTests(l.loadTestsFromModule('gentoopm.tests.repo'))
 				maintestsuite.addTests(testsuite)
