@@ -17,8 +17,6 @@ metadata_keys = (
 	'DEPEND', 'RDEPEND', 'PDEPEND',
 	'RESTRICT', 'PROPERTIES',
 	'REQUIRED_USE',
-	# deprecated ebuild-defined vars (not in PMS anymore)
-	'PROVIDE',
 	# magic ebuild-defined vars (PMS 7.4)
 	'INHERITED', 'DEFINED_PHASES',
 
