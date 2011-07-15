@@ -61,7 +61,7 @@ class PMPackage(ABCObject):
 
 		@type: any
 		"""
-		return self.atom.unversioned
+		return self.atom.key
 
 	@property
 	def id(self):
