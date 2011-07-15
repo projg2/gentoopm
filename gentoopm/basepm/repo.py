@@ -44,6 +44,14 @@ class PMRepositoryDict(ABCObject):
 				return r
 		raise KeyError('No repository matched key %s' % key)
 
+	def __contains__(self, k):
+		try:
+			self[k]
+		except KeyError:
+			return False
+		else:
+			return True
+
 	@abstractmethod
 	def __iter__(self):
 		"""
