@@ -167,8 +167,8 @@ class PortageRepository(PortDBRepository, PMEbuildRepository):
 	def path(self):
 		return self._repo.location
 
-	def __cmp__(self, other):
-		return cmp(self._repo.priority, other._repo.priority)
+	def __lt__(self, other):
+		return self._repo.priority < other._repo.priority
 
 class VDBRepository(PortDBRepository):
 	pass

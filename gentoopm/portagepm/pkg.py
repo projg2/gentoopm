@@ -47,12 +47,12 @@ class PortageDBCPV(PMPackage):
 	def atom(self):
 		return PortageAtom('=%s' % self.id, self)
 
-	def __cmp__(self, other):
+	def __lt__(self, other):
 		if not isinstance(other, PortageDBCPV):
 			raise TypeError('Unable to compare %s against %s' % \
 					(self, other))
-		return cmp(cpv_getkey(self._cpv), cpv_getkey(other._cpv)) \
-				or vercmp(cpv_getversion(self._cpv), cpv_getversion(other._cpv))
+		return cpv_getkey(self._cpv) < cpv_getkey(other._cpv) \
+				or vercmp(cpv_getversion(self._cpv), cpv_getversion(other._cpv)) < 0
 
 class PortageCPV(PortageDBCPV):
 	def __init__(self, cpv, dbapi, tree, repo_prio):
@@ -72,13 +72,13 @@ class PortageCPV(PortageDBCPV):
 	def id(self):
 		return '%s::%s' % (self._cpv, self._dbapi.getRepositoryName(self._tree))
 
-	def __cmp__(self, other):
+	def __lt__(self, other):
 		if not isinstance(other, PortageCPV):
 			raise TypeError('Unable to compare %s against %s' % \
 					(self, other))
-		return cmp(cpv_getkey(self._cpv), cpv_getkey(other._cpv)) \
-				or vercmp(cpv_getversion(self._cpv), cpv_getversion(other._cpv)) \
-				or cmp(self._repo_prio, other._repo_prio)
+		return cpv_getkey(self._cpv) < cpv_getkey(other._cpv) \
+				or vercmp(cpv_getversion(self._cpv), cpv_getversion(other._cpv)) < 0 \
+				or self._repo_prio < other._repo_prio
 
 class PortageDBMetadata(PMPackageMetadata):
 	def __init__(self, cpv, dbapi):
