@@ -53,6 +53,7 @@ class PMTestSuiteFactory(object):
 		self._pm = pm
 
 	def __call__(self, tests):
+		tests = list(tests)
 		for t in tests:
 			t.pm = self._pm
 		return unittest.TestSuite(tests)
