@@ -57,10 +57,6 @@ class PkgCoreMetadata(PMPackageMetadata):
 		self._pkg = pkg
 
 	@property
-	def EAPI(self):
-		return self._pkg.eapi
-
-	@property
 	def INHERITED(self):
 		# vdb uses INHERITED
 		# ebuilds use _eclasses_
@@ -73,14 +69,23 @@ class PkgCoreMetadata(PMPackageMetadata):
 		except KeyError:
 			return ''
 
+	@property
+	def DEPEND(self):
+		return str(self._pkg.depends)
+
+	@property
+	def RDEPEND(self):
+		return str(self._pkg.rdepends)
+
+	@property
+	def PDEPEND(self):
+		return str(self._pkg.post_rdepends)
+
 	def __getattr__(self, key):
 		if key not in self:
 			raise AttributeError('Unsupported metadata key: %s' % key)
-		try:
-			return self._pkg.data[key]
-		except KeyError:
-			return ''
-
-	@property
-	def CATEGORY(self):
-		return self._pkg.category
+		v = getattr(self._pkg, key.lower())
+		if isinstance(v, tuple) or isinstance(v, frozenset):
+			return ' '.join(v)
+		else:
+			return str(v)
