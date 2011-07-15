@@ -53,8 +53,8 @@ class BashServer(BashParser):
 
 	def _read1(self):
 		f = self._bashproc.stdout
-		buf = ' '
-		while buf[-1] != '\0':
+		buf = b' '
+		while not buf.endswith(b'\0'):
 			buf += f.read(1)
 		return buf[1:-1].decode('utf-8')
 
