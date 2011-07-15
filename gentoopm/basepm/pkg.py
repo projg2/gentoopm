@@ -141,6 +141,19 @@ class PMPackageSet(ABCObject):
 			return False
 		return True
 
+	def __nonzero__(self):
+		"""
+		Check whether the package set is non-empty.
+
+		@return: True if package set matches at least one package.
+		@rtype: bool
+		"""
+		try:
+			next(iter(self))
+		except StopIteration:
+			return False
+		return True
+
 class PMFilteredPackageSet(PMPackageSet):
 	def __init__(self, src, args, kwargs):
 		self._src = src
