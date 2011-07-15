@@ -39,7 +39,7 @@ class TestCommand(Command):
 		pass
 
 	def run(self):
-		import unittest, doctest
+		import unittest
 		import gentoopm.submodules, gentoopm.tests
 
 		maintestsuite = unittest.TestSuite()

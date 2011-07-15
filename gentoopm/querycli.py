@@ -122,7 +122,7 @@ class PMQueryCLI(object):
 
 		try:
 			pm = get_package_manager()
-		except Exception as e:
+		except Exception:
 			arg.error('No working package manager could be found.')
 
 		return args.instance(pm, args) or 0
