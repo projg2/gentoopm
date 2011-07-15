@@ -141,7 +141,7 @@ class PMPackageSet(ABCObject):
 			return False
 		return True
 
-	def __nonzero__(self):
+	def __bool__(self):
 		"""
 		Check whether the package set is non-empty.
 
@@ -153,6 +153,9 @@ class PMPackageSet(ABCObject):
 		except StopIteration:
 			return False
 		return True
+
+	def __nonzero__(self): # py2 compat
+		return self.__bool__()
 
 class PMFilteredPackageSet(PMPackageSet):
 	def __init__(self, src, args, kwargs):

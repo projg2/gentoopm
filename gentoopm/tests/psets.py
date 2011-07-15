@@ -10,13 +10,16 @@ class IterChecker(object):
 	def __init__(self, iterable):
 		self._it = iter(iterable)
 
-	def __nonzero__(self):
+	def __bool__(self):
 		try:
 			next(self._it)
 		except StopIteration:
 			return False
 		else:
 			return True
+
+	def __nonzero__(self):
+		return self.__bool__()
 
 class PackageSetsTestCase(PMTestCase):
 	def setUp(self):
