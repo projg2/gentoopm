@@ -59,7 +59,7 @@ class BashServer(BashParser):
 		return buf[1:-1].decode('utf-8')
 
 	def __getitem__(self, k):
-		self._bashproc.stdin.write(('${%s}\n' % k).encode('ASCII'))
+		self._bashproc.stdin.write(('"${%s}"\n' % k).encode('ASCII'))
 		self._bashproc.stdin.flush()
 
 		return self._read1()
