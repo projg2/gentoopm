@@ -14,7 +14,7 @@ class PaludisConfig(PMConfig):
 
 	@property
 	def userpriv_enabled(self):
-		return True
+		return self.userpriv_uid != 0
 
 	@property
 	def userpriv_uid(self):
