@@ -11,8 +11,8 @@ _bash_script = '''
 while true; do
 	(
 		source %s
-		while read -r __GENTOOPM_VARS; do
-			eval set -- ${__GENTOOPM_VARS}
+		while read -r __GENTOOPM_CMD; do
+			eval ${__GENTOOPM_CMD}
 			if [[ ${#} -eq 0 ]]; then
 				# reload env file
 				break
@@ -48,7 +48,7 @@ class BashServer(BashParser):
 		shutil.copyfileobj(envf, f)
 		f.flush()
 
-		self._bashproc.stdin.write('\n'.encode('ASCII'))
+		self._bashproc.stdin.write('set --\n'.encode('ASCII'))
 		self._bashproc.stdin.flush()
 
 	def _read1(self):
@@ -59,14 +59,14 @@ class BashServer(BashParser):
 		return buf[1:-1].decode('utf-8')
 
 	def __getitem__(self, k):
-		self._bashproc.stdin.write(('"${%s}"\n' % k).encode('ASCII'))
+		self._bashproc.stdin.write(('set -- "${%s}"\n' % k).encode('ASCII'))
 		self._bashproc.stdin.flush()
 
 		return self._read1()
 
 	def copy(self, *varlist):
 		q = ' '.join(['"${%s}"' % v for v in varlist])
-		self._bashproc.stdin.write(('%s\n' % q).encode('ASCII'))
+		self._bashproc.stdin.write(('set -- %s\n' % q).encode('ASCII'))
 		self._bashproc.stdin.flush()
 
 		ret = [self._read1() for v in varlist]
