@@ -3,7 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import functools, os
+import os
 from portage import create_trees
 
 from gentoopm.basepm import PackageManager

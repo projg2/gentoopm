@@ -4,7 +4,7 @@
 # Released under the terms of the 2-clause BSD license.
 
 from portage.versions import cpv_getkey, cpv_getversion, vercmp, \
-		catsplit, catpkgsplit, pkgsplit
+		catsplit
 
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageSet, \
