@@ -7,6 +7,106 @@ from abc import abstractmethod, abstractproperty
 
 from gentoopm.util import ABCObject
 
+class PMPackageKey(ABCObject):
+	"""
+	A base class for a package key (CP/qualified package name).
+	"""
+
+	@abstractproperty
+	def category(self):
+		"""
+		The package category.
+
+		@type: string/C{None}
+		"""
+		pass
+
+	@abstractproperty
+	def package(self):
+		"""
+		The package name.
+
+		@type: string
+		"""
+		pass
+
+	@abstractmethod
+	def __str__(self):
+		"""
+		Return the stringified package key.
+
+		@return: Stringified package key.
+		@rtype: string
+		"""
+		pass
+
+	def __eq__(self, other):
+		return str(self) == str(other)
+
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
+	def __hash__(self):
+		return hash(str(self))
+
+class PMIncompletePackageKey(PMPackageKey):
+	"""
+	An incomplete package key (without a category).
+
+	This is just a helper class to simplify implementations. You should not
+	rely on this particular class being used, implementations are free to
+	implement incomplete keys using plain L{PMPackageKey}.
+	"""
+
+	@property
+	def category(self):
+		return None
+
+	def __str__(self):
+		return self.package
+
+class PMPackageVersion(ABCObject):
+	"""
+	A base class for a package version.
+	"""
+
+	@abstractproperty
+	def without_revision(self):
+		"""
+		The actual package version.
+
+		@type: string
+		"""
+		pass
+
+	@abstractproperty
+	def revision(self):
+		"""
+		The ebuild revision.
+
+		@type: int
+		"""
+		pass
+
+	@abstractmethod
+	def __str__(self):
+		"""
+		Return the stringified package version.
+
+		@return: Stringified package version.
+		@rtype: string
+		"""
+		pass
+
+	def __eq__(self, other):
+		return str(self) == str(other)
+
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
+	def __hash__(self):
+		return hash(str(self))
+
 class PMAtom(ABCObject):
 	"""
 	A base class for PM-specific atom (dependency specification).
@@ -127,3 +227,20 @@ class PMAtom(ABCObject):
 		"""
 		pass
 
+	@abstractproperty
+	def key(self):
+		"""
+		The package key.
+
+		@type: L{PMPackageKey}
+		"""
+		pass
+
+	@abstractproperty
+	def version(self):
+		"""
+		The package version.
+
+		@type: L{PMPackageVersion}/C{None}
+		"""
+		pass

@@ -52,5 +52,39 @@ class UserSpecifiedAtomTestCase(PMTestCase):
 		self.assertEqual(str(a.slotted), '%s:0' % cas)
 		self.assertEqual(str(a.unversioned), cas)
 
+	def test_atom_parts(self):
+		a = self.pm.Atom('>=app-foo/bar-19-r1')
+		self.assertEqual(a.key.category, 'app-foo')
+		self.assertEqual(a.key.package, 'bar')
+		self.assertEqual(a.key, 'app-foo/bar')
+		self.assertEqual(a.version.without_revision, '19')
+		self.assertEqual(a.version.revision, 1)
+		self.assertEqual(a.version, '19-r1')
+
+	def test_atom_parts_incomplete(self):
+		a = self.pm.Atom('>=bar-19-r1')
+		self.assertTrue(a.key.category is None)
+		self.assertEqual(a.key.package, 'bar')
+		self.assertEqual(a.key, 'bar')
+		self.assertEqual(a.version.without_revision, '19')
+		self.assertEqual(a.version.revision, 1)
+		self.assertEqual(a.version, '19-r1')
+
+	def test_atom_parts_without_rev(self):
+		a = self.pm.Atom('>=app-foo/bar-19')
+		self.assertEqual(a.key.category, 'app-foo')
+		self.assertEqual(a.key.package, 'bar')
+		self.assertEqual(a.key, 'app-foo/bar')
+		self.assertEqual(a.version.without_revision, '19')
+		self.assertEqual(a.version.revision, 0)
+		self.assertEqual(a.version, '19')
+
+	def test_atom_parts_without_version(self):
+		a = self.pm.Atom('app-foo/bar')
+		self.assertEqual(a.key.category, 'app-foo')
+		self.assertEqual(a.key.package, 'bar')
+		self.assertEqual(a.key, 'app-foo/bar')
+		self.assertTrue(a.version is None)
+
 	def tearDown(self):
 		pass

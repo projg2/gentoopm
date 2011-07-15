@@ -4,10 +4,83 @@
 # Released under the terms of the 2-clause BSD license.
 
 from pkgcore.ebuild.atom import atom
+from pkgcore.ebuild.restricts import PackageDep, VersionMatch
+from pkgcore.restrictions.boolean import AndRestriction
 from pkgcore.util.parserestrict import parse_match, ParseError
 
-from gentoopm.basepm.atom import PMAtom
+from gentoopm.basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
+		PMIncompletePackageKey
 from gentoopm.exceptions import InvalidAtomStringError
+
+class PkgCorePackageKey(PMPackageKey):
+	def __init__(self, atom):
+		self._atom = atom
+
+	@property
+	def category(self):
+		return self._atom.category
+
+	@property
+	def package(self):
+		return self._atom.package
+
+	def __str__(self):
+		return self._atom.key
+
+class PkgCoreIncompletePackageKey(PMIncompletePackageKey):
+	def __init__(self, r):
+		if isinstance(r, AndRestriction):
+			for r in r.restrictions:
+				if isinstance(r, PackageDep):
+					break
+			else:
+				raise AssertionError('No PackageDep in restrictions.')
+
+		self._r = r
+
+	@property
+	def package(self):
+		return self._r.restriction.exact
+
+class PkgCorePackageVersion(PMPackageVersion):
+	def __init__(self, atom):
+		if atom.version is None:
+			raise AssertionError('Empty version in atom')
+		self._atom = atom
+
+	@property
+	def without_revision(self):
+		return self._atom.version
+
+	@property
+	def revision(self):
+		return self._atom.revision or 0
+
+	def __str__(self):
+		return self._atom.fullver
+
+class PkgCoreIncompletePackageVersion(PMPackageVersion):
+	def __init__(self, r):
+		if isinstance(r, AndRestriction):
+			for r in r.restrictions:
+				if isinstance(r, VersionMatch):
+					break
+			else:
+				raise AssertionError('No VersionMatch in restrictions.')
+
+		self._r = r
+
+	@property
+	def without_revision(self):
+		return self._r.ver
+
+	@property
+	def revision(self):
+		return self._r.rev or 0
+
+	def __str__(self):
+		# XXX: ugly?
+		return str(self._r).split()[-1]
 
 class PkgCoreAtom(PMAtom):
 	def __init__(self, s, pkg = None):
@@ -47,3 +120,20 @@ class PkgCoreAtom(PMAtom):
 	def unversioned(self):
 		assert(self.associated)
 		return PkgCoreAtom(self._pkg._pkg.unversioned_atom, self._pkg)
+
+	@property
+	def key(self):
+		if self.complete:
+			return PkgCorePackageKey(self._r)
+		else:
+			return PkgCoreIncompletePackageKey(self._r)
+
+	@property
+	def version(self):
+		try:
+			if self.complete:
+				return PkgCorePackageVersion(self._r)
+			else:
+				return PkgCoreIncompletePackageVersion(self._r)
+		except AssertionError:
+			return None

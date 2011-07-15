@@ -8,10 +8,46 @@ import collections
 import portage.exception as pe
 from portage.dbapi.dep_expand import dep_expand
 from portage.dep import match_from_list
-from portage.versions import catsplit
+from portage.versions import catsplit, pkgsplit, cpv_getversion
 
-from gentoopm.basepm.atom import PMAtom
+from gentoopm.basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
+		PMIncompletePackageKey
 from gentoopm.exceptions import InvalidAtomStringError
+
+class PortagePackageKey(PMPackageKey):
+	def __init__(self, cp):
+		self._cp = cp
+
+	@property
+	def category(self):
+		return catsplit(self._cp)[0]
+
+	@property
+	def package(self):
+		return catsplit(self._cp)[1]
+
+	def __str__(self):
+		return str(self._cp)
+
+class PortageIncompletePackageKey(PMIncompletePackageKey, PortagePackageKey):
+	pass
+
+class PortagePackageVersion(PMPackageVersion):
+	def __init__(self, cpv):
+		self._cpv = cpv
+
+	@property
+	def without_revision(self):
+		return pkgsplit(self._cpv)[1]
+
+	@property
+	def revision(self):
+		rs = pkgsplit(self._cpv)[2]
+		assert(rs.startswith('r'))
+		return int(rs[1:])
+
+	def __str__(self):
+		return cpv_getversion(self._cpv)
 
 class FakeSettings(object):
 	"""
@@ -69,6 +105,17 @@ class CompletePortageAtom(PMAtom):
 		assert(self.associated)
 		return PortageAtom(self._atom.cp)
 
+	@property
+	def key(self):
+		return PortagePackageKey(self._atom.cp)
+
+	@property
+	def version(self):
+		if self._atom.cp == self._atom.cpv:
+			return None
+		else:
+			return PortagePackageVersion(self._atom.cpv)
+
 class UncategorisedPackageWrapper(object):
 	def __init__(self, pkg):
 		self._pkg = pkg
@@ -93,3 +140,7 @@ class UnexpandedPortageAtom(CompletePortageAtom):
 	@property
 	def complete(self):
 		return False
+
+	@property
+	def key(self):
+		return PortageIncompletePackageKey(self._atom.cp)

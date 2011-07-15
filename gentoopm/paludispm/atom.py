@@ -5,10 +5,51 @@
 
 import paludis, re
 
-from gentoopm.basepm.atom import PMAtom
+from gentoopm.basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
+		PMIncompletePackageKey
 from gentoopm.exceptions import InvalidAtomStringError
 
 _category_wildcard_re = re.compile(r'\w')
+
+class PaludisPackageKey(PMPackageKey):
+	def __init__(self, key):
+		self._k = key
+
+	@property
+	def category(self):
+		return str(self._k.category)
+
+	@property
+	def package(self):
+		return str(self._k.package)
+
+	def __str__(self):
+		return str(self._k)
+
+class PaludisIncompletePackageKey(PMIncompletePackageKey):
+	def __init__(self, key):
+		self._k = key
+
+	@property
+	def package(self):
+		return str(self._k)
+
+class PaludisPackageVersion(PMPackageVersion):
+	def __init__(self, ver):
+		self._v = ver
+
+	@property
+	def without_revision(self):
+		return str(self._v.remove_revision())
+
+	@property
+	def revision(self):
+		rs = self._v.revision_only()
+		assert(rs.startswith('r'))
+		return int(rs[1:])
+
+	def __str__(self):
+		return str(self._v)
 
 class PaludisAtom(PMAtom):
 	def _init_atom(self, s, env, wildcards = False):
@@ -66,3 +107,18 @@ class PaludisAtom(PMAtom):
 	def unversioned(self):
 		assert(self.associated)
 		return PaludisAtom(str(self._atom.package), self._env)
+
+	@property
+	def key(self):
+		if self.complete:
+			return PaludisPackageKey(self._atom.package)
+		else:
+			return PaludisIncompletePackageKey(self._atom.package_name_part)
+
+	@property
+	def version(self):
+		try:
+			vr = next(iter(self._atom.version_requirements))
+		except StopIteration:
+			return None
+		return PaludisPackageVersion(vr.version_spec)
