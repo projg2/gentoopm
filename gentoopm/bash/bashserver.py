@@ -48,8 +48,7 @@ class BashServer(BashParser):
 		shutil.copyfileobj(envf, f)
 		f.flush()
 
-		self._bashproc.stdin.write('set --\n'.encode('ASCII'))
-		self._bashproc.stdin.flush()
+		self._write('set --')
 
 	def _read1(self):
 		f = self._bashproc.stdout
@@ -58,16 +57,19 @@ class BashServer(BashParser):
 			buf += f.read(1)
 		return buf[1:-1].decode('utf-8')
 
-	def __getitem__(self, k):
-		self._bashproc.stdin.write(('set -- "${%s}"\n' % k).encode('ASCII'))
+	def _write(self, *cmds):
+		for cmd in cmds:
+			self._bashproc.stdin.write(('%s\n' % cmd).encode('ASCII'))
 		self._bashproc.stdin.flush()
 
-		return self._read1()
+	def _cmd_print(self, *varlist):
+		q = ' '.join(['"${%s}"' % v for v in varlist])
+		self._write('set -- %s' % q)
+		return [self._read1() for v in varlist]
+
+	def __getitem__(self, k):
+		return self._cmd_print(k)[0]
 
 	def copy(self, *varlist):
-		q = ' '.join(['"${%s}"' % v for v in varlist])
-		self._bashproc.stdin.write(('set -- %s\n' % q).encode('ASCII'))
-		self._bashproc.stdin.flush()
-
-		ret = [self._read1() for v in varlist]
+		ret = self._cmd_print(*varlist)
 		return dict(zip(varlist, ret))
