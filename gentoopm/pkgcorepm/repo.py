@@ -76,8 +76,8 @@ class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository):
 	def path(self):
 		return self._repo.location
 
-	def __cmp__(self, other):
-		return cmp(other._index, self._index)
+	def __lt__(self, other):
+		return other._index < self._index
 
 class PkgCoreInstalledRepo(PkgCoreRepository):
 	pass

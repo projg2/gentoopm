@@ -45,12 +45,12 @@ class PkgCorePackage(PMPackage):
 	def atom(self):
 		return PkgCoreAtom('=%s' % self.id, self)
 
-	def __cmp__(self, other):
+	def __lt__(self, other):
 		if not isinstance(other, PkgCorePackage):
 			raise TypeError('Unable to compare %s against %s' % \
 					(self, other))
-		return cmp(self._pkg, other._pkg) \
-				or cmp(other._repo_index, self._repo_index)
+		return self._pkg < other._pkg \
+				or other._repo_index < self._repo_index
 
 class PkgCoreMetadata(PMPackageMetadata):
 	def __init__(self, pkg):
