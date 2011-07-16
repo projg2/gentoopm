@@ -53,38 +53,73 @@ class UserSpecifiedAtomTestCase(PMTestCase):
 		self.assertEqual(str(a.unversioned), cas)
 
 	def test_atom_parts(self):
-		a = self.pm.Atom('>=app-foo/bar-19-r1')
+		a = self.pm.Atom('>=app-foo/bar-19-r1:5::baz')
 		self.assertEqual(a.key.category, 'app-foo')
 		self.assertEqual(a.key.package, 'bar')
 		self.assertEqual(a.key, 'app-foo/bar')
 		self.assertEqual(a.version.without_revision, '19')
 		self.assertEqual(a.version.revision, 1)
 		self.assertEqual(a.version, '19-r1')
+		self.assertEqual(a.slot, '5')
+		self.assertEqual(a.repository, 'baz')
 
 	def test_atom_parts_incomplete(self):
-		a = self.pm.Atom('>=bar-19-r1')
+		a = self.pm.Atom('>=bar-19-r1:5::baz')
 		self.assertTrue(a.key.category is None)
 		self.assertEqual(a.key.package, 'bar')
 		self.assertEqual(a.key, 'bar')
 		self.assertEqual(a.version.without_revision, '19')
 		self.assertEqual(a.version.revision, 1)
 		self.assertEqual(a.version, '19-r1')
+		self.assertEqual(a.slot, '5')
+		self.assertEqual(a.repository, 'baz')
 
 	def test_atom_parts_without_rev(self):
-		a = self.pm.Atom('>=app-foo/bar-19')
+		a = self.pm.Atom('>=app-foo/bar-19:5::baz')
 		self.assertEqual(a.key.category, 'app-foo')
 		self.assertEqual(a.key.package, 'bar')
 		self.assertEqual(a.key, 'app-foo/bar')
 		self.assertEqual(a.version.without_revision, '19')
 		self.assertEqual(a.version.revision, 0)
 		self.assertEqual(a.version, '19')
+		self.assertEqual(a.slot, '5')
+		self.assertEqual(a.repository, 'baz')
 
 	def test_atom_parts_without_version(self):
+		a = self.pm.Atom('app-foo/bar:5::baz')
+		self.assertEqual(a.key.category, 'app-foo')
+		self.assertEqual(a.key.package, 'bar')
+		self.assertEqual(a.key, 'app-foo/bar')
+		self.assertTrue(a.version is None)
+		self.assertEqual(a.slot, '5')
+		self.assertEqual(a.repository, 'baz')
+
+	def test_atom_parts_without_slot(self):
+		a = self.pm.Atom('app-foo/bar::baz')
+		self.assertEqual(a.key.category, 'app-foo')
+		self.assertEqual(a.key.package, 'bar')
+		self.assertEqual(a.key, 'app-foo/bar')
+		self.assertTrue(a.version is None)
+		self.assertTrue(a.slot is None)
+		self.assertEqual(a.repository, 'baz')
+
+	def test_atom_parts_unversioned(self):
 		a = self.pm.Atom('app-foo/bar')
 		self.assertEqual(a.key.category, 'app-foo')
 		self.assertEqual(a.key.package, 'bar')
 		self.assertEqual(a.key, 'app-foo/bar')
 		self.assertTrue(a.version is None)
+		self.assertTrue(a.slot is None)
+		self.assertTrue(a.repository is None)
+
+	def test_atom_parts_dumb(self):
+		a = self.pm.Atom('bar')
+		self.assertTrue(a.key.category is None)
+		self.assertEqual(a.key.package, 'bar')
+		self.assertEqual(a.key, 'bar')
+		self.assertTrue(a.version is None)
+		self.assertTrue(a.slot is None)
+		self.assertTrue(a.repository is None)
 
 	def tearDown(self):
 		pass

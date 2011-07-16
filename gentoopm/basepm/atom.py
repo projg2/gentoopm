@@ -244,3 +244,21 @@ class PMAtom(ABCObject):
 		@type: L{PMPackageVersion}/C{None}
 		"""
 		pass
+
+	@abstractproperty
+	def slot(self):
+		"""
+		The package slot (if specified).
+
+		@type: string/C{None}
+		"""
+		pass
+
+	@abstractproperty
+	def repository(self):
+		"""
+		The package repository name (if specified).
+
+		@type: string/C{None}
+		"""
+		pass

@@ -145,3 +145,14 @@ class PaludisAtom(PMAtom):
 		except StopIteration:
 			return None
 		return PaludisPackageVersion(vr.version_spec)
+
+	@property
+	def slot(self):
+		# XXX
+		raise NotImplementedError('PaludisAtom.slot not yet implemented.')
+
+	@property
+	def repository(self):
+		if self._atom.in_repository is None:
+			return None
+		return str(self._atom.in_repository)

@@ -4,13 +4,26 @@
 # Released under the terms of the 2-clause BSD license.
 
 from pkgcore.ebuild.atom import atom
-from pkgcore.ebuild.restricts import PackageDep, VersionMatch
+from pkgcore.ebuild.restricts import PackageDep, VersionMatch, \
+		RepositoryDep, SlotDep
 from pkgcore.restrictions.boolean import AndRestriction
 from pkgcore.util.parserestrict import parse_match, ParseError
 
 from gentoopm.basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
 		PMIncompletePackageKey
 from gentoopm.exceptions import InvalidAtomStringError
+
+def _find_res(res, cls):
+	if isinstance(res, AndRestriction):
+		restrictions = res.restrictions
+	else:
+		restrictions = (res,)
+
+	for r in restrictions:
+		if isinstance(r, cls):
+			return r
+	else:
+		return None
 
 class PkgCorePackageKey(PMPackageKey):
 	def __init__(self, atom):
@@ -29,14 +42,9 @@ class PkgCorePackageKey(PMPackageKey):
 
 class PkgCoreIncompletePackageKey(PMIncompletePackageKey):
 	def __init__(self, r):
-		if isinstance(r, AndRestriction):
-			for r in r.restrictions:
-				if isinstance(r, PackageDep):
-					break
-			else:
-				raise AssertionError('No PackageDep in restrictions.')
-
-		self._r = r
+		self._r = _find_res(r, PackageDep)
+		if self._r is None:
+			raise AssertionError('No PackageDep in restrictions.')
 
 	@property
 	def package(self):
@@ -61,14 +69,9 @@ class PkgCorePackageVersion(PMPackageVersion):
 
 class PkgCoreIncompletePackageVersion(PMPackageVersion):
 	def __init__(self, r):
-		if isinstance(r, AndRestriction):
-			for r in r.restrictions:
-				if isinstance(r, VersionMatch):
-					break
-			else:
-				raise AssertionError('No VersionMatch in restrictions.')
-
-		self._r = r
+		self._r = _find_res(r, VersionMatch)
+		if self._r is None:
+			raise AssertionError('No VersionMatch in restrictions.')
 
 	@property
 	def without_revision(self):
@@ -137,3 +140,22 @@ class PkgCoreAtom(PMAtom):
 				return PkgCoreIncompletePackageVersion(self._r)
 		except AssertionError:
 			return None
+
+	@property
+	def slot(self):
+		if self.complete:
+			return self._r.slot[0] if self._r.slot \
+					else None
+		else:
+			r = _find_res(self._r, SlotDep)
+			return r.restriction.exact if r is not None \
+					else None
+
+	@property
+	def repository(self):
+		if self.complete:
+			return self._r.repo_id
+		else:
+			r = _find_res(self._r, RepositoryDep)
+			return r.restriction.exact if r is not None \
+					else None

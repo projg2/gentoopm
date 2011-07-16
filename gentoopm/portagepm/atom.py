@@ -27,7 +27,7 @@ class PortagePackageKey(PMPackageKey):
 		return catsplit(self._cp)[1]
 
 	def __str__(self):
-		return str(self._cp)
+		return self._cp
 
 class PortageIncompletePackageKey(PMIncompletePackageKey, PortagePackageKey):
 	pass
@@ -115,6 +115,14 @@ class CompletePortageAtom(PMAtom):
 			return None
 		else:
 			return PortagePackageVersion(self._atom.cpv)
+
+	@property
+	def slot(self):
+		return self._atom.slot
+
+	@property
+	def repository(self):
+		return self._atom.repo
 
 class UncategorisedPackageWrapper(object):
 	def __init__(self, pkg):
