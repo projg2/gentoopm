@@ -25,8 +25,7 @@ class PaludisEnumID(object):
 
 class PaludisRepository(PMRepository, PaludisPackageSet):
 	def __init__(self, env):
-		self._env = env
-		self._sorted = True
+		PaludisPackageSet.__init__(self, env, True)
 
 	@property
 	def _gen(self):
@@ -55,9 +54,9 @@ class PaludisRepository(PMRepository, PaludisPackageSet):
 				newargs.append(f)
 
 		if id(pset) == id(self):
-			return PaludisPackageSet.filter(self, args, kwargs)
+			return PaludisPackageSet.filter(self, *args, **kwargs)
 		elif newargs or kwargs:
-			return pset.filter(self, newargs, kwargs)
+			return pset.filter(*newargs, **kwargs)
 		else:
 			return pset
 
@@ -100,7 +99,7 @@ class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
 
 class PaludisInstalledRepo(PaludisRepository):
 	def __init__(self, env):
-		self._env = env
+		PaludisRepository.__init__(self, env)
 		for r in env.repositories:
 			if str(r.name) == 'installed': # XXX
 				self._repo = r

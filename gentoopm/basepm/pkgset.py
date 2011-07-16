@@ -164,5 +164,3 @@ class PMFilteredPackageSet(PMPackageSet):
 		for el in self._src:
 			if el._matches(*self._args, **self._kwargs):
 				yield el
-
-

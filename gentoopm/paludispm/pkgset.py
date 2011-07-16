@@ -5,12 +5,18 @@
 
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.exceptions import EmptyPackageSetError, AmbiguousPackageSetError
+from gentoopm.paludispm.atom import PaludisAtom
 
-class PaludisPackageSet(PMPackageSet):
-	_sorted = False
+class PaludisPackageSet(object):
+	def __init__(self, env, issorted = False):
+		self._env = env
+		self._sorted = issorted
 
 	def filter(self, *args, **kwargs):
-		return PaludisFilteredPackageSet(self, args, kwargs)
+		newargs = [(a if not isinstance(a, str)
+			else PaludisAtom(a)) for a in args]
+
+		return PaludisFilteredPackageSet(self, newargs, kwargs)
 
 	@property
 	def best(self):
@@ -32,7 +38,7 @@ class PaludisPackageSet(PMPackageSet):
 		else:
 			return PMPackageSet.best.fget(self)
 
-class PaludisFilteredPackageSet(PMFilteredPackageSet, PaludisPackageSet):
+class PaludisFilteredPackageSet(PaludisPackageSet, PMFilteredPackageSet):
 	def __init__(self, pset, args, kwargs):
-		self._sorted = pset._sorted
+		PaludisPackageSet.__init__(self, pset._env, pset._sorted)
 		PMFilteredPackageSet.__init__(self, pset, args, kwargs)
