@@ -151,8 +151,9 @@ class PaludisAtom(PMAtom):
 
 	@property
 	def slot(self):
-		# XXX
-		raise NotImplementedError('PaludisAtom.slot not yet implemented.')
+		if self._atom.slot_requirement is None:
+			return None
+		return str(self._atom.slot_requirement.slot)
 
 	@property
 	def repository(self):
