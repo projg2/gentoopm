@@ -82,12 +82,13 @@ class PaludisAtom(PMAtom):
 
 	def __contains__(self, pkg):
 		# we have to implementing matching by hand, boo
+		other = pkg.atom
 		# 1) category, our may be unset
 		if self.key.category is not None \
-				and self.key.category != pkg.atom.key.category:
+				and self.key.category != other.key.category:
 			return False
 		# 2) package name
-		if self.key.package != pkg.atom.key.package:
+		if self.key.package != other.key.package:
 			return False
 		# 3) package version (if any requirement set)
 		try:
@@ -99,10 +100,12 @@ class PaludisAtom(PMAtom):
 					vr.version_spec):
 				return False
 		# 4) slot
-		# XXX
+		if self.slot is not None \
+				and self.slot != other.slot:
+			return False
 		# 5) repository
-		if self._atom.in_repository is not None \
-				and self._atom.in_repository != pkg._pkg.repository_name:
+		if self.repository is not None \
+				and self.repository != other.repository:
 			return False
 		return True
 
