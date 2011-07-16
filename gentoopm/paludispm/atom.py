@@ -81,7 +81,30 @@ class PaludisAtom(PMAtom):
 		self._env = env
 
 	def __contains__(self, pkg):
-		raise NotImplementedError('Direct atom matching not implemented in Paludis')
+		# we have to implementing matching by hand, boo
+		# 1) category, our may be unset
+		if self.key.category is not None \
+				and self.key.category != pkg.atom.key.category:
+			return False
+		# 2) package name
+		if self.key.package != pkg.atom.key.package:
+			return False
+		# 3) package version (if any requirement set)
+		try:
+			vr = next(iter(self._atom.version_requirements))
+		except StopIteration:
+			pass
+		else:
+			if not vr.version_operator.compare(pkg._pkg.version,
+					vr.version_spec):
+				return False
+		# 4) slot
+		# XXX
+		# 5) repository
+		if self._atom.in_repository is not None \
+				and self._atom.in_repository != pkg._pkg.repository_name:
+			return False
+		return True
 
 	def __str__(self):
 		if self._incomplete:
