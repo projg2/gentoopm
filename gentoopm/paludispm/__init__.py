@@ -6,7 +6,7 @@
 import functools, paludis
 
 try:
-	paludis.PackageDepSpec.slot
+	paludis.PackageDepSpec.slot_requirement
 except (NameError, AttributeError):
 	raise ImportError('paludis version too old (at least 0.64.2 required)')
 
