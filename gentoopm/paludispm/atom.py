@@ -125,14 +125,14 @@ class PaludisAtom(PMAtom):
 	@property
 	def slotted(self):
 		assert(self.associated)
-		cp = str(self._atom.package)
-		slot = self._pkg.metadata['SLOT']
+		cp = str(self.key)
+		slot = self.slot or self._pkg.metadata['SLOT']
 		return PaludisAtom('%s:%s' % (cp, slot), self._env)
 
 	@property
 	def unversioned(self):
 		assert(self.associated)
-		return PaludisAtom(str(self._atom.package), self._env)
+		return PaludisAtom(str(self.key), self._env)
 
 	@property
 	def key(self):

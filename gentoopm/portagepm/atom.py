@@ -96,14 +96,14 @@ class CompletePortageAtom(PMAtom):
 	@property
 	def slotted(self):
 		assert(self.associated)
-		cp = self._atom.cp
+		cp = str(self.key)
 		slot = self._pkg.metadata['SLOT']
 		return PortageAtom('%s:%s' % (cp, slot))
 
 	@property
 	def unversioned(self):
 		assert(self.associated)
-		return PortageAtom(self._atom.cp)
+		return PortageAtom(str(self.key))
 
 	@property
 	def key(self):
