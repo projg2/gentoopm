@@ -5,6 +5,11 @@
 
 import functools, paludis
 
+try:
+	paludis.PackageDepSpec.slot
+except (NameError, AttributeError):
+	raise ImportError('paludis version too old (at least 0.64.2 required)')
+
 from gentoopm.basepm import PackageManager
 from gentoopm.paludispm.atom import PaludisAtom
 from gentoopm.paludispm.config import PaludisConfig
