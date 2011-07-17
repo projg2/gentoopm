@@ -121,7 +121,7 @@ class PMPackage(ABCObject):
 				try:
 					return os.path.getmtime(path)
 				except OSError:
-					return None
+					return -1
 
 			files = ('environment.bz2', 'environment')
 			# Take the newer one.
