@@ -3,7 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-PV = '0.1.1'
+PV = '0.1.2'
 
 """
 The package version.
