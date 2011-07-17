@@ -109,12 +109,10 @@ class PMPackage(ABCObject):
 		@type: L{PMPackageEnvironment}
 		"""
 		p = self.path
-		bz2 = False
 		if os.path.isdir(p):
 			# XXX: look for .bz2 and plain, take the newer one
 			p = os.path.join(p, 'environment.bz2')
-			bz2 = True
-		return PMPackageEnvironment(p, bzipped2 = bz2)
+		return PMPackageEnvironment(p)
 
 	def __eq__(self, other):
 		if not isinstance(other, self.__class__):

@@ -7,7 +7,7 @@ import bz2
 
 from gentoopm.bash import get_any_bashparser
 
-def _load_bp(bp, path, open_func):
+def _load_bp(bp, path):
 	"""
 	Load a file onto a bash parser.
 
@@ -15,12 +15,19 @@ def _load_bp(bp, path, open_func):
 	@type bp: L{BashParser}
 	@param path: path to the environment file
 	@type path: string
-	@param open_func: open function for the file
-	@type open_func: func(path, mode)
 	"""
-	f = open_func(path)
-	bp.load_file(f)
-	f.close()
+
+	def _try_file(t):
+		f = t(path, 'r')
+		try:
+			bp.load_file(f)
+		finally:
+			f.close()
+
+	try:
+		_try_file(bz2.BZ2File)
+	except IOError:
+		_try_file(open)
 
 class LazyBashParser(object):
 	"""
@@ -29,14 +36,12 @@ class LazyBashParser(object):
 	_curr_path = None
 	_parser = None
 
-	def set_file(self, path, open_func):
+	def set_file(self, path):
 		"""
 		Switch the currently used environment file, if necessary.
 
 		@param path: path to the new environment file
 		@type path: string
-		@param open_func: open functions for the new file
-		@type open_func: func(path, mode)
 		"""
 
 		if self._curr_path == path:
@@ -44,7 +49,7 @@ class LazyBashParser(object):
 		self._curr_path = path
 		if self._parser is None:
 			self._parser = get_any_bashparser()
-		_load_bp(self._parser, path, open_func)
+		_load_bp(self._parser, path)
 
 	def __getitem__(self, k):
 		return self._parser[k]
@@ -59,17 +64,14 @@ class PMPackageEnvironment(object):
 	Package environment accessor class.
 	"""
 
-	def __init__(self, path, bzipped2 = False):
+	def __init__(self, path):
 		"""
 		Instantiate L{PMPackageEnvironment} accessor.
 
 		@param path: path to the environment file
 		@type path: string
-		@param bzipped2: whether to bunzip2 the file
-		@type bzipped2: bool
 		"""
 		self._path = path
-		self._open_func = bz2.BZ2File if bzipped2 else open
 
 	def __getitem__(self, k):
 		"""
@@ -80,7 +82,7 @@ class PMPackageEnvironment(object):
 		@return: the environment variable value
 		@rtype: string
 		"""
-		_bp.set_file(self._path, self._open_func)
+		_bp.set_file(self._path)
 		return _bp[k]
 
 	def copy(self, *keys):
@@ -92,7 +94,7 @@ class PMPackageEnvironment(object):
 		@return: a dict of copied environment keys
 		@rtype: dict(string -> string)
 		"""
-		_bp.set_file(self._path, self._open_func)
+		_bp.set_file(self._path)
 		return _bp.copy(*keys)
 
 	def fork(self):
@@ -104,5 +106,5 @@ class PMPackageEnvironment(object):
 		@rtype: L{BashParser}
 		"""
 		bp = get_any_bashparser()
-		_load_bp(bp, self._path, self._open_func)
+		_load_bp(bp, self._path)
 		return bp
