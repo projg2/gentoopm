@@ -55,20 +55,19 @@ class PMPackage(ABCObject):
 	@property
 	def key(self):
 		"""
-		Return the key identifying the package. This is used by
-		L{pkgset.PMPackageSet.best}, to check whether the set doesn't reference
-		more than one package.
+		The key identifying the package. This is used to group packages, e.g.
+		when choosing the best package in a set.
 
-		@type: any
+		@type: hashable
 		"""
 		return self.atom.key
 
 	@property
 	def id(self):
 		"""
-		Return an unique identifier for the package.
+		An unique identifier for the package.
 
-		@type: any
+		@type: hashable
 		"""
 		return self.atom
 
@@ -84,17 +83,19 @@ class PMPackage(ABCObject):
 	@abstractproperty
 	def path(self):
 		"""
-		Return path to the ebuild file (or vardb entry) if appropriate.
-		If not available, just return None.
+		Path to the ebuild file (or vardb entry) if appropriate.
 
-		@type: string/None
+		This function may return C{None} if that information is not available
+		or the particular repository doesn't operate on local filesystem.
+
+		@type: string/C{None}
 		"""
 		pass
 
 	@abstractproperty
 	def metadata(self):
 		"""
-		Return the metadata accessor object for the package.
+		The metadata accessor object for the package.
 
 		@type: L{PMPackageMetadata}
 		"""
@@ -103,7 +104,7 @@ class PMPackage(ABCObject):
 	@property
 	def environ(self):
 		"""
-		Return the environment accessor object for the package.
+		The environment accessor object for the package.
 
 		@type: L{PMPackageEnvironment}
 		"""
