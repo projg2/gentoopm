@@ -41,7 +41,7 @@ class PackageSetsTestCase(PMTestCase):
 	def test_filter_atom_multiple(self):
 		""" Check whether multi-matching atoms return multiple packages. """
 		at = PackageNames.multiple
-		for r in self._repos:
+		for r in (self._repo, self._stack):
 			keys = set()
 			for p in r.filter(at):
 				keys.add(p.key)
@@ -64,7 +64,7 @@ class PackageSetsTestCase(PMTestCase):
 
 	def test_select_atom_multiple(self):
 		at = PackageNames.multiple
-		for r in self._repos:
+		for r in (self._repo, self._stack):
 			self.assertRaises(AmbiguousPackageSetError, r.select, at)
 
 	def test_select_atom_empty(self):
@@ -104,7 +104,7 @@ class PackageSetsTestCase(PMTestCase):
 
 	def test_contains_atom_multiple(self):
 		at = PackageNames.multiple
-		for r in self._repos:
+		for r in (self._repo, self._stack):
 			self.assertTrue(at in r)
 
 	def test_contains_atom_empty(self):
