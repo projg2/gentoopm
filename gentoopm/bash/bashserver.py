@@ -9,12 +9,15 @@ from gentoopm.bash import BashParser
 from gentoopm.exceptions import InvalidBashCodeError
 
 _bash_script = '''
-while true; do
+while
 	(
 		while read -r __GENTOOPM_CMD; do
 			eval ${__GENTOOPM_CMD}
 		done
+		exit 1
 	)
+do
+	:
 done
 '''
 
@@ -37,7 +40,7 @@ class BashServer(BashParser):
 		shutil.copyfileobj(envf, f)
 		f.flush()
 
-		self._write('break',
+		self._write('exit 0',
 				'source %s && printf "OK\\0" || printf "FAIL\\0"' % repr(f.name))
 		resp = self._read1()
 		f.close()
