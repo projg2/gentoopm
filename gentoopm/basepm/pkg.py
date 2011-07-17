@@ -106,12 +106,22 @@ class PMPackage(ABCObject):
 		"""
 		The environment accessor object for the package.
 
-		@type: L{PMPackageEnvironment}
+		Please note that this function may return C{None} if environment is
+		inaccessible (path is unavailable or file does not exist).
+
+		@type: L{PMPackageEnvironment}/C{None}
 		"""
+
 		p = self.path
+		if p is None:
+			return None
+
 		if os.path.isdir(p):
 			# XXX: look for .bz2 and plain, take the newer one
 			p = os.path.join(p, 'environment.bz2')
+
+		if not os.path.exists(p):
+			return None
 		return PMPackageEnvironment(p)
 
 	def __eq__(self, other):
