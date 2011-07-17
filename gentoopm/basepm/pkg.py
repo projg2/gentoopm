@@ -117,8 +117,16 @@ class PMPackage(ABCObject):
 			return None
 
 		if os.path.isdir(p):
-			# XXX: look for .bz2 and plain, take the newer one
-			p = os.path.join(p, 'environment.bz2')
+			def _mtime_if_exists(path):
+				try:
+					return os.path.getmtime(path)
+				except OSError:
+					return None
+
+			files = ('environment.bz2', 'environment')
+			# Take the newer one.
+			fn = sorted(files, key=_mtime_if_exists, reverse=True)[0]
+			p = os.path.join(p, fn)
 
 		if not os.path.exists(p):
 			return None
