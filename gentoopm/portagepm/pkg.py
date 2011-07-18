@@ -6,7 +6,7 @@
 from portage.versions import cpv_getkey, cpv_getversion, vercmp
 
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage
+from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom, \
 		PortagePackageKey, PortagePackageVersion, _get_atom
@@ -20,6 +20,18 @@ class PortagePackageSet(PMPackageSet):
 
 class PortageFilteredPackageSet(PortagePackageSet, PMFilteredPackageSet):
 	pass
+
+class PortagePackageDescription(PMPackageDescription):
+	def __init__(self, meta):
+		self._meta = meta
+
+	@property
+	def short(self):
+		return self._meta['DESCRIPTION']
+
+	@property
+	def long(self):
+		return None # XXX
 
 class PortageDBCPV(PMPackage, CompletePortageAtom):
 	def __init__(self, cpv, dbapi):
@@ -42,6 +54,10 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 	@property
 	def version(self):
 		return PortagePackageVersion(self._cpv)
+
+	@property
+	def description(self):
+		return PortagePackageDescription(self.metadata) # XXX
 
 	@property
 	def slot(self):

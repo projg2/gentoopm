@@ -10,6 +10,39 @@ from gentoopm.basepm.atom import PMAtom
 from gentoopm.basepm.environ import PMPackageEnvironment
 from gentoopm.util import ABCObject
 
+class PMPackageDescription(ABCObject):
+	"""
+	Description of a package.
+	"""
+
+	@abstractproperty
+	def short(self):
+		"""
+		The short package description (e.g. C{DESCRIPTION} within the ebuild).
+
+		@type: string
+		"""
+		pass
+
+	@abstractproperty
+	def long(self):
+		"""
+		The long package description (e.g. from C{metadata.xml}).
+
+		@type: string/C{None}
+		"""
+		pass
+
+	def __str__(self):
+		"""
+		Stringify to the best package description. In other words, long package
+		description if available, short otherwise.
+
+		@returns: best package description
+		@rtype: string
+		"""
+		return self.long or self.short
+
 class PMPackage(PMAtom):
 	"""
 	An abstract class representing a single, uniquely-identified package
@@ -91,6 +124,16 @@ class PMPackage(PMAtom):
 		The metadata accessor object for the package.
 
 		@type: L{PMPackageMetadata}
+		@deprecated: inconsistent, please use L{PMPackage} properties instead
+		"""
+		pass
+
+	@abstractproperty
+	def description(self):
+		"""
+		The description of the package.
+
+		@type: L{PMPackageDescription}
 		"""
 		pass
 

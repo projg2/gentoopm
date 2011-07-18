@@ -4,7 +4,7 @@
 # Released under the terms of the 2-clause BSD license.
 
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage
+from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
 
@@ -18,6 +18,21 @@ class PkgCorePackageSet(PMPackageSet):
 class PkgCoreFilteredPackageSet(PkgCorePackageSet, PMFilteredPackageSet):
 	pass
 
+class PkgCorePackageDescription(PMPackageDescription):
+	def __init__(self, pkg):
+		self._pkg = pkg
+
+	@property
+	def short(self):
+		return self._pkg.description
+
+	@property
+	def long(self):
+		if hasattr(self._pkg, 'longdescription'):
+			return self._pkg.longdescription
+		else: # vdb, for example
+			return None
+
 class PkgCorePackage(PMPackage, PkgCoreAtom):
 	def __init__(self, pkg, repo_index = 0):
 		self._pkg = pkg
@@ -30,6 +45,10 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 	@property
 	def path(self):
 		return self._pkg.path
+
+	@property
+	def description(self):
+		return PkgCorePackageDescription(self._pkg)
 
 	@property
 	def slotted(self):

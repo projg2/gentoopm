@@ -6,9 +6,22 @@
 import paludis
 
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage
+from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
 from gentoopm.paludispm.atom import PaludisAtom, \
 		PaludisPackageKey, PaludisPackageVersion
+
+class PaludisPackageDescription(PMPackageDescription):
+	def __init__(self, pkg):
+		self._pkg = pkg
+
+	@property
+	def short(self):
+		return self._pkg.short_description_key().parse_value()
+
+	@property
+	def long(self):
+		k = self._pkg.long_description_key()
+		return k.parse_value() if k is not None else None
 
 class PaludisID(PMPackage, PaludisAtom):
 	def __init__(self, pkg, num = 0, enum_id = None, env = None):
@@ -42,6 +55,10 @@ class PaludisID(PMPackage, PaludisAtom):
 	@property
 	def version(self):
 		return PaludisPackageVersion(self._pkg.version)
+
+	@property
+	def description(self):
+		return PaludisPackageDescription(self._pkg)
 
 	@property
 	def slot(self):
