@@ -89,6 +89,18 @@ class PaludisMetadata(PMPackageMetadata):
 		self._pkg = pkg
 
 	def __getattr__(self, key):
+		"""
+		Get the value of a metadata key through an attribute.
+
+		@param key: the metadata key to catch
+		@type key: string
+		@return: the value of a metadata key, or C{''} when unset
+		@rtype: string
+		@raise AttributeError: when invalid metadata key referred
+		@raise NotImplementedError: when not-stringifiable key referred
+		@bug: not all values can be stringified, pretty printing API
+			hasn't been wrapped in Python yet
+		"""
 		if key not in self:
 			raise AttributeError('Unsupported metadata key: %s' % key)
 		m = self._pkg.find_metadata(key)

@@ -31,6 +31,12 @@ class PortagePackageDescription(PMPackageDescription):
 
 	@property
 	def long(self):
+		"""
+		The long package description.
+
+		@type: string/C{None}
+		@bug: Portage doesn't support parsing metadata.xml.
+		"""
 		return None # XXX
 
 class PortageDBCPV(PMPackage, CompletePortageAtom):

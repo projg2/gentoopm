@@ -200,7 +200,7 @@ class PMAtom(ABCObject):
 		@raise EmptyPackageSetError: when no packages match the atom
 		@raise AmbiguousPackageSetError: when packages with different keys
 			match the atom
-		@depracated: redundant and unclear, please use C{repo[atom]} instead
+		@deprecated: redundant and unclear, please use C{repo[atom]} instead
 		"""
 		return repo.select(self)
 
