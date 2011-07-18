@@ -7,9 +7,10 @@ import paludis
 
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage
-from gentoopm.paludispm.atom import PaludisAtom
+from gentoopm.paludispm.atom import PaludisAtom, \
+		PaludisPackageKey, PaludisPackageVersion
 
-class PaludisID(PMPackage):
+class PaludisID(PMPackage, PaludisAtom):
 	def __init__(self, pkg, num = 0, enum_id = None, env = None):
 		self._pkg = pkg
 		self._num = num
@@ -25,9 +26,38 @@ class PaludisID(PMPackage):
 		return self._pkg.fs_location_key().parse_value()
 
 	@property
-	def atom(self):
-		return PaludisAtom(self._pkg.uniquely_identifying_spec(),
-				self._env, self)
+	def slotted(self):
+		cp = str(self.key)
+		slot = self.slot
+		return PaludisAtom('%s:%s' % (cp, slot), self._env)
+
+	@property
+	def unversioned(self):
+		return PaludisAtom(str(self.key), self._env)
+
+	@property
+	def key(self):
+		return PaludisPackageKey(self._pkg.name)
+
+	@property
+	def version(self):
+		return PaludisPackageVersion(self._pkg.version)
+
+	@property
+	def slot(self):
+		k = self._pkg.slot_key()
+		return str(k.parse_value())
+
+	@property
+	def repository(self):
+		return str(self._pkg.repository_name)
+
+	@property
+	def _atom(self):
+		return self._pkg.uniquely_identifying_spec()
+
+	def __str__(self):
+		return str(self._atom)
 
 	def __lt__(self, other):
 		if not isinstance(other, PaludisID):

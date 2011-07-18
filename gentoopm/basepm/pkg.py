@@ -10,7 +10,7 @@ from gentoopm.basepm.atom import PMAtom
 from gentoopm.basepm.environ import PMPackageEnvironment
 from gentoopm.util import ABCObject
 
-class PMPackage(ABCObject):
+class PMPackage(PMAtom):
 	"""
 	An abstract class representing a single, uniquely-identified package
 	in the package tree.
@@ -53,32 +53,25 @@ class PMPackage(ABCObject):
 		return True
 
 	@property
-	def key(self):
-		"""
-		The key identifying the package. This is used to group packages, e.g.
-		when choosing the best package in a set.
-
-		@type: hashable
-		"""
-		return self.atom.key
-
-	@property
 	def id(self):
 		"""
 		An unique identifier for the package.
 
 		@type: hashable
+		@deprecated: use the package itself or its C{hash()} instead
 		"""
-		return self.atom
+		return self
 
-	@abstractproperty
+	@property
 	def atom(self):
 		"""
 		Return an atom matching the package uniquely.
 
 		@type: L{PMAtom}
+		@deprecated: the package is now a subclass of L{PMAtom}
+			and can be used directly as an atom
 		"""
-		pass
+		return self
 
 	@abstractproperty
 	def path(self):
@@ -132,16 +125,41 @@ class PMPackage(ABCObject):
 			return None
 		return PMPackageEnvironment(p)
 
-	def __eq__(self, other):
-		if not isinstance(other, self.__class__):
-			return False
-		return self.id == other.id
+	@abstractproperty
+	def slotted(self):
+		"""
+		Return an atom matching all packages in the same slot as the associated
+		package.
 
-	def __ne__(self, other):
-		return not self.__eq__(other)
+		This method should be used on associated atoms only. When called
+		on an unassociated atom, it should raise an exception.
 
-	def __hash__(self):
-		return hash(self.id)
+		@type: L{PMAtom}
+		"""
+		pass
 
-	def __repr__(self):
-		return '%s(%s)' % (self.__class__.__name__, repr(self.id))
+	@abstractproperty
+	def unversioned(self):
+		"""
+		Return an atom matching all packages with the same key as the
+		associated package.
+
+		This method should be used on associated atoms only. When called
+		on an unassociated atom, it should raise an exception.
+
+		@type: L{PMAtom}
+		"""
+		pass
+
+	# atom API
+
+	def __contains__(self, pkg):
+		return self == pkg
+
+	@property
+	def complete(self):
+		return True
+
+	@property
+	def associated(self):
+		return True

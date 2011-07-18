@@ -8,7 +8,8 @@ from portage.versions import cpv_getkey, cpv_getversion, vercmp
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
-from gentoopm.portagepm.atom import PortageAtom
+from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom, \
+		PortagePackageKey, PortagePackageVersion, _get_atom
 
 class PortagePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):
@@ -20,7 +21,7 @@ class PortagePackageSet(PMPackageSet):
 class PortageFilteredPackageSet(PortagePackageSet, PMFilteredPackageSet):
 	pass
 
-class PortageDBCPV(PMPackage):
+class PortageDBCPV(PMPackage, CompletePortageAtom):
 	def __init__(self, cpv, dbapi):
 		self._cpv = cpv
 		self._dbapi = dbapi
@@ -35,8 +36,37 @@ class PortageDBCPV(PMPackage):
 		return self._dbapi.getpath(self._cpv)
 
 	@property
-	def atom(self):
-		return PortageAtom('=%s' % self._cpv, self)
+	def key(self):
+		return PortagePackageKey(cpv_getkey(self._cpv))
+
+	@property
+	def version(self):
+		return PortagePackageVersion(self._cpv)
+
+	@property
+	def slot(self):
+		return self.metadata['SLOT'] # XXX
+
+	@property
+	def repository(self):
+		raise NotImplementedError() # XXX
+
+	@property
+	def slotted(self):
+		cp = str(self.key)
+		slot = self.slot
+		return PortageAtom('%s:%s' % (cp, slot))
+
+	@property
+	def unversioned(self):
+		return PortageAtom(str(self.key))
+
+	@property
+	def _atom(self):
+		return _get_atom(str(self))
+
+	def __str__(self):
+		return '=%s' % self._cpv
 
 	def __lt__(self, other):
 		if not isinstance(other, PortageDBCPV):
@@ -60,9 +90,11 @@ class PortageCPV(PortageDBCPV):
 		return self._dbapi.findname(self._cpv, self._tree)
 
 	@property
-	def atom(self):
-		return PortageAtom('=%s::%s' % (self._cpv,
-			self._dbapi.getRepositoryName(self._tree)), self)
+	def repository(self):
+		return self._dbapi.getRepositoryName(self._tree)
+
+	def __str__(self):
+		return '=%s::%s' % (self._cpv, self.repository)
 
 	def __lt__(self, other):
 		if not isinstance(other, PortageCPV):

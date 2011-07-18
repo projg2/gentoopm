@@ -18,7 +18,7 @@ class PkgCorePackageSet(PMPackageSet):
 class PkgCoreFilteredPackageSet(PkgCorePackageSet, PMFilteredPackageSet):
 	pass
 
-class PkgCorePackage(PMPackage):
+class PkgCorePackage(PMPackage, PkgCoreAtom):
 	def __init__(self, pkg, repo_index = 0):
 		self._pkg = pkg
 		self._repo_index = repo_index
@@ -32,12 +32,27 @@ class PkgCorePackage(PMPackage):
 		return self._pkg.path
 
 	@property
-	def atom(self):
+	def slotted(self):
+		return PkgCoreAtom(self._pkg.slotted_atom)
+
+	@property
+	def unversioned(self):
+		return PkgCoreAtom(self._pkg.unversioned_atom)
+
+	@property
+	def _r(self):
+		return self._pkg
+
+	@property
+	def repository(self):
+		return self._pkg.repo.repo_id
+
+	def __str__(self):
 		if self._repo_index != 0:
 			s = '%s::%s' % (self._pkg.cpvstr, self._pkg.repo.repo_id)
 		else:
 			s = self._pkg.cpvstr
-		return PkgCoreAtom('=%s' % s, self)
+		return '=%s' % s
 
 	def __lt__(self, other):
 		if not isinstance(other, PkgCorePackage):

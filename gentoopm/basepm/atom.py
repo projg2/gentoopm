@@ -176,7 +176,7 @@ class PMAtom(ABCObject):
 		"""
 		pass
 
-	@abstractproperty
+	@property
 	def associated(self):
 		"""
 		Whether the atom is associated with a package.
@@ -184,8 +184,10 @@ class PMAtom(ABCObject):
 		If an atom is unassociated, it is impossible to transform it.
 
 		@type: bool
+		@deprecated: now L{PMPackage} is a subclass of L{PMAtom},
+			and that's the associated atom variant
 		"""
-		pass
+		return False
 
 	def get_associated(self, repo):
 		"""
@@ -198,34 +200,9 @@ class PMAtom(ABCObject):
 		@raise EmptyPackageSetError: when no packages match the atom
 		@raise AmbiguousPackageSetError: when packages with different keys
 			match the atom
+		@depracated: redundant and unclear, please use C{repo[atom]} instead
 		"""
-		return repo.select(self).atom
-
-	@abstractproperty
-	def slotted(self):
-		"""
-		Return an atom matching all packages in the same slot as the associated
-		package.
-
-		This method should be used on associated atoms only. When called
-		on an unassociated atom, it should raise an exception.
-
-		@type: L{PMAtom}
-		"""
-		pass
-
-	@abstractproperty
-	def unversioned(self):
-		"""
-		Return an atom matching all packages with the same key as the
-		associated package.
-
-		This method should be used on associated atoms only. When called
-		on an unassociated atom, it should raise an exception.
-
-		@type: L{PMAtom}
-		"""
-		pass
+		return repo.select(self)
 
 	@abstractproperty
 	def key(self):

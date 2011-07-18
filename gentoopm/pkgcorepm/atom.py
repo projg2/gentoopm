@@ -86,7 +86,7 @@ class PkgCoreIncompletePackageVersion(PMPackageVersion):
 		return str(self._r).split()[-1]
 
 class PkgCoreAtom(PMAtom):
-	def __init__(self, s, pkg = None):
+	def __init__(self, s):
 		if isinstance(s, atom):
 			self._r = s
 		else:
@@ -94,8 +94,6 @@ class PkgCoreAtom(PMAtom):
 				self._r = parse_match(s)
 			except ParseError:
 				raise InvalidAtomStringError('Incorrect atom: %s' % s)
-
-		self._pkg = pkg
 
 	def __contains__(self, pkg):
 		return self._r.match(pkg._pkg)
@@ -109,20 +107,6 @@ class PkgCoreAtom(PMAtom):
 	@property
 	def complete(self):
 		return isinstance(self._r, atom)
-
-	@property
-	def associated(self):
-		return self._pkg is not None
-
-	@property
-	def slotted(self):
-		assert(self.associated)
-		return PkgCoreAtom(self._pkg._pkg.slotted_atom, self._pkg)
-
-	@property
-	def unversioned(self):
-		assert(self.associated)
-		return PkgCoreAtom(self._pkg._pkg.unversioned_atom, self._pkg)
 
 	@property
 	def key(self):

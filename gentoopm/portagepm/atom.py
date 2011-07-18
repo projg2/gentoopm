@@ -57,23 +57,23 @@ class FakeSettings(object):
 	def __getattr__(self, key):
 		return lambda: collections.defaultdict(lambda: '')
 
-class PortageAtom(object):
-	def __new__(self, s, pkg = None):
-		try:
-			a = dep_expand(s, settings = FakeSettings())
-		except pe.InvalidAtom:
-			raise InvalidAtomStringError('Incorrect atom: %s' % s)
+def _get_atom(s):
+	try:
+		return dep_expand(s, settings = FakeSettings())
+	except pe.InvalidAtom:
+		raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
+class PortageAtom(object):
+	def __new__(self, s):
+		a = _get_atom(s)
 		if catsplit(a.cp)[0] == 'null':
-			assert(pkg is None)
 			return UnexpandedPortageAtom(a)
 		else:
-			return CompletePortageAtom(a, pkg)
+			return CompletePortageAtom(a)
 
 class CompletePortageAtom(PMAtom):
-	def __init__(self, a, pkg = None):
+	def __init__(self, a):
 		self._atom = a
-		self._pkg = pkg
 
 	def __contains__(self, pkg):
 		# SLOT matching requires metadata so delay it.
@@ -88,22 +88,6 @@ class CompletePortageAtom(PMAtom):
 	@property
 	def complete(self):
 		return True
-
-	@property
-	def associated(self):
-		return self._pkg is not None
-
-	@property
-	def slotted(self):
-		assert(self.associated)
-		cp = str(self.key)
-		slot = self._pkg.metadata['SLOT']
-		return PortageAtom('%s:%s' % (cp, slot))
-
-	@property
-	def unversioned(self):
-		assert(self.associated)
-		return PortageAtom(str(self.key))
 
 	@property
 	def key(self):

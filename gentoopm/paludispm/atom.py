@@ -66,7 +66,7 @@ class PaludisAtom(PMAtom):
 				paludis.RepositoryNameError):
 			raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
-	def __init__(self, s, env, pkg = None):
+	def __init__(self, s, env):
 		self._incomplete = False
 		if isinstance(s, paludis.PackageDepSpec):
 			self._atom = s
@@ -77,7 +77,6 @@ class PaludisAtom(PMAtom):
 				# try */ for the category
 				self._init_atom(_category_wildcard_re.sub(r'*/\g<0>', s, 1), env, True)
 				self._incomplete = True
-		self._pkg = pkg
 		self._env = env
 
 	def __contains__(self, pkg):
@@ -117,22 +116,6 @@ class PaludisAtom(PMAtom):
 	@property
 	def complete(self):
 		return not self._incomplete
-
-	@property
-	def associated(self):
-		return self._pkg is not None
-
-	@property
-	def slotted(self):
-		assert(self.associated)
-		cp = str(self.key)
-		slot = self.slot or self._pkg.metadata['SLOT']
-		return PaludisAtom('%s:%s' % (cp, slot), self._env)
-
-	@property
-	def unversioned(self):
-		assert(self.associated)
-		return PaludisAtom(str(self.key), self._env)
 
 	@property
 	def key(self):

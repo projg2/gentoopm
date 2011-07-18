@@ -6,6 +6,7 @@
 import pkgcore.restrictions.boolean as br
 
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
+from gentoopm.pkgcorepm.pkg import PkgCorePackage
 
 def transform_filters(args, kwargs):
 	"""
@@ -21,6 +22,8 @@ def transform_filters(args, kwargs):
 	f = []
 
 	for a in args:
+		if isinstance(a, PkgCorePackage):
+			a = str(a)
 		if isinstance(a, str):
 			a = PkgCoreAtom(a)
 		if isinstance(a, PkgCoreAtom):
