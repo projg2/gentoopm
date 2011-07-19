@@ -79,7 +79,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def repository(self):
-		raise NotImplementedError() # XXX
+		raise None
 
 	@property
 	def slotted(self):
