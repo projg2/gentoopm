@@ -23,12 +23,12 @@ class PortageFilteredPackageSet(PortagePackageSet, PMFilteredPackageSet):
 	pass
 
 class PortagePackageDescription(PMPackageDescription):
-	def __init__(self, meta):
-		self._meta = meta
+	def __init__(self, pkg):
+		self._pkg = pkg
 
 	@property
 	def short(self):
-		return StringWrapper(self._meta['DESCRIPTION'])
+		return StringWrapper(self._pkg._aux_get['DESCRIPTION'])
 
 	@property
 	def long(self):
@@ -71,11 +71,11 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def description(self):
-		return PortagePackageDescription(self.metadata) # XXX
+		return PortagePackageDescription(self)
 
 	@property
 	def slot(self):
-		return StringWrapper(self.metadata['SLOT']) # XXX
+		return StringWrapper(self._aux_get('SLOT'))
 
 	@property
 	def repository(self):
