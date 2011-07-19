@@ -49,6 +49,12 @@ class StringWrapper(object):
 	def __str__(self):
 		return str(self._s)
 
+	def __bool__(self):
+		return bool(str(self))
+
+	def __nonzero__(self):
+		return self.__bool__(self)
+
 	def __repr__(self):
 		return '(%s)' % repr(str(self))
 
