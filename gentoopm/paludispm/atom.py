@@ -8,6 +8,7 @@ import paludis, re
 from gentoopm.basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
 		PMIncompletePackageKey
 from gentoopm.exceptions import InvalidAtomStringError
+from gentoopm.util import StringWrapper
 
 _category_wildcard_re = re.compile(r'\w')
 
@@ -17,11 +18,11 @@ class PaludisPackageKey(PMPackageKey):
 
 	@property
 	def category(self):
-		return str(self._k.category)
+		return StringWrapper(self._k.category)
 
 	@property
 	def package(self):
-		return str(self._k.package)
+		return StringWrapper(self._k.package)
 
 	def __str__(self):
 		return str(self._k)
@@ -32,7 +33,7 @@ class PaludisIncompletePackageKey(PMIncompletePackageKey):
 
 	@property
 	def package(self):
-		return str(self._k)
+		return StringWrapper(self._k)
 
 class PaludisPackageVersion(PMPackageVersion):
 	def __init__(self, ver):
@@ -40,7 +41,7 @@ class PaludisPackageVersion(PMPackageVersion):
 
 	@property
 	def without_revision(self):
-		return str(self._v.remove_revision())
+		return StringWrapper(self._v.remove_revision())
 
 	@property
 	def revision(self):
@@ -136,10 +137,10 @@ class PaludisAtom(PMAtom):
 	def slot(self):
 		if self._atom.slot_requirement is None:
 			return None
-		return str(self._atom.slot_requirement.slot)
+		return StringWrapper(self._atom.slot_requirement.slot)
 
 	@property
 	def repository(self):
 		if self._atom.in_repository is None:
 			return None
-		return str(self._atom.in_repository)
+		return StringWrapper(self._atom.in_repository)

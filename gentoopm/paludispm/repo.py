@@ -10,6 +10,7 @@ from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 from gentoopm.paludispm.atom import PaludisAtom
 from gentoopm.paludispm.pkg import PaludisID
 from gentoopm.paludispm.pkgset import PaludisPackageSet
+from gentoopm.util import StringWrapper
 
 class PaludisRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -91,11 +92,11 @@ class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
 
 	@property
 	def name(self):
-		return str(self._repo.name)
+		return StringWrapper(self._repo.name)
 
 	@property
 	def path(self):
-		return self._repo.location_key().parse_value()
+		return StringWrapper(self._repo.location_key().parse_value())
 
 class PaludisInstalledRepo(PaludisRepository):
 	def __init__(self, env):

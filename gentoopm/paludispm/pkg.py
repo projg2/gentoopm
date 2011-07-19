@@ -9,6 +9,7 @@ from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
 from gentoopm.paludispm.atom import PaludisAtom, \
 		PaludisPackageKey, PaludisPackageVersion
+from gentoopm.util import StringWrapper
 
 class PaludisPackageDescription(PMPackageDescription):
 	def __init__(self, pkg):
@@ -16,12 +17,12 @@ class PaludisPackageDescription(PMPackageDescription):
 
 	@property
 	def short(self):
-		return self._pkg.short_description_key().parse_value()
+		return StringWrapper(self._pkg.short_description_key().parse_value())
 
 	@property
 	def long(self):
 		k = self._pkg.long_description_key()
-		return k.parse_value() if k is not None else None
+		return StringWrapper(k.parse_value()) if k is not None else None
 
 class PaludisID(PMPackage, PaludisAtom):
 	def __init__(self, pkg, num = 0, enum_id = None, env = None):
@@ -36,7 +37,7 @@ class PaludisID(PMPackage, PaludisAtom):
 
 	@property
 	def path(self):
-		return self._pkg.fs_location_key().parse_value()
+		return StringWrapper(self._pkg.fs_location_key().parse_value())
 
 	@property
 	def slotted(self):
@@ -63,11 +64,11 @@ class PaludisID(PMPackage, PaludisAtom):
 	@property
 	def slot(self):
 		k = self._pkg.slot_key()
-		return str(k.parse_value())
+		return StringWrapper(k.parse_value())
 
 	@property
 	def repository(self):
-		return str(self._pkg.repository_name)
+		return StringWrapper(self._pkg.repository_name)
 
 	@property
 	def _atom(self):
@@ -95,7 +96,7 @@ class PaludisMetadata(PMPackageMetadata):
 		@param key: the metadata key to catch
 		@type key: string
 		@return: the value of a metadata key, or C{''} when unset
-		@rtype: string
+		@rtype: L{StringWrapper}
 		@raise AttributeError: when invalid metadata key referred
 		@raise NotImplementedError: when not-stringifiable key referred
 		@bug: not all values can be stringified, pretty printing API
@@ -105,12 +106,12 @@ class PaludisMetadata(PMPackageMetadata):
 			raise AttributeError('Unsupported metadata key: %s' % key)
 		m = self._pkg.find_metadata(key)
 		if m is None:
-			return ''
+			return StringWrapper('')
 		m = m.parse_value()
 		if isinstance(m, paludis.StringSetIterable) \
 				or isinstance(m, paludis.KeywordNameIterable):
-			return ' '.join([str(x) for x in m])
+			return StringWrapper(' '.join([str(x) for x in m]))
 		elif isinstance(m, paludis.AllDepSpec):
 			raise NotImplementedError('Parsing %s is not supported yet.' % key)
 		else:
-			return str(m)
+			return StringWrapper(m)

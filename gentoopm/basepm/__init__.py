@@ -19,7 +19,7 @@ class PackageManager(ABCObject):
 		Return the canonical name of the PM. The value should be static
 		and unique.
 
-		@type: string
+		@type: L{StringWrapper}
 		"""
 		pass
 

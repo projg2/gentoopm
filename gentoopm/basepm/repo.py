@@ -32,7 +32,7 @@ class PMRepositoryDict(ABCObject):
 		@rtype: L{PMEbuildRepository}
 		@raise KeyError: when no repository matches the key
 		"""
-		bypath = os.path.isabs(key)
+		bypath = os.path.isabs(str(key))
 
 		for r in self:
 			if bypath:
@@ -82,7 +82,7 @@ class PMEbuildRepository(PMRepository):
 		Return the repository name (either from the repo_name file or PM
 		fallback name).
 
-		@type: string
+		@type: L{StringWrapper}
 		"""
 		pass
 
@@ -91,7 +91,7 @@ class PMEbuildRepository(PMRepository):
 		"""
 		Return the canonical path to the ebuild repository.
 
-		@type: string
+		@type: L{StringWrapper}
 		"""
 		pass
 

@@ -17,7 +17,7 @@ class PMPackageKey(ABCObject):
 		"""
 		The package category.
 
-		@type: string/C{None}
+		@type: L{StringWrapper}/C{None}
 		"""
 		pass
 
@@ -26,7 +26,7 @@ class PMPackageKey(ABCObject):
 		"""
 		The package name.
 
-		@type: string
+		@type: L{StringWrapper}
 		"""
 		pass
 
@@ -63,7 +63,7 @@ class PMIncompletePackageKey(PMPackageKey):
 		return None
 
 	def __str__(self):
-		return self.package
+		return str(self.package)
 
 class PMPackageVersion(ABCObject):
 	"""
@@ -75,7 +75,7 @@ class PMPackageVersion(ABCObject):
 		"""
 		The actual package version.
 
-		@type: string
+		@type: L{StringWrapper}
 		"""
 		pass
 
@@ -227,7 +227,7 @@ class PMAtom(ABCObject):
 		"""
 		The package slot (if specified).
 
-		@type: string/C{None}
+		@type: L{StringWrapper}/C{None}
 		"""
 		pass
 
@@ -236,6 +236,6 @@ class PMAtom(ABCObject):
 		"""
 		The package repository name (if specified).
 
-		@type: string/C{None}
+		@type: L{StringWrapper}/C{None}
 		"""
 		pass

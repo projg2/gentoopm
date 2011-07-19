@@ -7,6 +7,7 @@ import shutil, subprocess, tempfile
 
 from gentoopm.bash import BashParser
 from gentoopm.exceptions import InvalidBashCodeError
+from gentoopm.util import StringWrapper
 
 _bash_script = '''
 while
@@ -64,7 +65,7 @@ class BashServer(BashParser):
 		q = ' '.join(['"${%s}"' % v for v in varlist])
 		self._write('set -- %s' % q,
 				'printf "%s\\0" "${@}"')
-		return [self._read1() for v in varlist]
+		return [StringWrapper(self._read1()) for v in varlist]
 
 	def __getitem__(self, k):
 		return self._cmd_print(k)[0]

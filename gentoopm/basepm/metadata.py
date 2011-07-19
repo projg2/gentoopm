@@ -34,7 +34,7 @@ class PMPackageMetadata(ABCObject):
 		@param key: the metadata key to catch
 		@type key: string
 		@return: the value of a metadata key, or C{''} when unset
-		@rtype: string
+		@rtype: L{StringWrapper}
 		@raise KeyError: when invalid metadata key referred
 		"""
 		try:
@@ -53,7 +53,7 @@ class PMPackageMetadata(ABCObject):
 		@param key: the metadata key to catch
 		@type key: string
 		@return: the value of a metadata key, or C{''} when unset
-		@rtype: string
+		@rtype: L{StringWrapper}
 		@raise AttributeError: when invalid metadata key referred
 		"""
 		pass
@@ -63,6 +63,6 @@ class PMPackageMetadata(ABCObject):
 		Iterate over possible metadata keys.
 
 		@return: available metadata keys
-		@rtype: iter(string)
+		@rtype: iter(L{StringWrapper})
 		"""
 		return iter(metadata_keys)

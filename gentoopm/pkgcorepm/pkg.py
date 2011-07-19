@@ -7,6 +7,7 @@ from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
+from gentoopm.util import StringWrapper
 
 class PkgCorePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):
@@ -24,12 +25,12 @@ class PkgCorePackageDescription(PMPackageDescription):
 
 	@property
 	def short(self):
-		return self._pkg.description
+		return StringWrapper(self._pkg.description)
 
 	@property
 	def long(self):
 		if hasattr(self._pkg, 'longdescription'):
-			return self._pkg.longdescription
+			return StringWrapper(self._pkg.longdescription)
 		else: # vdb, for example
 			return None
 
@@ -44,7 +45,7 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 
 	@property
 	def path(self):
-		return self._pkg.path
+		return StringWrapper(self._pkg.path)
 
 	@property
 	def description(self):
@@ -64,7 +65,7 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 
 	@property
 	def repository(self):
-		return self._pkg.repo.repo_id
+		return StringWrapper(self._pkg.repo.repo_id)
 
 	def __str__(self):
 		if self._repo_index != 0:
@@ -89,31 +90,31 @@ class PkgCoreMetadata(PMPackageMetadata):
 		# vdb uses INHERITED
 		# ebuilds use _eclasses_
 		try:
-			return self._pkg.data['INHERITED']
+			return StringWrapper(self._pkg.data['INHERITED'])
 		except KeyError:
 			pass
 		try:
-			return ' '.join(self._pkg.data['_eclasses_'].keys())
+			return StringWrapper(' '.join(self._pkg.data['_eclasses_'].keys()))
 		except KeyError:
-			return ''
+			return StringWrapper('')
 
 	@property
 	def DEPEND(self):
-		return str(self._pkg.depends)
+		return StringWrapper(self._pkg.depends)
 
 	@property
 	def RDEPEND(self):
-		return str(self._pkg.rdepends)
+		return StringWrapper(self._pkg.rdepends)
 
 	@property
 	def PDEPEND(self):
-		return str(self._pkg.post_rdepends)
+		return StringWrapper(self._pkg.post_rdepends)
 
 	def __getattr__(self, key):
 		if key not in self:
 			raise AttributeError('Unsupported metadata key: %s' % key)
 		v = getattr(self._pkg, key.lower())
 		if isinstance(v, tuple) or isinstance(v, frozenset):
-			return ' '.join(v)
+			return StringWrapper(' '.join(v))
 		else:
-			return str(v)
+			return StringWrapper(v)

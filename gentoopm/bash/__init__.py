@@ -30,7 +30,7 @@ class BashParser(ABCObject):
 		@param k: environment variable name
 		@type k: string
 		@return: value of the environment variable (or C{''} if unset)
-		@rtype: string
+		@rtype: L{StringWrapper}
 		"""
 		pass
 
@@ -42,7 +42,7 @@ class BashParser(ABCObject):
 		@param varlist: environment variable names
 		@type varlist: list(string)
 		@return: environment variables with values
-		@rtype: dict(string -> string)
+		@rtype: dict(string -> L{StringWrapper})
 		"""
 
 		out = {}
