@@ -21,8 +21,12 @@ class PMTestCase(unittest.TestCase):
 	def _try(self, f, args):
 		try:
 			f(self, *args)
-		except AssertionError as e:
-			raise AssertionError('[%s] %s' % (self._pm.name, e.args[0]))
+		except Exception as e:
+			if isinstance(e.args[0], str):
+				raise e.__class__('[%s] %s' % (self._pm.name, e.args[0]),
+						*e.args[1:])
+			else:
+				raise
 
 	def assertEqual(self, *args):
 		self._try(unittest.TestCase.assertEqual, args)
