@@ -47,7 +47,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def metadata(self):
-		return PortageDBMetadata(self._cpv, self._dbapi)
+		return PortageMetadata(self)
 
 	@property
 	def path(self):
@@ -61,6 +61,9 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 	@property
 	def version(self):
 		return PortagePackageVersion(self._cpv)
+
+	def _aux_get(self, *keys):
+		return self._dbapi.aux_get(self._cpv, keys)
 
 	@property
 	def description(self):
@@ -105,16 +108,16 @@ class PortageCPV(PortageDBCPV):
 		self._repo_prio = repo_prio
 
 	@property
-	def metadata(self):
-		return PortageMetadata(self._cpv, self._dbapi, self._tree)
-
-	@property
 	def path(self):
 		return StringWrapper(self._dbapi.findname(self._cpv, self._tree))
 
 	@property
 	def repository(self):
 		return StringWrapper(self._dbapi.getRepositoryName(self._tree))
+
+	def _aux_get(self, *keys):
+		return self._dbapi.aux_get(self._cpv, keys,
+				mytree = self._tree)
 
 	def __str__(self):
 		return '=%s::%s' % (self._cpv, self.repository)
@@ -127,23 +130,11 @@ class PortageCPV(PortageDBCPV):
 				or vercmp(cpv_getversion(self._cpv), cpv_getversion(other._cpv)) < 0 \
 				or self._repo_prio < other._repo_prio
 
-class PortageDBMetadata(PMPackageMetadata):
-	def __init__(self, cpv, dbapi):
-		self._cpv = cpv
-		self._dbapi = dbapi
+class PortageMetadata(PMPackageMetadata):
+	def __init__(self, pkg):
+		self._pkg = pkg
 
 	def __getattr__(self, key):
 		if key not in self:
 			raise AttributeError('Unsupported metadata key: %s' % key)
-		return self._dbapi.aux_get(self._cpv, [key])[0]
-
-class PortageMetadata(PortageDBMetadata):
-	def __init__(self, cpv, dbapi, tree):
-		PortageDBMetadata.__init__(self, cpv, dbapi)
-		self._tree = tree
-
-	def __getattr__(self, key):
-		if key not in self:
-			raise AttributeError('Unsupported metadata key: %s' % key)
-		return self._dbapi.aux_get(self._cpv, [key],
-				mytree = self._tree)[0]
+		return self._pkg._aux_get(key)[0]
