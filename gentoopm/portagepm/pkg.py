@@ -28,7 +28,7 @@ class PortagePackageDescription(PMPackageDescription):
 
 	@property
 	def short(self):
-		return self._meta['DESCRIPTION']
+		return StringWrapper(self._meta['DESCRIPTION'])
 
 	@property
 	def long(self):
@@ -68,7 +68,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def slot(self):
-		return self.metadata['SLOT'] # XXX
+		return StringWrapper(self.metadata['SLOT']) # XXX
 
 	@property
 	def repository(self):
@@ -135,7 +135,7 @@ class PortageDBMetadata(PMPackageMetadata):
 	def __getattr__(self, key):
 		if key not in self:
 			raise AttributeError('Unsupported metadata key: %s' % key)
-		return StringWrapper(self._dbapi.aux_get(self._cpv, [key])[0])
+		return self._dbapi.aux_get(self._cpv, [key])[0]
 
 class PortageMetadata(PortageDBMetadata):
 	def __init__(self, cpv, dbapi, tree):
@@ -145,5 +145,5 @@ class PortageMetadata(PortageDBMetadata):
 	def __getattr__(self, key):
 		if key not in self:
 			raise AttributeError('Unsupported metadata key: %s' % key)
-		return StringWrapper(self._dbapi.aux_get(self._cpv, [key],
-				mytree = self._tree)[0])
+		return self._dbapi.aux_get(self._cpv, [key],
+				mytree = self._tree)[0]

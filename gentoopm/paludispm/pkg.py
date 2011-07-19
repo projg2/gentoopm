@@ -96,7 +96,7 @@ class PaludisMetadata(PMPackageMetadata):
 		@param key: the metadata key to catch
 		@type key: string
 		@return: the value of a metadata key, or C{''} when unset
-		@rtype: L{StringWrapper}
+		@rtype: string
 		@raise AttributeError: when invalid metadata key referred
 		@raise NotImplementedError: when not-stringifiable key referred
 		@bug: not all values can be stringified, pretty printing API
@@ -106,12 +106,12 @@ class PaludisMetadata(PMPackageMetadata):
 			raise AttributeError('Unsupported metadata key: %s' % key)
 		m = self._pkg.find_metadata(key)
 		if m is None:
-			return StringWrapper('')
+			return ''
 		m = m.parse_value()
 		if isinstance(m, paludis.StringSetIterable) \
 				or isinstance(m, paludis.KeywordNameIterable):
-			return StringWrapper(' '.join([str(x) for x in m]))
+			return ' '.join([str(x) for x in m])
 		elif isinstance(m, paludis.AllDepSpec):
 			raise NotImplementedError('Parsing %s is not supported yet.' % key)
 		else:
-			return StringWrapper(m)
+			return m

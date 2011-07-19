@@ -90,31 +90,31 @@ class PkgCoreMetadata(PMPackageMetadata):
 		# vdb uses INHERITED
 		# ebuilds use _eclasses_
 		try:
-			return StringWrapper(self._pkg.data['INHERITED'])
+			return self._pkg.data['INHERITED']
 		except KeyError:
 			pass
 		try:
-			return StringWrapper(' '.join(self._pkg.data['_eclasses_'].keys()))
+			return ' '.join(self._pkg.data['_eclasses_'].keys())
 		except KeyError:
-			return StringWrapper('')
+			return ''
 
 	@property
 	def DEPEND(self):
-		return StringWrapper(self._pkg.depends)
+		return str(self._pkg.depends)
 
 	@property
 	def RDEPEND(self):
-		return StringWrapper(self._pkg.rdepends)
+		return str(self._pkg.rdepends)
 
 	@property
 	def PDEPEND(self):
-		return StringWrapper(self._pkg.post_rdepends)
+		return str(self._pkg.post_rdepends)
 
 	def __getattr__(self, key):
 		if key not in self:
 			raise AttributeError('Unsupported metadata key: %s' % key)
 		v = getattr(self._pkg, key.lower())
 		if isinstance(v, tuple) or isinstance(v, frozenset):
-			return StringWrapper(' '.join(v))
+			return ' '.join(v)
 		else:
-			return StringWrapper(v)
+			return v
