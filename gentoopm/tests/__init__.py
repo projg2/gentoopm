@@ -18,35 +18,26 @@ class PMTestCase(unittest.TestCase):
 		assert(self._pm is None)
 		self._pm = val
 
-	def assertEqual(self, *args):
+	def _try(self, f, args):
 		try:
-			unittest.TestCase.assertEqual(self, *args)
+			f(self, *args)
 		except AssertionError as e:
 			raise AssertionError('[%s] %s' % (self._pm.name, e.args[0]))
+
+	def assertEqual(self, *args):
+		self._try(unittest.TestCase.assertEqual, args)
 
 	def assertNotEqual(self, *args):
-		try:
-			unittest.TestCase.assertNotEqual(self, *args)
-		except AssertionError as e:
-			raise AssertionError('[%s] %s' % (self._pm.name, e.args[0]))
+		self._try(unittest.TestCase.assertNotEqual, args)
 
 	def assertTrue(self, *args):
-		try:
-			unittest.TestCase.assertTrue(self, *args)
-		except AssertionError as e:
-			raise AssertionError('[%s] %s' % (self._pm.name, e.args[0]))
+		self._try(unittest.TestCase.assertTrue, args)
 
 	def assertFalse(self, *args):
-		try:
-			unittest.TestCase.assertFalse(self, *args)
-		except AssertionError as e:
-			raise AssertionError('[%s] %s' % (self._pm.name, e.args[0]))
+		self._try(unittest.TestCase.assertFalse, args)
 
 	def assertRaises(self, *args):
-		try:
-			unittest.TestCase.assertRaises(self, *args)
-		except AssertionError as e:
-			raise AssertionError('[%s] %s' % (self._pm.name, e.args[0]))
+		self._try(unittest.TestCase.assertRaises, args)
 
 class PMTestSuiteFactory(object):
 	def __init__(self, pm):
