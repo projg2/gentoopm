@@ -7,7 +7,7 @@ import os.path
 from abc import abstractmethod, abstractproperty
 
 from gentoopm.basepm.pkgset import PMPackageSet
-from gentoopm.util import ABCObject
+from gentoopm.util import ABCObject, FillMissingNotEqual
 
 class PMRepositoryDict(ABCObject):
 	"""
@@ -71,7 +71,7 @@ class PMRepository(PMPackageSet):
 	Base abstract class for a single repository.
 	"""
 
-class PMEbuildRepository(PMRepository):
+class PMEbuildRepository(PMRepository, FillMissingNotEqual):
 	"""
 	Base abstract class for an ebuild repository (on livefs).
 	"""
@@ -99,9 +99,6 @@ class PMEbuildRepository(PMRepository):
 		if not isinstance(other, self.__class__):
 			return False
 		return self.name == other.name and self.path == other.path
-
-	def __ne__(self, other):
-		return not self.__eq__(other)
 
 	def __hash__(self):
 		return hash((self.name, self.path))

@@ -6,9 +6,9 @@
 from abc import abstractmethod
 
 from gentoopm.exceptions import EmptyPackageSetError, AmbiguousPackageSetError
-from gentoopm.util import ABCObject
+from gentoopm.util import ABCObject, BoolCompat
 
-class PMPackageSet(ABCObject):
+class PMPackageSet(ABCObject, BoolCompat):
 	""" A set of packages. """
 
 	@abstractmethod
@@ -150,9 +150,6 @@ class PMPackageSet(ABCObject):
 		except StopIteration:
 			return False
 		return True
-
-	def __nonzero__(self): # py2 compat
-		return self.__bool__()
 
 class PMFilteredPackageSet(PMPackageSet):
 	def __init__(self, src, args, kwargs):

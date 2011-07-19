@@ -5,7 +5,7 @@
 
 from abc import abstractmethod
 
-from gentoopm.util import ABCObject
+from gentoopm.util import ABCObject, FillMissingNotEqual
 
 class PMPackageMatcher(ABCObject):
 	"""
@@ -25,7 +25,7 @@ class PMPackageMatcher(ABCObject):
 		"""
 		pass
 
-class PMKeywordMatcher(ABCObject):
+class PMKeywordMatcher(ABCObject, FillMissingNotEqual):
 	"""
 	Base class for a keyword matcher.
 
@@ -39,7 +39,7 @@ class PMKeywordMatcher(ABCObject):
 		"""
 		Check whether the value of a metadata key matches the condition
 		specified in the matcher.
-		
+
 		@return: True if metadata value matches
 		@rtype: bool
 		"""

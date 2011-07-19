@@ -13,7 +13,7 @@ from gentoopm.basepm.repo import PMRepositoryDict, PMEbuildRepository, \
 from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom
 from gentoopm.portagepm.pkg import PortageCPV, PortageDBCPV, PortagePackageSet, \
 		PortageFilteredPackageSet
-from gentoopm.util import StringWrapper
+from gentoopm.util import FillMissingComparisons, StringWrapper
 
 class PortageRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -147,7 +147,9 @@ class PortageHackedFilteredRepo(PortageFilteredRepo):
 	def _stringified_atom(self):
 		return str(self._atom)
 
-class PortageRepository(PortDBRepository, PMEbuildRepository):
+class PortageRepository(PortDBRepository, PMEbuildRepository,
+		FillMissingComparisons):
+
 	def __init__(self, repo_obj, portdbapi):
 		self._repo = repo_obj
 		PortDBRepository.__init__(self, portdbapi)

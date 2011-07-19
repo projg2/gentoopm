@@ -5,9 +5,9 @@
 
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.util import ABCObject
+from gentoopm.util import ABCObject, StringifiedComparisons
 
-class PMPackageKey(ABCObject):
+class PMPackageKey(ABCObject, StringifiedComparisons):
 	"""
 	A base class for a package key (CP/qualified package name).
 	"""
@@ -40,15 +40,6 @@ class PMPackageKey(ABCObject):
 		"""
 		pass
 
-	def __eq__(self, other):
-		return str(self) == str(other)
-
-	def __ne__(self, other):
-		return not self.__eq__(other)
-
-	def __hash__(self):
-		return hash(str(self))
-
 class PMIncompletePackageKey(PMPackageKey):
 	"""
 	An incomplete package key (without a category).
@@ -65,7 +56,7 @@ class PMIncompletePackageKey(PMPackageKey):
 	def __str__(self):
 		return str(self.package)
 
-class PMPackageVersion(ABCObject):
+class PMPackageVersion(ABCObject, StringifiedComparisons):
 	"""
 	A base class for a package version.
 	"""
@@ -98,16 +89,7 @@ class PMPackageVersion(ABCObject):
 		"""
 		pass
 
-	def __eq__(self, other):
-		return str(self) == str(other)
-
-	def __ne__(self, other):
-		return not self.__eq__(other)
-
-	def __hash__(self):
-		return hash(str(self))
-
-class PMAtom(ABCObject):
+class PMAtom(ABCObject, StringifiedComparisons):
 	"""
 	A base class for PM-specific atom (dependency specification).
 	"""
@@ -142,19 +124,6 @@ class PMAtom(ABCObject):
 		It can raise an exception then.
 		"""
 		pass
-
-	def __eq__(self, other):
-		if not self.complete:
-			raise NotImplementedError('Unable to compare incomplete atoms')
-		return str(self) == str(other)
-
-	def __ne__(self, other):
-		return not self.__eq__(other)
-
-	def __hash__(self):
-		if not self.complete:
-			raise NotImplementedError('Unable to hash incomplete atoms')
-		return hash(str(self))
 
 	def __repr__(self):
 		if self.complete:

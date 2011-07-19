@@ -5,8 +5,9 @@
 
 from gentoopm.exceptions import AmbiguousPackageSetError, EmptyPackageSetError
 from gentoopm.tests import PMTestCase, PackageNames
+from gentoopm.util import BoolCompat
 
-class IterChecker(object):
+class IterChecker(BoolCompat):
 	def __init__(self, iterable):
 		self._it = iter(iterable)
 
@@ -17,9 +18,6 @@ class IterChecker(object):
 			return False
 		else:
 			return True
-
-	def __nonzero__(self):
-		return self.__bool__()
 
 class PackageSetsTestCase(PMTestCase):
 	def setUp(self):

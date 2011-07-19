@@ -4,11 +4,11 @@
 # Released under the terms of the 2-clause BSD license.
 
 import os.path
-from abc import abstractproperty
+from abc import abstractmethod, abstractproperty
 
 from gentoopm.basepm.atom import PMAtom
 from gentoopm.basepm.environ import PMPackageEnvironment
-from gentoopm.util import ABCObject
+from gentoopm.util import ABCObject, FillMissingComparisons
 
 class PMPackageDescription(ABCObject):
 	"""
@@ -43,7 +43,7 @@ class PMPackageDescription(ABCObject):
 		"""
 		return self.long or self.short
 
-class PMPackage(PMAtom):
+class PMPackage(PMAtom, FillMissingComparisons):
 	"""
 	An abstract class representing a single, uniquely-identified package
 	in the package tree.
@@ -192,6 +192,10 @@ class PMPackage(PMAtom):
 
 		@type: L{PMAtom}
 		"""
+		pass
+
+	@abstractmethod
+	def __lt__(self, other):
 		pass
 
 	# atom API
