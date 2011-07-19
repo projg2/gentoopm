@@ -63,7 +63,11 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 		return PortagePackageVersion(self._cpv)
 
 	def _aux_get(self, *keys):
-		return self._dbapi.aux_get(self._cpv, keys)
+		val = self._dbapi.aux_get(self._cpv, keys)
+		if len(keys) == 1:
+			return val[0]
+		else:
+			return tuple(val)
 
 	@property
 	def description(self):
@@ -116,8 +120,12 @@ class PortageCPV(PortageDBCPV):
 		return StringWrapper(self._dbapi.getRepositoryName(self._tree))
 
 	def _aux_get(self, *keys):
-		return self._dbapi.aux_get(self._cpv, keys,
+		val = self._dbapi.aux_get(self._cpv, keys,
 				mytree = self._tree)
+		if len(keys) == 1:
+			return val[0]
+		else:
+			return tuple(val)
 
 	def __str__(self):
 		return '=%s::%s' % (self._cpv, self.repository)
@@ -137,4 +145,4 @@ class PortageMetadata(PMPackageMetadata):
 	def __getattr__(self, key):
 		if key not in self:
 			raise AttributeError('Unsupported metadata key: %s' % key)
-		return self._pkg._aux_get(key)[0]
+		return self._pkg._aux_get(key)
