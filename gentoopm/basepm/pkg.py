@@ -8,9 +8,9 @@ from abc import abstractmethod, abstractproperty
 
 from gentoopm.basepm.atom import PMAtom
 from gentoopm.basepm.environ import PMPackageEnvironment
-from gentoopm.util import ABCObject, FillMissingComparisons
+from gentoopm.util import ABCObject, FillMissingComparisons, StringCompat
 
-class PMPackageDescription(ABCObject):
+class PMPackageDescription(ABCObject, StringCompat):
 	"""
 	Description of a package.
 	"""

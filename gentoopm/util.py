@@ -69,3 +69,45 @@ class BoolCompat(object):
 
 	def __nonzero__(self):
 		return self.__bool__()
+
+class StringCompat(StringifiedComparisons):
+	"""
+	A helper class providing objects with compatibility string functions,
+	working on stringified form of objects. In other words, it lets you use
+	objects like strings.
+	"""
+
+	def __hasattr__(self, k):
+		return hasattr(str, k)
+
+	def __getattr__(self, k):
+		return getattr(str(self), k)
+
+	# other useful special methods
+	def __add__(self, other):
+		return str(self) + other
+
+	def __contains__(self, h):
+		# XXX: might be useful to override this
+		return h in str(self)
+
+	def __format__(self, spec):
+		return format(str(self), spec)
+
+	def __getitem__(self, k):
+		return str(self)[k]
+
+	def __getslice__(self, a, b):
+		return str(self)[a:b]
+
+	def __len__(self):
+		return len(str(self))
+
+	def __mul__(self, other):
+		return str(self) * other
+
+	def __rmod__(self, other):
+		return other % str(self)
+
+	def __rmul__(self, other):
+		return other * str(self)

@@ -5,9 +5,9 @@
 
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.util import ABCObject, StringifiedComparisons
+from gentoopm.util import ABCObject, StringCompat, StringifiedComparisons
 
-class PMPackageKey(ABCObject, StringifiedComparisons):
+class PMPackageKey(ABCObject, StringCompat):
 	"""
 	A base class for a package key (CP/qualified package name).
 	"""
@@ -56,7 +56,7 @@ class PMIncompletePackageKey(PMPackageKey):
 	def __str__(self):
 		return self.package
 
-class PMPackageVersion(ABCObject, StringifiedComparisons):
+class PMPackageVersion(ABCObject, StringCompat):
 	"""
 	A base class for a package version.
 	"""
@@ -127,7 +127,7 @@ class PMAtom(ABCObject, StringifiedComparisons):
 
 	def __repr__(self):
 		if self.complete:
-			s = repr(self.__str__())
+			s = repr(str(self))
 		else:
 			s = '<incomplete>'
 		return '%s(%s)' % (self.__class__.__name__, s)
