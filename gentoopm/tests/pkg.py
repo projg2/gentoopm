@@ -63,6 +63,22 @@ class PackagesTestCase(PMTestCase):
 			self.assertRaises(KeyError, lambda m, rk: m[rk], p.metadata, rk)
 			self.assertRaises(AttributeError, getattr, p.metadata, rk)
 
+	def test_description(self):
+		""" Check whether description works as expected. """
+		for p in self._pkgs:
+			self.assertEqual(str(p.description),
+					p.description.long if p.description.long is not None
+					else p.description.short)
+
+	def test_inherits(self):
+		""" Check whether inherits are an iterable of stringifiables. """
+		for p in self._pkgs:
+			if p.inherits is not None:
+				try:
+					self.assertTrue(str(next(iter(p.inherits))))
+				except StopIteration:
+					pass
+
 	def test_environ_dict(self):
 		""" Try to access environment.bz2 via dict. """
 		rk = PackageNames.envsafe_metadata_key
