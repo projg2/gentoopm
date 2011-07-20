@@ -74,6 +74,11 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 		return PortagePackageDescription(self)
 
 	@property
+	def inherits(self):
+		return tuple([StringWrapper(x) for x
+			in self._aux_get('INHERITED').split()])
+
+	@property
 	def slot(self):
 		return StringWrapper(self._aux_get('SLOT'))
 

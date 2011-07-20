@@ -137,6 +137,15 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		pass
 
+	@abstractproperty
+	def inherits(self):
+		"""
+		Eclasses inherited by a package.
+
+		@type: tuple(L{StringWrapper})/C{None}
+		"""
+		pass
+
 	@property
 	def environ(self):
 		"""

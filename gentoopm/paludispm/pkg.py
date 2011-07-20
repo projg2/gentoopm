@@ -62,6 +62,14 @@ class PaludisID(PMPackage, PaludisAtom):
 		return PaludisPackageDescription(self._pkg)
 
 	@property
+	def inherits(self):
+		k = self._pkg.find_metadata('INHERITED')
+		if k is None:
+			return None
+		return tuple([StringWrapper(x) for x
+			in k.parse_value()])
+
+	@property
 	def slot(self):
 		k = self._pkg.slot_key()
 		return StringWrapper(k.parse_value())

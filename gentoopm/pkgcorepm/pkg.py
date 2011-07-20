@@ -52,6 +52,20 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 		return PkgCorePackageDescription(self._pkg)
 
 	@property
+	def inherits(self):
+		# ebuilds use _eclasses_
+		# vdb uses INHERITED
+		try:
+			l = self._pkg.data['_eclasses_']
+		except KeyError:
+			try:
+				l = self._pkg.data['INHERITED'].split()
+			except KeyError:
+				return None
+
+		return tuple([StringWrapper(x) for x in l])
+
+	@property
 	def slotted(self):
 		return PkgCoreAtom(self._pkg.slotted_atom)
 
