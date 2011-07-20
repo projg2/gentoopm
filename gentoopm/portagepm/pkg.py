@@ -28,7 +28,7 @@ class PortagePackageDescription(PMPackageDescription):
 
 	@property
 	def short(self):
-		return StringWrapper(self._pkg._aux_get['DESCRIPTION'])
+		return StringWrapper(self._pkg._aux_get('DESCRIPTION'))
 
 	@property
 	def long(self):
