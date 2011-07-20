@@ -63,7 +63,8 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 		return PortagePackageVersion(self._cpv)
 
 	def _aux_get(self, *keys):
-		val = self._dbapi.aux_get(self._cpv, keys)
+		val = [str(x) for x
+				in self._dbapi.aux_get(self._cpv, keys)]
 		if len(keys) == 1:
 			return val[0]
 		else:
@@ -75,7 +76,11 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def inherits(self):
-		return SpaceSepTuple(str(self._aux_get('INHERITED')))
+		return SpaceSepTuple(self._aux_get('INHERITED'))
+
+	@property
+	def homepages(self):
+		return SpaceSepTuple(self._aux_get('HOMEPAGE'))
 
 	@property
 	def slot(self):
@@ -124,8 +129,8 @@ class PortageCPV(PortageDBCPV):
 		return self._dbapi.getRepositoryName(self._tree)
 
 	def _aux_get(self, *keys):
-		val = self._dbapi.aux_get(self._cpv, keys,
-				mytree = self._tree)
+		val = [str(x) for x in self._dbapi.aux_get
+				(self._cpv, keys, mytree = self._tree)]
 		if len(keys) == 1:
 			return val[0]
 		else:

@@ -146,6 +146,15 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		pass
 
+	@abstractproperty
+	def homepages(self):
+		"""
+		Homepages of a package.
+
+		@type: L{SpaceSepTuple}
+		"""
+		pass
+
 	@property
 	def environ(self):
 		"""

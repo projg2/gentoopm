@@ -66,6 +66,10 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 		return SpaceSepTuple(l)
 
 	@property
+	def homepages(self):
+		return SpaceSepTuple(self._pkg.homepage)
+
+	@property
 	def slotted(self):
 		return PkgCoreAtom(self._pkg.slotted_atom)
 
