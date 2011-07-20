@@ -10,6 +10,7 @@ from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom, \
 		PortagePackageKey, PortagePackageVersion, _get_atom
+from gentoopm.util import SpaceSepTuple
 
 class PortagePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):
@@ -74,7 +75,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def inherits(self):
-		return tuple(self._aux_get('INHERITED').split())
+		return SpaceSepTuple(str(self._aux_get('INHERITED')))
 
 	@property
 	def slot(self):

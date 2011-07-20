@@ -7,6 +7,7 @@ from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
+from gentoopm.util import SpaceSepTuple
 
 class PkgCorePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):
@@ -58,11 +59,11 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 			l = self._pkg.data['_eclasses_']
 		except KeyError:
 			try:
-				l = self._pkg.data['INHERITED'].split()
+				l = self._pkg.data['INHERITED']
 			except KeyError:
-				return ()
+				l = ()
 
-		return tuple(l)
+		return SpaceSepTuple(l)
 
 	@property
 	def slotted(self):

@@ -142,7 +142,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		Eclasses inherited by a package.
 
-		@type: tuple(string)/C{None}
+		@type: L{SpaceSepTuple}
 		"""
 		pass
 

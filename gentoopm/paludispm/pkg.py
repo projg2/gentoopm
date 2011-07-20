@@ -9,6 +9,7 @@ from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
 from gentoopm.paludispm.atom import PaludisAtom, \
 		PaludisPackageKey, PaludisPackageVersion
+from gentoopm.util import SpaceSepTuple
 
 class PaludisPackageDescription(PMPackageDescription):
 	def __init__(self, pkg):
@@ -64,8 +65,8 @@ class PaludisID(PMPackage, PaludisAtom):
 	def inherits(self):
 		k = self._pkg.find_metadata('INHERITED')
 		if k is None:
-			return ()
-		return tuple(k.parse_value())
+			return SpaceSepTuple(())
+		return SpaceSepTuple(k.parse_value())
 
 	@property
 	def slot(self):

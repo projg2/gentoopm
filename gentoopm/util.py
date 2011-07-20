@@ -111,3 +111,16 @@ class StringCompat(StringifiedComparisons):
 
 	def __rmul__(self, other):
 		return other * str(self)
+
+class SpaceSepTuple(tuple):
+	"""
+	A tuple subclass representing a space-separated list.
+	"""
+
+	def __new__(self, s):
+		if isinstance(s, str):
+			s = s.split()
+		return tuple.__new__(self, s)
+
+	def __str__(self):
+		return ' '.join(self)
