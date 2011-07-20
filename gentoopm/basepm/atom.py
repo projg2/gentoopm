@@ -17,7 +17,7 @@ class PMPackageKey(ABCObject, StringifiedComparisons):
 		"""
 		The package category.
 
-		@type: L{StringWrapper}/C{None}
+		@type: string/C{None}
 		"""
 		pass
 
@@ -26,7 +26,7 @@ class PMPackageKey(ABCObject, StringifiedComparisons):
 		"""
 		The package name.
 
-		@type: L{StringWrapper}
+		@type: string
 		"""
 		pass
 
@@ -54,7 +54,7 @@ class PMIncompletePackageKey(PMPackageKey):
 		return None
 
 	def __str__(self):
-		return str(self.package)
+		return self.package
 
 class PMPackageVersion(ABCObject, StringifiedComparisons):
 	"""
@@ -66,7 +66,7 @@ class PMPackageVersion(ABCObject, StringifiedComparisons):
 		"""
 		The actual package version.
 
-		@type: L{StringWrapper}
+		@type: string
 		"""
 		pass
 
@@ -196,7 +196,7 @@ class PMAtom(ABCObject, StringifiedComparisons):
 		"""
 		The package slot (if specified).
 
-		@type: L{StringWrapper}/C{None}
+		@type: string/C{None}
 		"""
 		pass
 
@@ -205,6 +205,6 @@ class PMAtom(ABCObject, StringifiedComparisons):
 		"""
 		The package repository name (if specified).
 
-		@type: L{StringWrapper}/C{None}
+		@type: string/C{None}
 		"""
 		pass

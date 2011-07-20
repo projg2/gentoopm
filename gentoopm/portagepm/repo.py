@@ -13,7 +13,7 @@ from gentoopm.basepm.repo import PMRepositoryDict, PMEbuildRepository, \
 from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom
 from gentoopm.portagepm.pkg import PortageCPV, PortageDBCPV, PortagePackageSet, \
 		PortageFilteredPackageSet
-from gentoopm.util import FillMissingComparisons, StringWrapper
+from gentoopm.util import FillMissingComparisons
 
 class PortageRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -21,7 +21,6 @@ class PortageRepoDict(PMRepositoryDict):
 			yield PortageRepository(p_repo, self._dbapi)
 
 	def __getitem__(self, key):
-		key = str(key)
 		try:
 			if os.path.isabs(key):
 				repo_name = self._dbapi.repositories.get_name_for_location(key)
@@ -99,7 +98,7 @@ class PortageFilteredRepo(PortageFilteredDBRepo):
 	def __init__(self, repo, atom):
 		PortageFilteredDBRepo.__init__(self, repo, atom)
 		self._name = repo.name
-		self._path = str(repo.path)
+		self._path = repo.path
 		self._prio = repo._repo.priority
 
 	def __iter__(self):
@@ -155,7 +154,7 @@ class PortageRepository(PortDBRepository, PMEbuildRepository,
 		PortDBRepository.__init__(self, portdbapi)
 
 	def __iter__(self):
-		path = str(self.path)
+		path = self.path
 		prio = self._repo.priority
 		for cp in self._dbapi.cp_all(trees = (path,)):
 			for p in self._dbapi.cp_list(cp, mytree = path):
@@ -165,11 +164,11 @@ class PortageRepository(PortDBRepository, PMEbuildRepository,
 
 	@property
 	def name(self):
-		return StringWrapper(self._repo.name)
+		return self._repo.name
 
 	@property
 	def path(self):
-		return StringWrapper(self._repo.location)
+		return self._repo.location
 
 	def __lt__(self, other):
 		return self._repo.priority < other._repo.priority

@@ -10,7 +10,7 @@ from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 from gentoopm.pkgcorepm.pkg import PkgCorePackage, PkgCorePackageSet, \
 		PkgCoreFilteredPackageSet
 from gentoopm.pkgcorepm.filter import transform_filters
-from gentoopm.util import FillMissingComparisons, StringWrapper
+from gentoopm.util import FillMissingComparisons
 
 class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -73,11 +73,11 @@ class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository,
 
 	@property
 	def name(self):
-		return StringWrapper(self._repo.repo_id)
+		return self._repo.repo_id
 
 	@property
 	def path(self):
-		return StringWrapper(self._repo.location)
+		return self._repo.location
 
 	def __lt__(self, other):
 		return other._index < self._index

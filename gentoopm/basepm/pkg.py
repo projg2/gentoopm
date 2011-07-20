@@ -20,7 +20,7 @@ class PMPackageDescription(ABCObject):
 		"""
 		The short package description (e.g. C{DESCRIPTION} within the ebuild).
 
-		@type: L{StringWrapper}
+		@type: string
 		"""
 		pass
 
@@ -29,7 +29,7 @@ class PMPackageDescription(ABCObject):
 		"""
 		The long package description (e.g. from C{metadata.xml}).
 
-		@type: L{StringWrapper}/C{None}
+		@type: string/C{None}
 		"""
 		pass
 
@@ -114,7 +114,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		This function may return C{None} if that information is not available
 		or the particular repository doesn't operate on local filesystem.
 
-		@type: L{StringWrapper}/C{None}
+		@type: string/C{None}
 		"""
 		pass
 
@@ -142,7 +142,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		Eclasses inherited by a package.
 
-		@type: tuple(L{StringWrapper})/C{None}
+		@type: tuple(string)/C{None}
 		"""
 		pass
 
@@ -157,9 +157,9 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		@type: L{PMPackageEnvironment}/C{None}
 		"""
 
-		if self.path is None:
+		p = self.path
+		if p is None:
 			return None
-		p = str(self.path)
 
 		if os.path.isdir(p):
 			def _mtime_if_exists(path):

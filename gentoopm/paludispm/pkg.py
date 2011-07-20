@@ -9,7 +9,6 @@ from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
 from gentoopm.paludispm.atom import PaludisAtom, \
 		PaludisPackageKey, PaludisPackageVersion
-from gentoopm.util import StringWrapper
 
 class PaludisPackageDescription(PMPackageDescription):
 	def __init__(self, pkg):
@@ -17,12 +16,12 @@ class PaludisPackageDescription(PMPackageDescription):
 
 	@property
 	def short(self):
-		return StringWrapper(self._pkg.short_description_key().parse_value())
+		return self._pkg.short_description_key().parse_value()
 
 	@property
 	def long(self):
 		k = self._pkg.long_description_key()
-		return StringWrapper(k.parse_value()) if k is not None else None
+		return k.parse_value() if k is not None else None
 
 class PaludisID(PMPackage, PaludisAtom):
 	def __init__(self, pkg, num = 0, enum_id = None, env = None):
@@ -37,7 +36,7 @@ class PaludisID(PMPackage, PaludisAtom):
 
 	@property
 	def path(self):
-		return StringWrapper(self._pkg.fs_location_key().parse_value())
+		return self._pkg.fs_location_key().parse_value()
 
 	@property
 	def slotted(self):
@@ -66,17 +65,16 @@ class PaludisID(PMPackage, PaludisAtom):
 		k = self._pkg.find_metadata('INHERITED')
 		if k is None:
 			return ()
-		return tuple([StringWrapper(x) for x
-			in k.parse_value()])
+		return tuple(k.parse_value())
 
 	@property
 	def slot(self):
 		k = self._pkg.slot_key()
-		return StringWrapper(k.parse_value())
+		return str(k.parse_value())
 
 	@property
 	def repository(self):
-		return StringWrapper(self._pkg.repository_name)
+		return str(self._pkg.repository_name)
 
 	@property
 	def _atom(self):
@@ -122,4 +120,4 @@ class PaludisMetadata(PMPackageMetadata):
 		elif isinstance(m, paludis.AllDepSpec):
 			raise NotImplementedError('Parsing %s is not supported yet.' % key)
 		else:
-			return m
+			return str(m)

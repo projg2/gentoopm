@@ -12,7 +12,6 @@ from pkgcore.util.parserestrict import parse_match, ParseError
 from gentoopm.basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
 		PMIncompletePackageKey
 from gentoopm.exceptions import InvalidAtomStringError
-from gentoopm.util import StringWrapper
 
 def _find_res(res, cls):
 	if isinstance(res, AndRestriction):
@@ -32,11 +31,11 @@ class PkgCorePackageKey(PMPackageKey):
 
 	@property
 	def category(self):
-		return StringWrapper(self._atom.category)
+		return self._atom.category
 
 	@property
 	def package(self):
-		return StringWrapper(self._atom.package)
+		return self._atom.package
 
 	def __str__(self):
 		return self._atom.key
@@ -49,7 +48,7 @@ class PkgCoreIncompletePackageKey(PMIncompletePackageKey):
 
 	@property
 	def package(self):
-		return StringWrapper(self._r.restriction.exact)
+		return self._r.restriction.exact
 
 class PkgCorePackageVersion(PMPackageVersion):
 	def __init__(self, atom):
@@ -59,7 +58,7 @@ class PkgCorePackageVersion(PMPackageVersion):
 
 	@property
 	def without_revision(self):
-		return StringWrapper(self._atom.version)
+		return self._atom.version
 
 	@property
 	def revision(self):
@@ -76,7 +75,7 @@ class PkgCoreIncompletePackageVersion(PMPackageVersion):
 
 	@property
 	def without_revision(self):
-		return StringWrapper(self._r.ver)
+		return self._r.ver
 
 	@property
 	def revision(self):
@@ -129,18 +128,18 @@ class PkgCoreAtom(PMAtom):
 	@property
 	def slot(self):
 		if self.complete:
-			return StringWrapper(self._r.slot[0]) if self._r.slot \
+			return self._r.slot[0] if self._r.slot \
 					else None
 		else:
 			r = _find_res(self._r, SlotDep)
-			return StringWrapper(r.restriction.exact) if r is not None \
+			return r.restriction.exact if r is not None \
 					else None
 
 	@property
 	def repository(self):
 		if self.complete:
-			return StringWrapper(self._r.repo_id)
+			return self._r.repo_id
 		else:
 			r = _find_res(self._r, RepositoryDep)
-			return StringWrapper(r.restriction.exact) if r is not None \
+			return r.restriction.exact if r is not None \
 					else None

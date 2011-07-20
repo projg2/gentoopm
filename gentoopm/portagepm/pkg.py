@@ -10,7 +10,6 @@ from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom, \
 		PortagePackageKey, PortagePackageVersion, _get_atom
-from gentoopm.util import StringWrapper
 
 class PortagePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):
@@ -28,7 +27,7 @@ class PortagePackageDescription(PMPackageDescription):
 
 	@property
 	def short(self):
-		return StringWrapper(self._pkg._aux_get('DESCRIPTION'))
+		return self._pkg._aux_get('DESCRIPTION')
 
 	@property
 	def long(self):
@@ -52,7 +51,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 	@property
 	def path(self):
 		# .findname() gives .ebuild path
-		return StringWrapper(self._dbapi.getpath(self._cpv))
+		return self._dbapi.getpath(self._cpv)
 
 	@property
 	def key(self):
@@ -75,12 +74,11 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def inherits(self):
-		return tuple([StringWrapper(x) for x
-			in self._aux_get('INHERITED').split()])
+		return tuple(self._aux_get('INHERITED').split())
 
 	@property
 	def slot(self):
-		return StringWrapper(self._aux_get('SLOT'))
+		return self._aux_get('SLOT')
 
 	@property
 	def repository(self):
@@ -118,11 +116,11 @@ class PortageCPV(PortageDBCPV):
 
 	@property
 	def path(self):
-		return StringWrapper(self._dbapi.findname(self._cpv, self._tree))
+		return self._dbapi.findname(self._cpv, self._tree)
 
 	@property
 	def repository(self):
-		return StringWrapper(self._dbapi.getRepositoryName(self._tree))
+		return self._dbapi.getRepositoryName(self._tree)
 
 	def _aux_get(self, *keys):
 		val = self._dbapi.aux_get(self._cpv, keys,

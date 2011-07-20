@@ -30,7 +30,7 @@ class PackagesTestCase(PMTestCase):
 		""" Check whether the path returned is ok (if any). """
 		for p in self._pkgs:
 			if p.path:
-				self.assertTrue(os.path.exists(str(p.path)))
+				self.assertTrue(os.path.exists(p.path))
 
 	def test_atom_reverse(self):
 		""" Check whether the atom matches the same package. """

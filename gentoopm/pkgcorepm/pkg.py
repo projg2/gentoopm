@@ -7,7 +7,6 @@ from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
-from gentoopm.util import StringWrapper
 
 class PkgCorePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):
@@ -25,12 +24,12 @@ class PkgCorePackageDescription(PMPackageDescription):
 
 	@property
 	def short(self):
-		return StringWrapper(self._pkg.description)
+		return self._pkg.description
 
 	@property
 	def long(self):
 		if hasattr(self._pkg, 'longdescription'):
-			return StringWrapper(self._pkg.longdescription)
+			return self._pkg.longdescription
 		else: # vdb, for example
 			return None
 
@@ -45,7 +44,7 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 
 	@property
 	def path(self):
-		return StringWrapper(self._pkg.path)
+		return self._pkg.path
 
 	@property
 	def description(self):
@@ -63,7 +62,7 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 			except KeyError:
 				return ()
 
-		return tuple([StringWrapper(x) for x in l])
+		return tuple(l)
 
 	@property
 	def slotted(self):
@@ -79,7 +78,7 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 
 	@property
 	def repository(self):
-		return StringWrapper(self._pkg.repo.repo_id)
+		return self._pkg.repo.repo_id
 
 	def __str__(self):
 		if self._repo_index != 0:
@@ -131,4 +130,4 @@ class PkgCoreMetadata(PMPackageMetadata):
 		if isinstance(v, tuple) or isinstance(v, frozenset):
 			return ' '.join(v)
 		else:
-			return v
+			return str(v)

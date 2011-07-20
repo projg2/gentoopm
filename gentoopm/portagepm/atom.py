@@ -13,7 +13,6 @@ from portage.versions import catsplit, pkgsplit, cpv_getversion
 from gentoopm.basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
 		PMIncompletePackageKey
 from gentoopm.exceptions import InvalidAtomStringError
-from gentoopm.util import StringWrapper
 
 class PortagePackageKey(PMPackageKey):
 	def __init__(self, cp):
@@ -21,11 +20,11 @@ class PortagePackageKey(PMPackageKey):
 
 	@property
 	def category(self):
-		return StringWrapper(catsplit(self._cp)[0])
+		return catsplit(self._cp)[0]
 
 	@property
 	def package(self):
-		return StringWrapper(catsplit(self._cp)[1])
+		return catsplit(self._cp)[1]
 
 	def __str__(self):
 		return self._cp
@@ -39,7 +38,7 @@ class PortagePackageVersion(PMPackageVersion):
 
 	@property
 	def without_revision(self):
-		return StringWrapper(pkgsplit(self._cpv)[1])
+		return pkgsplit(self._cpv)[1]
 
 	@property
 	def revision(self):
@@ -103,11 +102,11 @@ class CompletePortageAtom(PMAtom):
 
 	@property
 	def slot(self):
-		return StringWrapper(self._atom.slot)
+		return self._atom.slot
 
 	@property
 	def repository(self):
-		return StringWrapper(self._atom.repo)
+		return self._atom.repo
 
 class UncategorisedPackageWrapper(object):
 	def __init__(self, pkg):
@@ -116,7 +115,7 @@ class UncategorisedPackageWrapper(object):
 	@property
 	def id(self):
 		cpv = self._pkg.id
-		return StringWrapper('null/%s' % catsplit(cpv)[1])
+		return 'null/%s' % catsplit(cpv)[1]
 
 class UnexpandedPortageAtom(CompletePortageAtom):
 	"""

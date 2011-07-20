@@ -80,7 +80,7 @@ class PMPackageEnvironment(object):
 		@param k: the key to access
 		@type k: string
 		@return: the environment variable value
-		@rtype: L{StringWrapper}
+		@rtype: string
 		"""
 		_bp.set_file(self._path)
 		return _bp[k]
@@ -92,7 +92,7 @@ class PMPackageEnvironment(object):
 		@param keys: keys to access
 		@type keys: strings
 		@return: a dict of copied environment keys
-		@rtype: dict(string -> L{StringWrapper})
+		@rtype: dict(string -> string)
 		"""
 		_bp.set_file(self._path)
 		return _bp.copy(*keys)

@@ -69,36 +69,3 @@ class BoolCompat(object):
 
 	def __nonzero__(self):
 		return self.__bool__()
-
-class StringWrapper(StringifiedComparisons, BoolCompat):
-	"""
-	A wrapper for strings, to ensure that users stringify properties. This way,
-	we can replace string-returning properties into more complex types whenever
-	necessary.
-	"""
-
-	def __new__(self, s):
-		if isinstance(s, StringWrapper):
-			raise AssertionError('Nah, redundant.')
-		if s is None:
-			return None
-		else:
-			return object.__new__(self, s)
-
-	def __init__(self, s):
-		"""
-		Instantiate.
-
-		@param s: object to stringify when stringified
-		@type s: stringifiable
-		"""
-		self._s = s
-
-	def __str__(self):
-		return str(self._s)
-
-	def __bool__(self):
-		return bool(str(self))
-
-	def __repr__(self):
-		return '(%s)' % repr(str(self))
