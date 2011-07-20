@@ -61,7 +61,7 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 			try:
 				l = self._pkg.data['INHERITED'].split()
 			except KeyError:
-				return None
+				return ()
 
 		return tuple([StringWrapper(x) for x in l])
 

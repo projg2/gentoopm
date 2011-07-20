@@ -65,7 +65,7 @@ class PaludisID(PMPackage, PaludisAtom):
 	def inherits(self):
 		k = self._pkg.find_metadata('INHERITED')
 		if k is None:
-			return None
+			return ()
 		return tuple([StringWrapper(x) for x
 			in k.parse_value()])
 
