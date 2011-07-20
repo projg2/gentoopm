@@ -41,7 +41,7 @@ class PMPackageDescription(ABCObject):
 		@returns: best package description
 		@rtype: string
 		"""
-		return self.long or self.short
+		return str(self.long or self.short)
 
 class PMPackage(PMAtom, FillMissingComparisons):
 	"""
