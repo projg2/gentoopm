@@ -37,11 +37,15 @@ class PaludisBaseRepo(PMRepository, PaludisPackageSet):
 	def _filt(self):
 		return paludis.Filter.All()
 
+	@abstractproperty
+	def _pkg_class(self):
+		pass
+
 	def __iter__(self):
 		enum = PaludisEnumID()
 		for i, p in enumerate(self._env[paludis.Selection.AllVersionsSorted(
 				paludis.FilteredGenerator(self._gen, self._filt))]):
-			yield PaludisID(p, i, enum, self._env)
+			yield self._pkg_class(p, i, enum, self._env)
 
 	def filter(self, *args, **kwargs):
 		pset = self
@@ -76,18 +80,27 @@ class PaludisAtomFilteredRepo(PaludisBaseRepo):
 	def _filt(self):
 		return self._myfilt
 
+	@property
+	def _pkg_class(self):
+		return self._mypkg_class
+
 	def __init__(self, repo, atom):
 		PaludisBaseRepo.__init__(self, repo._env)
 		self._myfilt = repo._filt
 		self._mygen = repo._gen & paludis.Generator.Matches(atom._atom,
 				paludis.MatchPackageOptions())
+		self._mypkg_class = repo._pkg_class
 
 class PaludisStackRepo(PaludisBaseRepo):
+	_pkg_class = PaludisID
+
 	@property
 	def _filt(self):
 		return paludis.Filter.SupportsInstallAction()
 
 class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
+	_pkg_class = PaludisID
+
 	def __init__(self, repo_obj, env):
 		PaludisRepository.__init__(self, env)
 		self._repo = repo_obj
@@ -101,6 +114,8 @@ class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
 		return self._repo.location_key().parse_value()
 
 class PaludisInstalledRepo(PaludisBaseRepo):
+	_pkg_class = PaludisID
+
 	@property
 	def _filt(self):
 		return paludis.Filter.InstalledAtRoot('/')
