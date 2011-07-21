@@ -22,7 +22,15 @@ class ABCObject(object):
 	__metaclass__ = ABCMeta
 ''')
 
-class StringifiedComparisons(object):
+class FillMissingNotEqual(object):
+	"""
+	A base class filling '!=' using '=='.
+	"""
+
+	def __ne__(self, other):
+		return not self == other
+
+class StringifiedComparisons(FillMissingNotEqual):
 	"""
 	A base class with '==', '!=' and hashing methods set to use the object
 	stringification.
@@ -33,17 +41,6 @@ class StringifiedComparisons(object):
 
 	def __eq__(self, other):
 		return str(self) == str(other)
-
-	def __ne__(self, other):
-		return str(self) != str(other)
-
-class FillMissingNotEqual(object):
-	"""
-	A base class filling '!=' using '=='.
-	"""
-
-	def __ne__(self, other):
-		return not self == other
 
 class FillMissingComparisons(FillMissingNotEqual):
 	"""
