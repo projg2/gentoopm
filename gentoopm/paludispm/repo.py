@@ -10,7 +10,7 @@ import paludis
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
 from gentoopm.paludispm.atom import PaludisAtom
-from gentoopm.paludispm.pkg import PaludisID, PaludisInstalledID
+from gentoopm.paludispm.pkg import PaludisInstallableID, PaludisInstalledID
 from gentoopm.paludispm.pkgset import PaludisPackageSet
 
 class PaludisRepoDict(PMRepositoryDict):
@@ -87,14 +87,14 @@ class PaludisAtomFilteredRepo(PaludisBaseRepo):
 		self._mypkg_class = repo._pkg_class
 
 class PaludisStackRepo(PaludisBaseRepo):
-	_pkg_class = PaludisID
+	_pkg_class = PaludisInstallableID
 
 	@property
 	def _filt(self):
 		return paludis.Filter.SupportsInstallAction()
 
 class PaludisLivefsRepository(PaludisBaseRepo, PMEbuildRepository):
-	_pkg_class = PaludisID
+	_pkg_class = PaludisInstallableID
 
 	def __init__(self, repo_obj, env):
 		PaludisBaseRepo.__init__(self, env)

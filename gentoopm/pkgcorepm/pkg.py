@@ -5,7 +5,7 @@
 
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
-		PMInstalledPackage
+		PMInstalledPackage, PMInstallablePackage
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
 from gentoopm.util import SpaceSepTuple
@@ -53,15 +53,6 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 		return PkgCorePackageDescription(self._pkg)
 
 	@property
-	def inherits(self):
-		try:
-			l = self._pkg.data['_eclasses_']
-		except KeyError:
-			l = ()
-
-		return SpaceSepTuple(l)
-
-	@property
 	def homepages(self):
 		return SpaceSepTuple(self._pkg.homepage)
 
@@ -87,6 +78,16 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 		else:
 			s = self._pkg.cpvstr
 		return '=%s' % s
+
+class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
+	@property
+	def inherits(self):
+		try:
+			l = self._pkg.data['_eclasses_']
+		except KeyError:
+			l = ()
+
+		return SpaceSepTuple(l)
 
 	def __lt__(self, other):
 		if not isinstance(other, PkgCorePackage):

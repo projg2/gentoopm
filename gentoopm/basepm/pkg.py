@@ -229,6 +229,12 @@ class PMPackage(PMAtom, FillMissingComparisons):
 	def associated(self):
 		return True
 
+class PMInstallablePackage(PMPackage):
+	"""
+	An abstract class for a package which can be installed.
+	"""
+	pass
+
 class PMInstalledPackage(PMPackage):
 	"""
 	An abstract class for a installed package.

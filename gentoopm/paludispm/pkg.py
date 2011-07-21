@@ -7,7 +7,7 @@ import paludis
 
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
-		PMInstalledPackage
+		PMInstallablePackage, PMInstalledPackage
 from gentoopm.paludispm.atom import PaludisAtom, \
 		PaludisPackageKey, PaludisPackageVersion
 from gentoopm.util import SpaceSepTuple
@@ -97,6 +97,9 @@ class PaludisID(PMPackage, PaludisAtom):
 		if self._enum_id != other._enum_id:
 			raise TypeError('Unable to compare results of two enumerations')
 		return self._num < other._num
+
+class PaludisInstallableID(PaludisID, PMInstallablePackage):
+	pass
 
 class PaludisInstalledID(PaludisID, PMInstalledPackage):
 	pass

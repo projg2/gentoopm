@@ -7,7 +7,7 @@ from portage.versions import cpv_getkey, cpv_getversion, vercmp
 
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
-		PMInstalledPackage
+		PMInstalledPackage, PMInstallablePackage
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom, \
 		PortagePackageKey, PortagePackageVersion, _get_atom
@@ -115,7 +115,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 		return cpv_getkey(self._cpv) < cpv_getkey(other._cpv) \
 				or vercmp(cpv_getversion(self._cpv), cpv_getversion(other._cpv)) < 0
 
-class PortageCPV(PortageDBCPV):
+class PortageCPV(PortageDBCPV, PMInstallablePackage):
 	def __init__(self, cpv, dbapi, tree, repo_prio):
 		PortageDBCPV.__init__(self, cpv, dbapi)
 		self._tree = tree

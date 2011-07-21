@@ -9,8 +9,8 @@ import pkgcore.restrictions.boolean as br
 
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
-from gentoopm.pkgcorepm.pkg import PkgCorePackage, PkgCorePackageSet, \
-		PkgCoreFilteredPackageSet, PkgCoreInstalledPackage
+from gentoopm.pkgcorepm.pkg import PkgCorePackageSet, PkgCoreFilteredPackageSet, \
+		PkgCoreInstallablePackage, PkgCoreInstalledPackage
 from gentoopm.pkgcorepm.filter import transform_filters
 from gentoopm.util import FillMissingComparisons
 
@@ -77,7 +77,7 @@ class PkgCoreFilteredRepo(PkgCoreRepository):
 class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository,
 		FillMissingComparisons):
 
-	_pkg_class = PkgCorePackage
+	_pkg_class = PkgCoreInstallablePackage
 
 	def __init__(self, repo_obj, index):
 		PkgCoreRepository.__init__(self, repo_obj)
