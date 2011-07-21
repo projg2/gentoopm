@@ -4,7 +4,8 @@
 # Released under the terms of the 2-clause BSD license.
 
 from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage, PMPackageDescription
+from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
+		PMInstalledPackage
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
 from gentoopm.util import SpaceSepTuple
@@ -53,15 +54,10 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 
 	@property
 	def inherits(self):
-		# ebuilds use _eclasses_
-		# vdb uses INHERITED
 		try:
 			l = self._pkg.data['_eclasses_']
 		except KeyError:
-			try:
-				l = self._pkg.data['INHERITED']
-			except KeyError:
-				l = ()
+			l = ()
 
 		return SpaceSepTuple(l)
 
@@ -98,6 +94,22 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 					(self, other))
 		return self._pkg < other._pkg \
 				or other._repo_index < self._repo_index
+
+class PkgCoreInstalledPackage(PkgCorePackage, PMInstalledPackage):
+	@property
+	def inherits(self):
+		try:
+			l = self._pkg.data['INHERITED']
+		except KeyError:
+			l = ()
+
+		return SpaceSepTuple(l)
+
+	def __lt__(self, other):
+		if not isinstance(other, PkgCorePackage):
+			raise TypeError('Unable to compare %s against %s' % \
+					(self, other))
+		return self._pkg < other._pkg
 
 class PkgCoreMetadata(PMPackageMetadata):
 	def __init__(self, pkg):
