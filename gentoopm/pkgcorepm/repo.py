@@ -3,6 +3,8 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+from abc import abstractproperty
+
 import pkgcore.restrictions.boolean as br
 
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
@@ -25,10 +27,14 @@ class PkgCoreRepository(PkgCorePackageSet, PMRepository):
 	def __init__(self, repo_obj):
 		self._repo = repo_obj
 
+	@abstractproperty
+	def _pkg_class(self):
+		pass
+
 	def __iter__(self):
 		index = self._index
 		for pkg in self._repo:
-			yield PkgCorePackage(pkg, index)
+			yield self._pkg_class(pkg, index)
 
 	def filter(self, *args, **kwargs):
 		r = self
@@ -47,10 +53,14 @@ class PkgCoreFilteredRepo(PkgCoreRepository):
 		self._filt = filt
 		self._index = repo._index
 
+	@property
+	def _pkg_class(self):
+		return self._repo._pkg_class
+
 	def __iter__(self):
 		index = self._index
 		for pkg in self._repo._repo.match(self._filt):
-			yield PkgCorePackage(pkg, index)
+			yield self._pkg_class(pkg, index)
 
 	def filter(self, *args, **kwargs):
 		r = self
@@ -66,6 +76,8 @@ class PkgCoreFilteredRepo(PkgCoreRepository):
 
 class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository,
 		FillMissingComparisons):
+
+	_pkg_class = PkgCorePackage
 
 	def __init__(self, repo_obj, index):
 		PkgCoreRepository.__init__(self, repo_obj)
@@ -83,4 +95,4 @@ class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository,
 		return other._index < self._index
 
 class PkgCoreInstalledRepo(PkgCoreRepository):
-	pass
+	_pkg_class = PkgCorePackage
