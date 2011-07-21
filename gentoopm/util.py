@@ -97,9 +97,6 @@ class StringCompat(StringifiedComparisons):
 	def __getitem__(self, k):
 		return str(self)[k]
 
-	def __getslice__(self, a, b):
-		return str(self)[a:b]
-
 	def __len__(self):
 		return len(str(self))
 
