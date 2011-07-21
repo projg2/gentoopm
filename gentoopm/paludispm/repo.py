@@ -100,12 +100,7 @@ class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
 	def path(self):
 		return self._repo.location_key().parse_value()
 
-class PaludisInstalledRepo(PaludisRepository):
-	def __init__(self, env):
-		PaludisRepository.__init__(self, env)
-		for r in env.repositories:
-			if str(r.name) == 'installed': # XXX
-				self._repo = r
-				break
-		else:
-			raise Exception('Unable to find installed repository.')
+class PaludisInstalledRepo(PaludisBaseRepo):
+	@property
+	def _filt(self):
+		return paludis.Filter.InstalledAtRoot('/')
