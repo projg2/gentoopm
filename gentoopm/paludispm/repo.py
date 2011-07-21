@@ -29,13 +29,13 @@ class PaludisBaseRepo(PMRepository, PaludisPackageSet):
 	def __init__(self, env):
 		PaludisPackageSet.__init__(self, env, True)
 
-	@abstractproperty
+	@property
 	def _gen(self):
-		pass
+		return paludis.Generator.All()
 
-	@abstractproperty
+	@property
 	def _filt(self):
-		pass
+		return paludis.Filter.All()
 
 	def __iter__(self):
 		enum = PaludisEnumID()
@@ -67,10 +67,6 @@ class PaludisRepository(PaludisBaseRepo):
 	def _gen(self):
 		return paludis.Generator.InRepository(self._repo.name)
 
-	@property
-	def _filt(self):
-		return paludis.Filter.All()
-
 class PaludisAtomFilteredRepo(PaludisBaseRepo):
 	@property
 	def _gen(self):
@@ -87,10 +83,6 @@ class PaludisAtomFilteredRepo(PaludisBaseRepo):
 				paludis.MatchPackageOptions())
 
 class PaludisStackRepo(PaludisBaseRepo):
-	@property
-	def _gen(self):
-		return paludis.Generator.All()
-
 	@property
 	def _filt(self):
 		return paludis.Filter.SupportsInstallAction()
