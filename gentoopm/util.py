@@ -7,6 +7,7 @@
 Utility functions for gentoopm.
 """
 
+import collections
 from abc import ABCMeta
 
 try:
@@ -118,3 +119,37 @@ class SpaceSepTuple(tuple):
 
 	def __str__(self):
 		return ' '.join(self)
+
+def EnumTuple(name, *keys):
+	"""
+	Create a namedtuple factory for an enumerated type. The resulting factory
+	function shall be called with keyword argument with names resembling
+	enumerated value names and values evaluating to True or False.
+
+	>>> MyTestEnum = EnumTuple('MyTestEnum', 'bad', 'good')
+	>>> i = 4
+	>>> MyTestEnum(bad = i <= 3, good = i > 3)
+	MyTestEnum(bad=False, good=True)
+
+	@param name: name of the resulting namedtuple
+	@type name: string
+	@param keys: list of enumerated values
+	@type keys: strings
+	@return: Factory function creating namedtuples.
+	@rtype: func(**kwargs)
+	"""
+
+	def _check_args(kwargs):
+		res = False
+		for a in kwargs.values():
+			if not isinstance(a, bool):
+				raise ValueError('Non-bool passed to EnumTuple')
+			if a and res:
+				raise ValueError('More than a single True passed to EnumTuple')
+			res |= a
+		if not res:
+			raise ValueError('All values passed to EnumTuple are False')
+		return kwargs
+
+	nt = collections.namedtuple(name, keys)
+	return lambda **kwargs: nt(**_check_args(kwargs))
