@@ -7,7 +7,8 @@ from portage.versions import cpv_getkey, cpv_getversion, vercmp
 
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
-		PMInstalledPackage, PMInstallablePackage
+		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
+		PMPackageState
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom, \
 		PortagePackageKey, PortagePackageVersion, _get_atom
@@ -22,6 +23,17 @@ class PortagePackageSet(PMPackageSet):
 
 class PortageFilteredPackageSet(PortagePackageSet, PMFilteredPackageSet):
 	pass
+
+class PortageBoundPackageKey(PortagePackageKey, PMBoundPackageKey):
+	def __init__(self, cp, pkg):
+		PortagePackageKey.__init__(self, cp)
+		self._state = PMPackageState(
+				installable = isinstance(pkg, PortageCPV),
+				installed = isinstance(pkg, PortageVDBCPV))
+
+	@property
+	def state(self):
+		return self._state
 
 class PortagePackageDescription(PMPackageDescription):
 	def __init__(self, pkg):
@@ -57,7 +69,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def key(self):
-		return PortagePackageKey(cpv_getkey(self._cpv))
+		return PortageBoundPackageKey(cpv_getkey(self._cpv), self)
 
 	@property
 	def version(self):

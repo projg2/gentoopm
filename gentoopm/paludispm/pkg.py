@@ -7,10 +7,22 @@ import paludis
 
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
-		PMInstallablePackage, PMInstalledPackage
+		PMInstallablePackage, PMInstalledPackage, PMBoundPackageKey, \
+		PMPackageState
 from gentoopm.paludispm.atom import PaludisAtom, \
 		PaludisPackageKey, PaludisPackageVersion
 from gentoopm.util import SpaceSepTuple
+
+class PaludisBoundPackageKey(PaludisPackageKey, PMBoundPackageKey):
+	def __init__(self, key, pkg):
+		PaludisPackageKey.__init__(self, key)
+		self._state = PMPackageState(
+				installable = isinstance(pkg, PaludisInstallableID),
+				installed = isinstance(pkg, PaludisInstalledID))
+
+	@property
+	def state(self):
+		return self._state
 
 class PaludisPackageDescription(PMPackageDescription):
 	def __init__(self, pkg):
@@ -52,7 +64,7 @@ class PaludisID(PMPackage, PaludisAtom):
 
 	@property
 	def key(self):
-		return PaludisPackageKey(self._pkg.name)
+		return PaludisBoundPackageKey(self._pkg.name, self)
 
 	@property
 	def version(self):

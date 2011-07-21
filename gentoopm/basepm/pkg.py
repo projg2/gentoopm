@@ -6,9 +6,36 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.basepm.atom import PMAtom
+from gentoopm.basepm.atom import PMAtom, PMPackageKey
 from gentoopm.basepm.environ import PMPackageEnvironment
-from gentoopm.util import ABCObject, FillMissingComparisons, StringCompat
+from gentoopm.util import ABCObject, FillMissingComparisons, StringCompat, \
+		EnumTuple
+
+PMPackageState = EnumTuple('PMPackageState',
+		'installable',
+		'installed')
+
+class PMBoundPackageKey(PMPackageKey):
+	"""
+	A package key bound to a specific package.
+	"""
+
+	@abstractproperty
+	def state(self):
+		"""
+		State of the bound package.
+
+		@type: L{PMPackageState}
+		"""
+		pass
+
+	def __eq__(self, other):
+		if isinstance(other, PMBoundPackageKey) and not self.state == other.state:
+			return False
+		return PMPackageKey.__eq__(self, other)
+
+	def __hash__(self):
+		return hash((str(self), self.state))
 
 class PMPackageDescription(ABCObject, StringCompat):
 	"""

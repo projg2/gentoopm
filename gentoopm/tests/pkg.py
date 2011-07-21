@@ -26,6 +26,12 @@ class PackagesTestCase(PMTestCase):
 				else:
 					key = p.key
 
+	def test_key_state(self):
+		""" Check whether package keys set state correctly. """
+		self.assertTrue(self._inst_pkg.key.state.installed)
+		self.assertTrue(self._stack_pkg.key.state.installable)
+		self.assertNotEqual(self._inst_pkg.key, self._stack_pkg.key)
+
 	def test_path_exists(self):
 		""" Check whether the path returned is ok (if any). """
 		for p in self._pkgs:

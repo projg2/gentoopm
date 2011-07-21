@@ -5,9 +5,10 @@
 
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
-		PMInstalledPackage, PMInstallablePackage
+		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
+		PMPackageState
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
-from gentoopm.pkgcorepm.atom import PkgCoreAtom
+from gentoopm.pkgcorepm.atom import PkgCoreAtom, PkgCorePackageKey
 from gentoopm.util import SpaceSepTuple
 
 class PkgCorePackageSet(PMPackageSet):
@@ -19,6 +20,13 @@ class PkgCorePackageSet(PMPackageSet):
 
 class PkgCoreFilteredPackageSet(PkgCorePackageSet, PMFilteredPackageSet):
 	pass
+
+class PkgCoreBoundPackageKey(PkgCorePackageKey, PMBoundPackageKey):
+	@property
+	def state(self):
+		return PMPackageState(
+				installable = not self._atom.built,
+				installed = self._atom.built)
 
 class PkgCorePackageDescription(PMPackageDescription):
 	def __init__(self, pkg):
@@ -43,6 +51,10 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 	@property
 	def metadata(self):
 		return PkgCoreMetadata(self._pkg)
+
+	@property
+	def key(self):
+		return PkgCoreBoundPackageKey(self._pkg)
 
 	@property
 	def path(self):
