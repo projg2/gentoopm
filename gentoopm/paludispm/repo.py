@@ -10,7 +10,7 @@ import paludis
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
 from gentoopm.paludispm.atom import PaludisAtom
-from gentoopm.paludispm.pkg import PaludisID
+from gentoopm.paludispm.pkg import PaludisID, PaludisInstalledID
 from gentoopm.paludispm.pkgset import PaludisPackageSet
 
 class PaludisRepoDict(PMRepositoryDict):
@@ -113,7 +113,7 @@ class PaludisLivefsRepository(PaludisBaseRepo, PMEbuildRepository):
 		return self._repo.location_key().parse_value()
 
 class PaludisInstalledRepo(PaludisBaseRepo):
-	_pkg_class = PaludisID
+	_pkg_class = PaludisInstalledID
 
 	@property
 	def _filt(self):
