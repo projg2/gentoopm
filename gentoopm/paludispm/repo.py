@@ -66,11 +66,6 @@ class PaludisBaseRepo(PMRepository, PaludisPackageSet):
 		else:
 			return pset
 
-class PaludisRepository(PaludisBaseRepo):
-	@property
-	def _gen(self):
-		return paludis.Generator.InRepository(self._repo.name)
-
 class PaludisAtomFilteredRepo(PaludisBaseRepo):
 	@property
 	def _gen(self):
@@ -98,12 +93,16 @@ class PaludisStackRepo(PaludisBaseRepo):
 	def _filt(self):
 		return paludis.Filter.SupportsInstallAction()
 
-class PaludisLivefsRepository(PaludisRepository, PMEbuildRepository):
+class PaludisLivefsRepository(PaludisBaseRepo, PMEbuildRepository):
 	_pkg_class = PaludisID
 
 	def __init__(self, repo_obj, env):
-		PaludisRepository.__init__(self, env)
+		PaludisBaseRepo.__init__(self, env)
 		self._repo = repo_obj
+
+	@property
+	def _gen(self):
+		return paludis.Generator.InRepository(self._repo.name)
 
 	@property
 	def name(self):
