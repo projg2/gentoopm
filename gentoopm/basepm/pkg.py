@@ -228,3 +228,9 @@ class PMPackage(PMAtom, FillMissingComparisons):
 	@property
 	def associated(self):
 		return True
+
+class PMInstalledPackage(PMPackage):
+	"""
+	An abstract class for a installed package.
+	"""
+	pass
