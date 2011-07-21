@@ -3,6 +3,8 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+from abc import abstractproperty
+
 import paludis
 
 from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
@@ -23,17 +25,17 @@ class PaludisRepoDict(PMRepositoryDict):
 class PaludisEnumID(object):
 	pass
 
-class PaludisRepository(PMRepository, PaludisPackageSet):
+class PaludisBaseRepo(PMRepository, PaludisPackageSet):
 	def __init__(self, env):
 		PaludisPackageSet.__init__(self, env, True)
 
-	@property
+	@abstractproperty
 	def _gen(self):
-		return paludis.Generator.InRepository(self._repo.name)
+		pass
 
-	@property
+	@abstractproperty
 	def _filt(self):
-		return paludis.Filter.All()
+		pass
 
 	def __iter__(self):
 		enum = PaludisEnumID()
@@ -60,7 +62,16 @@ class PaludisRepository(PMRepository, PaludisPackageSet):
 		else:
 			return pset
 
-class PaludisAtomFilteredRepo(PaludisRepository):
+class PaludisRepository(PaludisBaseRepo):
+	@property
+	def _gen(self):
+		return paludis.Generator.InRepository(self._repo.name)
+
+	@property
+	def _filt(self):
+		return paludis.Filter.All()
+
+class PaludisAtomFilteredRepo(PaludisBaseRepo):
 	@property
 	def _gen(self):
 		return self._mygen
@@ -70,12 +81,12 @@ class PaludisAtomFilteredRepo(PaludisRepository):
 		return self._myfilt
 
 	def __init__(self, repo, atom):
-		PaludisRepository.__init__(self, repo._env)
+		PaludisBaseRepo.__init__(self, repo._env)
 		self._myfilt = repo._filt
 		self._mygen = repo._gen & paludis.Generator.Matches(atom._atom,
 				paludis.MatchPackageOptions())
 
-class PaludisStackRepo(PaludisRepository):
+class PaludisStackRepo(PaludisBaseRepo):
 	@property
 	def _gen(self):
 		return paludis.Generator.All()
