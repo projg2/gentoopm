@@ -4,6 +4,7 @@
 # Released under the terms of the 2-clause BSD license.
 
 import os.path
+from abc import abstractproperty
 
 import portage.exception as pe
 from portage.versions import catsplit
@@ -38,6 +39,7 @@ class PortageRepoDict(PMRepositoryDict):
 class PortageFilteredDBRepo(PortageFilteredPackageSet):
 	def __init__(self, repo, atom):
 		self._dbapi = repo._dbapi
+		self._pkg_class = repo._pkg_class
 		self._atom = atom._atom
 
 	@property
@@ -55,13 +57,14 @@ class PortageFilteredDBRepo(PortageFilteredPackageSet):
 					yield p
 		else:
 			for p in it:
-				yield PortageDBCPV(p, self._dbapi)
+				yield self._pkg_class(p, self._dbapi)
 
 class PortageHackedFilteredDBRepo(PortageFilteredDBRepo):
 	def __init__(self, repo, pkgcand):
 		cat = catsplit(pkgcand)[0]
 		self._atom = str(repo._atom).replace('null/', '%s/' % cat)
 		self._dbapi = repo._dbapi
+		self._pkg_class = repo._pkg_class
 
 	@property
 	def _stringified_atom(self):
@@ -71,9 +74,13 @@ class PortDBRepository(PortagePackageSet, PMRepository):
 	def __init__(self, dbapi):
 		self._dbapi = dbapi
 
+	@abstractproperty
+	def _pkg_class(self):
+		pass
+
 	def __iter__(self):
 		for p in self._dbapi.cpv_all(): # XXX
-			yield PortageDBCPV(p, self._dbapi)
+			yield self._pkg_class(p, self._dbapi)
 
 	_filtered_subclass = PortageFilteredDBRepo
 	def filter(self, *args, **kwargs):
@@ -117,7 +124,7 @@ class PortageFilteredRepo(PortageFilteredDBRepo):
 					yield p
 		else:
 			for p in it:
-				yield PortageCPV(p, self._dbapi, self._path, self._prio)
+				yield self._pkg_class(p, self._dbapi, self._path, self._prio)
 
 class PortageHackedAtom(object):
 	def __init__(self, s, repo):
@@ -139,6 +146,7 @@ class PortageHackedFilteredRepo(PortageFilteredRepo):
 				repo._atom.repo)
 		self._dbapi = repo._dbapi
 		self._path = repo._path
+		self._pkg_class = repo._pkg_class
 		self._prio = repo._prio
 		self._name = repo._name
 
@@ -153,12 +161,13 @@ class PortageRepository(PortDBRepository, PMEbuildRepository,
 		self._repo = repo_obj
 		PortDBRepository.__init__(self, portdbapi)
 
+	_pkg_class = PortageCPV
 	def __iter__(self):
 		path = self.path
 		prio = self._repo.priority
 		for cp in self._dbapi.cp_all(trees = (path,)):
 			for p in self._dbapi.cp_list(cp, mytree = path):
-				yield PortageCPV(p, self._dbapi, path, prio)
+				yield self._pkg_class(p, self._dbapi, path, prio)
 
 	_filtered_subclass = PortageFilteredRepo
 
@@ -174,4 +183,4 @@ class PortageRepository(PortDBRepository, PMEbuildRepository,
 		return self._repo.priority < other._repo.priority
 
 class VDBRepository(PortDBRepository):
-	pass
+	_pkg_class = PortageDBCPV
