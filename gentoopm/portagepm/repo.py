@@ -12,7 +12,7 @@ from portage.versions import catsplit
 from gentoopm.basepm.repo import PMRepositoryDict, PMEbuildRepository, \
 		PMRepository
 from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom
-from gentoopm.portagepm.pkg import PortageCPV, PortageDBCPV, PortagePackageSet, \
+from gentoopm.portagepm.pkg import PortageCPV, PortageVDBCPV, PortagePackageSet, \
 		PortageFilteredPackageSet
 from gentoopm.util import FillMissingComparisons
 
@@ -183,4 +183,4 @@ class PortageRepository(PortDBRepository, PMEbuildRepository,
 		return self._repo.priority < other._repo.priority
 
 class VDBRepository(PortDBRepository):
-	_pkg_class = PortageDBCPV
+	_pkg_class = PortageVDBCPV
