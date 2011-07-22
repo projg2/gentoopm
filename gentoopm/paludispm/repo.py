@@ -43,9 +43,9 @@ class PaludisBaseRepo(PMRepository, PaludisPackageSet):
 
 	def __iter__(self):
 		enum = PaludisEnumID()
-		for i, p in enumerate(self._env[paludis.Selection.AllVersionsSorted(
-				paludis.FilteredGenerator(self._gen, self._filt))]):
-			yield self._pkg_class(p, i, enum, self._env)
+		for p in self._env[paludis.Selection.AllVersionsUnsorted(
+				paludis.FilteredGenerator(self._gen, self._filt))]:
+			yield self._pkg_class(p, self._env)
 
 	def filter(self, *args, **kwargs):
 		pset = self

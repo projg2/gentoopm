@@ -38,10 +38,8 @@ class PaludisPackageDescription(PMPackageDescription):
 		return k.parse_value() if k is not None else None
 
 class PaludisID(PMPackage, PaludisAtom):
-	def __init__(self, pkg, num = 0, enum_id = None, env = None):
+	def __init__(self, pkg, env):
 		self._pkg = pkg
-		self._num = num
-		self._enum_id = enum_id
 		self._env = env
 
 	@property
@@ -106,9 +104,10 @@ class PaludisID(PMPackage, PaludisAtom):
 		if not isinstance(other, PaludisID):
 			raise TypeError('Unable to compare %s against %s' % \
 					self, other)
-		if self._enum_id != other._enum_id:
-			raise TypeError('Unable to compare results of two enumerations')
-		return self._num < other._num
+		return str(self.key) < str(other.key) \
+				or self._pkg.version < other._pkg.version \
+				or self._env.more_important_than( \
+						other.repository, self.repository)
 
 class PaludisInstallableID(PaludisID, PMInstallablePackage):
 	pass
