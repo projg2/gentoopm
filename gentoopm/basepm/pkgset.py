@@ -55,15 +55,15 @@ class PMPackageSet(ABCObject, BoolCompat):
 			match the condition
 		"""
 
-		l = sorted(self, reverse = True)
-		try:
-			best = l[0]
-		except IndexError:
+		best = None
+		for p in self.sorted:
+			if best is not None and p.key != best.key:
+				raise AmbiguousPackageSetError('.best called on a set of differently-named packages')
+			best = p
+
+		if best is None:
 			raise EmptyPackageSetError('.best called on an empty set')
 
-		for p in l:
-			if p.key != best.key:
-				raise AmbiguousPackageSetError('.best called on a set of differently-named packages')
 		return best
 
 	def select(self, *args, **kwargs):
@@ -89,6 +89,19 @@ class PMPackageSet(ABCObject, BoolCompat):
 			raise EmptyPackageSetError('No packages match the filters.')
 		except AmbiguousPackageSetError:
 			raise AmbiguousPackageSetError('Ambiguous filter (matches more than a single package name).')
+
+	@property
+	def sorted(self):
+		"""
+		Return a sorted variant of the package set. The packages will be sorted
+		in a standard PM manner, with better packages coming later. The key
+		ordering is undefined, although usually they will come sorted
+		lexically.
+
+		@return: sorted package set
+		@rtype: L{PMSortedPackageSet}
+		"""
+		return PMSortedPackageSet(self)
 
 	def __getitem__(self, filt):
 		"""
@@ -161,3 +174,10 @@ class PMFilteredPackageSet(PMPackageSet):
 		for el in self._src:
 			if el._matches(*self._args, **self._kwargs):
 				yield el
+
+class PMSortedPackageSet(PMPackageSet):
+	def __init__(self, src):
+		self._src = src
+
+	def __iter__(self):
+		return iter(sorted(self._src))
