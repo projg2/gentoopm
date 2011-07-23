@@ -5,9 +5,10 @@
 
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.util import ABCObject, StringCompat, StringifiedComparisons
+from gentoopm.util import ABCObject, StringCompat, StringifiedComparisons, \
+		FillMissingComparisons
 
-class PMPackageKey(ABCObject, StringCompat):
+class PMPackageKey(ABCObject, StringCompat, FillMissingComparisons):
 	"""
 	A base class for a package key (CP/qualified package name).
 	"""
@@ -39,6 +40,9 @@ class PMPackageKey(ABCObject, StringCompat):
 		@rtype: string
 		"""
 		pass
+
+	def __lt__(self, other):
+		return str(self) < str(other)
 
 class PMIncompletePackageKey(PMPackageKey):
 	"""
