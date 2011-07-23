@@ -67,6 +67,11 @@ class PkgCorePackageVersion(PMPackageVersion):
 	def __str__(self):
 		return self._atom.fullver
 
+	def __lt__(self, other):
+		if self._atom.key != other._atom.key:
+			raise NotImplementedError('Unable to compare versions of distinct packages')
+		return self._atom < other._atom
+
 class PkgCoreIncompletePackageVersion(PMPackageVersion):
 	def __init__(self, r):
 		self._r = _find_res(r, VersionMatch)
@@ -80,6 +85,9 @@ class PkgCoreIncompletePackageVersion(PMPackageVersion):
 	@property
 	def revision(self):
 		return self._r.rev or 0
+
+	def __lt__(self, other):
+		raise NotImplementedError('Unable to compare versions of incomplete atoms')
 
 	def __str__(self):
 		# XXX: ugly?

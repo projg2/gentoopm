@@ -93,6 +93,10 @@ class PMPackageVersion(ABCObject, StringCompat):
 		"""
 		pass
 
+	@abstractmethod
+	def __lt__(self, other):
+		pass
+
 class PMAtom(ABCObject, StringifiedComparisons):
 	"""
 	A base class for PM-specific atom (dependency specification).

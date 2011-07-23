@@ -51,6 +51,9 @@ class PaludisPackageVersion(PMPackageVersion):
 	def __str__(self):
 		return str(self._v)
 
+	def __lt__(self, other):
+		return self._v < other._v
+
 class PaludisAtom(PMAtom):
 	def _init_atom(self, s, env, wildcards = False):
 		opts = paludis.UserPackageDepSpecOptions() \

@@ -8,7 +8,7 @@ import collections
 import portage.exception as pe
 from portage.dbapi.dep_expand import dep_expand
 from portage.dep import match_from_list
-from portage.versions import catsplit, pkgsplit, cpv_getversion
+from portage.versions import catsplit, pkgsplit, cpv_getversion, vercmp
 
 from gentoopm.basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
 		PMIncompletePackageKey
@@ -48,6 +48,9 @@ class PortagePackageVersion(PMPackageVersion):
 
 	def __str__(self):
 		return cpv_getversion(self._cpv)
+
+	def __lt__(self, other):
+		return vercmp(str(self), str(other)) < 0
 
 class FakeSettings(object):
 	"""
