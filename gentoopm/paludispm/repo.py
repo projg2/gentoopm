@@ -56,7 +56,9 @@ class PaludisBaseRepo(PMRepository, PaludisPackageSet):
 			if isinstance(f, str):
 				f = PaludisAtom(f, self._env)
 			if isinstance(f, PaludisAtom):
-				pset = PaludisAtomFilteredRepo(pset, f)
+				newgen = paludis.Generator.Matches(f._atom,
+						paludis.MatchPackageOptions())
+				pset = PaludisOverrideRepo(pset, gen = newgen)
 			else:
 				newargs.append(f)
 
@@ -67,7 +69,7 @@ class PaludisBaseRepo(PMRepository, PaludisPackageSet):
 		else:
 			return pset
 
-class PaludisAtomFilteredRepo(PaludisBaseRepo):
+class PaludisOverrideRepo(PaludisBaseRepo):
 	@property
 	def _gen(self):
 		return self._mygen
@@ -77,14 +79,20 @@ class PaludisAtomFilteredRepo(PaludisBaseRepo):
 		return self._myfilt
 
 	@property
+	def _sel(self):
+		return self._mysel
+
+	@property
 	def _pkg_class(self):
 		return self._mypkg_class
 
-	def __init__(self, repo, atom):
+	def __init__(self, repo, filt = None, gen = None, sel = None):
 		PaludisBaseRepo.__init__(self, repo._env)
-		self._myfilt = repo._filt
-		self._mygen = repo._gen & paludis.Generator.Matches(atom._atom,
-				paludis.MatchPackageOptions())
+		self._myfilt = filt or repo._filt
+		self._mygen = repo._gen
+		if gen is not None:
+			self._mygen &= gen
+		self._mysel = sel or repo._sel
 		self._mypkg_class = repo._pkg_class
 
 class PaludisStackRepo(PaludisBaseRepo):
