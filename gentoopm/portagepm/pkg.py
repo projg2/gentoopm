@@ -124,8 +124,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 		if not isinstance(other, PortageDBCPV):
 			raise TypeError('Unable to compare %s against %s' % \
 					(self, other))
-		return cpv_getkey(self._cpv) < cpv_getkey(other._cpv) \
-				or vercmp(cpv_getversion(self._cpv), cpv_getversion(other._cpv)) < 0
+		return self.key < other.key or self.version < other.version
 
 class PortageCPV(PortageDBCPV, PMInstallablePackage):
 	def __init__(self, cpv, dbapi, tree, repo_prio):
@@ -156,8 +155,7 @@ class PortageCPV(PortageDBCPV, PMInstallablePackage):
 		if not isinstance(other, PortageCPV):
 			raise TypeError('Unable to compare %s against %s' % \
 					(self, other))
-		return cpv_getkey(self._cpv) < cpv_getkey(other._cpv) \
-				or vercmp(cpv_getversion(self._cpv), cpv_getversion(other._cpv)) < 0 \
+		return self.key < other.key or self.version < other.version \
 				or self._repo_prio < other._repo_prio
 
 class PortageVDBCPV(PortageDBCPV, PMInstalledPackage):

@@ -104,8 +104,8 @@ class PaludisID(PMPackage, PaludisAtom):
 		if not isinstance(other, PaludisID):
 			raise TypeError('Unable to compare %s against %s' % \
 					self, other)
-		return str(self.key) < str(other.key) \
-				or self._pkg.version < other._pkg.version \
+		return self.key < other.key \
+				or self.version < other.version \
 				or self._env.more_important_than( \
 						other.repository, self.repository)
 
