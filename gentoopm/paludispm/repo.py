@@ -34,13 +34,17 @@ class PaludisBaseRepo(PMRepository, PaludisPackageSet):
 	def _filt(self):
 		return paludis.Filter.All()
 
+	@property
+	def _sel(self):
+		return paludis.Selection.AllVersionsUnsorted
+
 	@abstractproperty
 	def _pkg_class(self):
 		pass
 
 	def __iter__(self):
 		enum = PaludisEnumID()
-		for p in self._env[paludis.Selection.AllVersionsUnsorted(
+		for p in self._env[self._sel(
 				paludis.FilteredGenerator(self._gen, self._filt))]:
 			yield self._pkg_class(p, self._env)
 
