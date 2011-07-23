@@ -69,6 +69,11 @@ class PaludisBaseRepo(PMRepository, PaludisPackageSet):
 		else:
 			return pset
 
+	@property
+	def sorted(self):
+		return PaludisOverrideRepo(self,
+				sel = paludis.Selection.AllVersionsSorted)
+
 class PaludisOverrideRepo(PaludisBaseRepo):
 	@property
 	def _gen(self):
