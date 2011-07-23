@@ -26,9 +26,6 @@ class PaludisEnumID(object):
 	pass
 
 class PaludisBaseRepo(PMRepository, PaludisPackageSet):
-	def __init__(self, env):
-		PaludisPackageSet.__init__(self, env, True)
-
 	@property
 	def _gen(self):
 		return paludis.Generator.All()
