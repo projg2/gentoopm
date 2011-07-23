@@ -109,6 +109,9 @@ class PaludisLivefsRepository(PaludisBaseRepo, PMEbuildRepository):
 	def path(self):
 		return self._repo.location_key().parse_value()
 
+	def __lt__(self, other):
+		return self._env.more_important_than(other.name, self.name)
+
 class PaludisInstalledRepo(PaludisBaseRepo):
 	_pkg_class = PaludisInstalledID
 
