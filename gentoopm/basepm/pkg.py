@@ -92,11 +92,11 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 
 		for f in args:
-			if callable(f): # a matcher
-				if not f(self):
-					return False
-			elif isinstance(f, PMAtom): # an atom
+			if isinstance(f, PMAtom): # an atom
 				if not self in f:
+					return False
+			elif hasattr(f, '__call__'):
+				if not f(self):
 					return False
 			else:
 				raise ValueError('Incorrect positional argument: %s' % f)
