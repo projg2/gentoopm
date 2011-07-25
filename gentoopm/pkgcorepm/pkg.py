@@ -9,6 +9,7 @@ from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 		PMPackageState
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.pkgcorepm.atom import PkgCoreAtom, PkgCorePackageKey
+from gentoopm.pkgcorepm.contents import PkgCorePackageContents
 from gentoopm.util import SpaceSepTuple
 
 class PkgCorePackageSet(PMPackageSet):
@@ -117,6 +118,10 @@ class PkgCoreInstalledPackage(PkgCorePackage, PMInstalledPackage):
 			l = ()
 
 		return SpaceSepTuple(l)
+
+	@property
+	def contents(self):
+		return PkgCorePackageContents(self._pkg.contents)
 
 	def __lt__(self, other):
 		if not isinstance(other, PkgCorePackage):
