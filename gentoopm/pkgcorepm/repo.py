@@ -17,15 +17,17 @@ from gentoopm.util import FillMissingComparisons
 class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):
 		for i, r in enumerate(self._stack.trees):
-			yield PkgCoreEbuildRepo(r, i)
+			yield PkgCoreEbuildRepo(r, self._domain, i)
 
-	def __init__(self, stack):
+	def __init__(self, stack, domain):
 		self._stack = stack
+		self._domain = domain
 
 class PkgCoreRepository(PkgCorePackageSet, PMRepository):
 	_index = 0
-	def __init__(self, repo_obj):
-		self._repo = repo_obj
+	def __init__(self, repo_obj, domain):
+		self._repo = repo_obj.configure(repo_obj, domain,
+				domain.settings)
 
 	@abstractproperty
 	def _pkg_class(self):
@@ -79,8 +81,8 @@ class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository,
 
 	_pkg_class = PkgCoreInstallablePackage
 
-	def __init__(self, repo_obj, index):
-		PkgCoreRepository.__init__(self, repo_obj)
+	def __init__(self, repo_obj, domain, index):
+		PkgCoreRepository.__init__(self, repo_obj, domain)
 		self._index = index
 
 	@property

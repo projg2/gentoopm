@@ -20,11 +20,13 @@ class PkgCorePM(PackageManager):
 
 	@property
 	def repositories(self):
-		return PkgCoreRepoDict(self._domain.named_repos['repo-stack'])
+		return PkgCoreRepoDict(self._domain.named_repos['repo-stack'],
+				self._domain)
 
 	@property
 	def installed(self):
-		return PkgCoreInstalledRepo(self._domain.named_repos['vdb'])
+		return PkgCoreInstalledRepo(self._domain.named_repos['vdb'],
+				self._domain)
 
 	@property
 	def Atom(self):
