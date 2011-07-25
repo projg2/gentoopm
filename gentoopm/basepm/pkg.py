@@ -266,4 +266,12 @@ class PMInstalledPackage(PMPackage):
 	"""
 	An abstract class for a installed package.
 	"""
-	pass
+
+	@abstractproperty
+	def contents(self):
+		"""
+		Return package contents list accessor.
+
+		@type: L{PMPackageContents}
+		"""
+		pass
