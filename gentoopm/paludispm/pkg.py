@@ -12,6 +12,7 @@ from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 from gentoopm.paludispm.atom import PaludisAtom, \
 		PaludisPackageKey, PaludisPackageVersion
 from gentoopm.paludispm.contents import PaludisPackageContents
+from gentoopm.paludispm.depend import PaludisPackageDepSet
 from gentoopm.util import SpaceSepTuple
 
 class PaludisBoundPackageKey(PaludisPackageKey, PMBoundPackageKey):
@@ -93,6 +94,24 @@ class PaludisID(PMPackage, PaludisAtom):
 	@property
 	def repository(self):
 		return str(self._pkg.repository_name)
+
+	@property
+	def build_dependencies(self):
+		return PaludisPackageDepSet(
+				self._pkg.build_dependencies_key().parse_value(),
+				self)
+
+	@property
+	def run_dependencies(self):
+		return PaludisPackageDepSet(
+				self._pkg.run_dependencies_key().parse_value(),
+				self)
+
+	@property
+	def post_dependencies(self):
+		return PaludisPackageDepSet(
+				self._pkg.post_dependencies_key().parse_value(),
+				self)
 
 	@property
 	def _atom(self):

@@ -213,6 +213,33 @@ class PMPackage(PMAtom, FillMissingComparisons):
 			return None
 		return PMPackageEnvironment(p)
 
+	@property
+	def build_dependencies(self):
+		"""
+		Get the package build dependencies (C{DEPEND}).
+
+		@type: L{PMPackageDepSet}
+		"""
+		pass
+
+	@property
+	def run_dependencies(self):
+		"""
+		Get the package runtime dependencies (C{RDEPEND}).
+
+		@type: L{PMPackageDepSet}
+		"""
+		pass
+
+	@property
+	def post_dependencies(self):
+		"""
+		Get the package post-installed dependencies (C{PDEPEND}).
+
+		@type: L{PMPackageDepSet}
+		"""
+		pass
+
 	@abstractproperty
 	def slotted(self):
 		"""
