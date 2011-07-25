@@ -105,5 +105,11 @@ class PackagesTestCase(PMTestCase):
 			self.assertEqual(p.metadata[rk], forkenv[rk])
 			del forkenv
 
+	def test_contents(self):
+		""" Test .contents. """
+		p = self._inst_pkg
+		f = next(iter(p.contents))
+		self.assertTrue(f in p.contents)
+
 	def tearDown(self):
 		pass
