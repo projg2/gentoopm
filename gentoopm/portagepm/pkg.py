@@ -12,6 +12,7 @@ from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom, \
 		PortagePackageKey, PortagePackageVersion, _get_atom
+from gentoopm.portagepm.contents import PortagePackageContents
 from gentoopm.util import SpaceSepTuple
 
 class PortagePackageSet(PMPackageSet):
@@ -159,7 +160,9 @@ class PortageCPV(PortageDBCPV, PMInstallablePackage):
 				or self._repo_prio < other._repo_prio
 
 class PortageVDBCPV(PortageDBCPV, PMInstalledPackage):
-	pass
+	@property
+	def contents(self):
+		return PortagePackageContents(self._dbapi._dblink(self._cpv))
 
 class PortageMetadata(PMPackageMetadata):
 	def __init__(self, pkg):
