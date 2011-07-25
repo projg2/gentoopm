@@ -98,8 +98,7 @@ class PMPackageSet(ABCObject, BoolCompat):
 		ordering is undefined, although usually they will come sorted
 		lexically.
 
-		@return: sorted package set
-		@rtype: L{PMSortedPackageSet}
+		@type: L{PMSortedPackageSet}
 		"""
 		return PMSortedPackageSet(self)
 
