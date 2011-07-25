@@ -10,6 +10,7 @@ from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.pkgcorepm.atom import PkgCoreAtom, PkgCorePackageKey
 from gentoopm.pkgcorepm.contents import PkgCorePackageContents
+from gentoopm.pkgcorepm.depend import PkgCorePackageDepSet
 from gentoopm.util import SpaceSepTuple
 
 class PkgCorePackageSet(PMPackageSet):
@@ -84,6 +85,21 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 	@property
 	def repository(self):
 		return self._pkg.repo.repo_id
+
+	@property
+	def build_dependencies(self):
+		return PkgCorePackageDepSet(self._pkg.depends,
+				self._pkg)
+
+	@property
+	def run_dependencies(self):
+		return PkgCorePackageDepSet(self._pkg.rdepends,
+				self._pkg)
+
+	@property
+	def post_dependencies(self):
+		return PkgCorePackageDepSet(self._pkg.pdepends,
+				self._pkg)
 
 	def __str__(self):
 		if self._repo_index != 0:
