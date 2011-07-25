@@ -27,7 +27,6 @@ class PMPackageContents(ABCObject):
 		"""
 		pass
 
-	@abstractmethod
 	def __contains__(self, path):
 		"""
 		Check whether the path given is installed by the package.
@@ -37,4 +36,9 @@ class PMPackageContents(ABCObject):
 		@return: whether the path exists in package contents
 		@rtype: bool
 		"""
-		pass
+
+		path = os.path.normpath(path)
+		for f in self:
+			if str(f) == path:
+				return True
+		return False
