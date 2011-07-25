@@ -6,7 +6,14 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.util import ABCObject
+from gentoopm.util import ABCObject, StringCompat
+
+class PMContentObj(StringCompat):
+	def __init__(self, path):
+		self._path = os.path.normpath(path)
+
+	def __str__(self):
+		return self._path
 
 class PMPackageContents(ABCObject):
 	"""
