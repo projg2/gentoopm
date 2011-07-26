@@ -37,4 +37,31 @@ class PkgCoreConditionalUseDep(PMConditionalDep, PkgCoreBaseDep):
 		return self._deps.restriction.match(self._pkg.use)
 
 class PkgCorePackageDepSet(PMPackageDepSet, PkgCoreBaseDep):
+	@property
+	def without_conditionals(self):
+		return PkgCoreUncondPackageDepSet(
+				self._deps.evaluate_depset(self._pkg.use))
+
+class PkgCoreUncondDep(PkgCoreBaseDep):
+	def __init__(self, deps):
+		self._deps = deps
+
+	@property
+	def without_conditionals(self):
+		return self
+
+	def __iter__(self):
+		for d in self._deps:
+			if isinstance(d, atom):
+				yield PkgCoreAtom(d)
+			elif isinstance(d, OrRestriction):
+				yield PkgCoreUncondOneOfDep(d)
+			else:
+				raise NotImplementedError('Parsing %s not implemented' \
+						% repr(d))
+
+class PkgCoreUncondOneOfDep(PMOneOfDep, PkgCoreUncondDep):
+	pass
+
+class PkgCoreUncondPackageDepSet(PkgCoreUncondDep):
 	pass
