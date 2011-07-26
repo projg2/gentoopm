@@ -70,6 +70,45 @@ class PMPackageDescription(ABCObject, StringCompat):
 		"""
 		return str(self.long or self.short)
 
+class PMUseFlag(ABCObject, StringCompat):
+	"""
+	A base class for a USE flag supported by a package.
+	"""
+
+	def __init__(self, usestr):
+		"""
+		Instantiate from an IUSE atom.
+
+		@param usestr: the IUSE atom (C{[+-]?flag})
+		@type usestr: string
+		"""
+		self._default = None
+		if usestr[0] in ('-', '+'):
+			self._default = (usestr[0] == '+')
+			usestr = usestr[1:]
+		self._name = usestr
+
+	@property
+	def default(self):
+		"""
+		The default state, if provided by the ebuild.
+
+		@type: bool/C{None}
+		"""
+		return self._default
+
+	@property
+	def name(self):
+		"""
+		The flag name.
+
+		@type: string
+		"""
+		return self._name
+
+	def __str__(self):
+		return self.name
+
 class PMPackage(PMAtom, FillMissingComparisons):
 	"""
 	An abstract class representing a single, uniquely-identified package
@@ -237,6 +276,15 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		Get the package post-installed dependencies (C{PDEPEND}).
 
 		@type: L{PMPackageDepSet}
+		"""
+		pass
+
+	@property
+	def use(self):
+		"""
+		Get the list of USE flags declared in the ebuild (C{IUSE}).
+
+		@type: L{SpaceSepTuple}(L{PMUseFlag})
 		"""
 		pass
 
