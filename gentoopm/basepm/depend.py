@@ -21,10 +21,45 @@ class PMBaseDep(ABCObject):
 		"""
 		pass
 
+	@abstractproperty
+	def without_conditionals(self):
+		"""
+		Return the depspec with all conditionals resolved.
+
+		@type: L{PMUncondDep}
+		"""
+		pass
+
+class PMUncondDep(PMBaseDep):
+	def __init__(self, parent):
+		self._parent = parent
+
+	@property
+	def without_conditionals(self):
+		return self
+
+	def _iter_deps(self, deps):
+		for d in deps:
+			if isinstance(d, PMConditionalDep):
+				if d.enabled:
+					for d in self._iter_deps(d):
+						yield d
+			elif isinstance(d, PMOneOfDep):
+				yield PMUncondOneOfDep(d)
+			else:
+				yield d
+
+	def __iter__(self):
+		return self._iter_deps(self._parent)
+
 class PMConditionalDep(PMBaseDep):
 	"""
 	A conditional dependency set (enabled by a condition of some kind).
 	"""
+
+	@property
+	def without_conditionals(self):
+		return PMUncondDep((self,))
 
 	@abstractproperty
 	def enabled(self):
@@ -36,10 +71,22 @@ class PMConditionalDep(PMBaseDep):
 		pass
 
 class PMOneOfDep(PMBaseDep):
+	"""
+	A one-of dependency set (C{|| ( ... )}).
+	"""
+
+	@property
+	def without_conditionals(self):
+		return PMUncondOneOfDep(self)
+
+class PMUncondOneOfDep(PMOneOfDep, PMUncondDep):
 	pass
 
 class PMPackageDepSet(PMBaseDep):
 	"""
 	A base class representing a depset of a single package.
 	"""
-	pass
+
+	@property
+	def without_conditionals(self):
+		return PMUncondDep(self)
