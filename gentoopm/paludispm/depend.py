@@ -5,40 +5,42 @@
 
 import paludis
 
-from gentoopm.basepm.depend import PMPackageDepSet, \
-		PMPackageFinalDepSet
+from gentoopm.basepm.depend import PMPackageDepSet, PMConditionalDep, \
+	PMOneOfDep, PMBaseDep
 from gentoopm.paludispm.atom import PaludisAtom
 
-class PaludisPackageDepSet(PMPackageDepSet):
+class PaludisBaseDep(PMBaseDep):
 	def __init__(self, deps, pkg):
 		self._deps = deps
 		self._pkg = pkg
 
-	@property
-	def evaluated(self):
-		return PaludisPackageFinalDepSet(
-				self._deps, self._pkg)
-
-class PaludisPackageFinalDepSet(PMPackageFinalDepSet):
-	def __init__(self, deps, pkg):
-		self._deps = deps
-		self._pkg = pkg
-
-	def _ideps(self, deps):
-		for d in deps:
+	def __iter__(self):
+		for d in self._deps:
 			if isinstance(d, paludis.PackageDepSpec):
 				yield PaludisAtom(d, self._pkg._env)
 			elif isinstance(d, paludis.AnyDepSpec):
-				# XXX, use something better here
-				for a in self._ideps((next(iter(d)),)):
-					yield a
+				yield PaludisOneOfDep(d, self._pkg)
 			elif isinstance(d, paludis.ConditionalDepSpec):
-				if d.condition_met(self._pkg._env, self._pkg._pkg):
-					for a in self._ideps(d):
-						yield a
+				yield PaludisConditionalDep(d, self._pkg)
 			else:
 				raise NotImplementedError('Unable to parse %s' % repr(d))
 
+class PaludisOneOfDep(PMOneOfDep, PaludisBaseDep):
+	pass
+
+class PaludisConditionalDep(PMConditionalDep, PaludisBaseDep):
+	@property
+	def enabled(self):
+		return self._deps.condition_met(self._pkg._env, self._pkg._pkg)
+
+class PaludisPackageDepSet(PMPackageDepSet, PaludisBaseDep):
 	def __iter__(self):
-		for r in self._ideps(self._deps):
-			yield r
+		for d in self._deps:
+			if isinstance(d, paludis.PackageDepSpec):
+				yield PaludisAtom(d, self._pkg._env)
+			elif isinstance(d, paludis.AnyDepSpec):
+				yield PaludisOneOfDep(d, self._pkg)
+			elif isinstance(d, paludis.ConditionalDepSpec):
+				yield PaludisConditionalDep(d, self._pkg)
+			else:
+				raise NotImplementedError('Unable to parse %s' % repr(d))

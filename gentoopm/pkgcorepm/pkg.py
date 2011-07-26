@@ -88,17 +88,17 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 
 	@property
 	def build_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg.depends,
+		return PkgCorePackageDepSet(self._pkg._raw_pkg.depends,
 				self._pkg)
 
 	@property
 	def run_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg.rdepends,
+		return PkgCorePackageDepSet(self._pkg._raw_pkg.rdepends,
 				self._pkg)
 
 	@property
 	def post_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg.pdepends,
+		return PkgCorePackageDepSet(self._pkg._raw_pkg.pdepends,
 				self._pkg)
 
 	def __str__(self):
