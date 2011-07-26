@@ -86,21 +86,6 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 	def repository(self):
 		return self._pkg.repo.repo_id
 
-	@property
-	def build_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg._raw_pkg.depends,
-				self._pkg)
-
-	@property
-	def run_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg._raw_pkg.rdepends,
-				self._pkg)
-
-	@property
-	def post_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg._raw_pkg.pdepends,
-				self._pkg)
-
 	def __str__(self):
 		if self._repo_index != 0:
 			s = '%s::%s' % (self._pkg.cpvstr, self._pkg.repo.repo_id)
@@ -118,6 +103,21 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
 
 		return SpaceSepTuple(l)
 
+	@property
+	def build_dependencies(self):
+		return PkgCorePackageDepSet(self._pkg._raw_pkg.depends,
+				self._pkg)
+
+	@property
+	def run_dependencies(self):
+		return PkgCorePackageDepSet(self._pkg._raw_pkg.rdepends,
+				self._pkg)
+
+	@property
+	def post_dependencies(self):
+		return PkgCorePackageDepSet(self._pkg._raw_pkg.pdepends,
+				self._pkg)
+
 	def __lt__(self, other):
 		if not isinstance(other, PkgCorePackage):
 			raise TypeError('Unable to compare %s against %s' % \
@@ -134,6 +134,21 @@ class PkgCoreInstalledPackage(PkgCorePackage, PMInstalledPackage):
 			l = ()
 
 		return SpaceSepTuple(l)
+
+	@property
+	def build_dependencies(self):
+		return PkgCorePackageDepSet(self._pkg.depends,
+				self._pkg)
+
+	@property
+	def run_dependencies(self):
+		return PkgCorePackageDepSet(self._pkg.rdepends,
+				self._pkg)
+
+	@property
+	def post_dependencies(self):
+		return PkgCorePackageDepSet(self._pkg.pdepends,
+				self._pkg)
 
 	@property
 	def contents(self):
