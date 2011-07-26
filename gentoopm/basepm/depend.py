@@ -30,6 +30,12 @@ class PMBaseDep(ABCObject):
 		"""
 		pass
 
+	def __repr__(self):
+		l = ['\n'.join(['\t%s' % x for x in repr(d).splitlines()])
+				for d in self]
+		return '%s(\n%s)' % (self.__class__.__name__,
+				',\n'.join(l))
+
 class PMUncondBaseDep(PMBaseDep):
 	def __init__(self, parent):
 		self._parent = parent
