@@ -26,11 +26,11 @@ class PMBaseDep(ABCObject):
 		"""
 		Return the depspec with all conditionals resolved.
 
-		@type: L{PMUncondDep}
+		@type: L{PMUncondAllOfDep}
 		"""
 		pass
 
-class PMUncondDep(PMBaseDep):
+class PMUncondBaseDep(PMBaseDep):
 	def __init__(self, parent):
 		self._parent = parent
 
@@ -59,7 +59,7 @@ class PMConditionalDep(PMBaseDep):
 
 	@property
 	def without_conditionals(self):
-		return PMUncondDep((self,))
+		return PMUncondAllOfDep((self,))
 
 	@abstractproperty
 	def enabled(self):
@@ -70,6 +70,18 @@ class PMConditionalDep(PMBaseDep):
 		"""
 		pass
 
+class PMAllOfDep(PMBaseDep):
+	"""
+	An all-of dependency block (C{( ... ... )}).
+	"""
+
+	@property
+	def without_conditionals(self):
+		return PMUncondAllOfDep(self)
+
+class PMUncondAllOfDep(PMAllOfDep, PMUncondBaseDep):
+	pass
+
 class PMOneOfDep(PMBaseDep):
 	"""
 	A one-of dependency set (C{|| ( ... )}).
@@ -79,7 +91,7 @@ class PMOneOfDep(PMBaseDep):
 	def without_conditionals(self):
 		return PMUncondOneOfDep(self)
 
-class PMUncondOneOfDep(PMOneOfDep, PMUncondDep):
+class PMUncondOneOfDep(PMOneOfDep, PMUncondBaseDep):
 	pass
 
 class PMPackageDepSet(PMBaseDep):
@@ -89,4 +101,4 @@ class PMPackageDepSet(PMBaseDep):
 
 	@property
 	def without_conditionals(self):
-		return PMUncondDep(self)
+		return PMUncondAllOfDep(self)
