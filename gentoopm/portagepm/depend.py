@@ -7,7 +7,7 @@ from portage.dep import paren_reduce
 
 from gentoopm.basepm.depend import PMPackageDepSet, PMConditionalDep, \
 	PMOneOfDep, PMAllOfDep, PMBaseDep
-from gentoopm.portagepm.atom import CompletePortageAtom
+from gentoopm.portagepm.atom import PortageAtom
 
 class PortageBaseDep(PMBaseDep):
 	def __init__(self, deps):
@@ -23,7 +23,7 @@ class PortageBaseDep(PMBaseDep):
 			elif d.endswith('?'):
 				yield PortageConditionalUseDep(next(it))
 			else:
-				yield CompletePortageAtom(d)
+				yield PortageAtom(d)
 
 class PortageOneOfDep(PMOneOfDep, PortageBaseDep):
 	pass
