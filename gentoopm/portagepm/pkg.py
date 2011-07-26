@@ -13,6 +13,7 @@ from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom, \
 		PortagePackageKey, PortagePackageVersion, _get_atom
 from gentoopm.portagepm.contents import PortagePackageContents
+from gentoopm.portagepm.depend import PortagePackageDepSet
 from gentoopm.util import SpaceSepTuple
 
 class PortagePackageSet(PMPackageSet):
@@ -117,6 +118,18 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 	@property
 	def _atom(self):
 		return _get_atom(str(self))
+
+	@property
+	def build_dependencies(self):
+		return PortagePackageDepSet(self._aux_get('DEPEND'))
+
+	@property
+	def run_dependencies(self):
+		return PortagePackageDepSet(self._aux_get('RDEPEND'))
+
+	@property
+	def post_dependencies(self):
+		return PortagePackageDepSet(self._aux_get('PDEPEND'))
 
 	def __str__(self):
 		return '=%s' % self._cpv
