@@ -252,7 +252,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 			return None
 		return PMPackageEnvironment(p)
 
-	@property
+	@abstractproperty
 	def build_dependencies(self):
 		"""
 		Get the package build dependencies (C{DEPEND}).
@@ -261,7 +261,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		pass
 
-	@property
+	@abstractproperty
 	def run_dependencies(self):
 		"""
 		Get the package runtime dependencies (C{RDEPEND}).
@@ -270,7 +270,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		pass
 
-	@property
+	@abstractproperty
 	def post_dependencies(self):
 		"""
 		Get the package post-installed dependencies (C{PDEPEND}).
@@ -279,7 +279,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		pass
 
-	@property
+	@abstractproperty
 	def use(self):
 		"""
 		Get the list of USE flags declared in the ebuild (C{IUSE}).
