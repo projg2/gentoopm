@@ -6,7 +6,7 @@
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
-		PMPackageState
+		PMPackageState, PMUseFlag
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.pkgcorepm.atom import PkgCoreAtom, PkgCorePackageKey
 from gentoopm.pkgcorepm.contents import PkgCorePackageContents
@@ -45,6 +45,9 @@ class PkgCorePackageDescription(PMPackageDescription):
 		else: # vdb, for example
 			return None
 
+class PkgCoreUseFlag(PMUseFlag):
+	pass
+
 class PkgCorePackage(PMPackage, PkgCoreAtom):
 	def __init__(self, pkg, repo_index = 0):
 		self._pkg = pkg
@@ -69,6 +72,10 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 	@property
 	def homepages(self):
 		return SpaceSepTuple(self._pkg.homepage)
+
+	@property
+	def use(self):
+		return SpaceSepTuple([PkgCoreUseFlag(x) for x in self._pkg.iuse])
 
 	@property
 	def slotted(self):

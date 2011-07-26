@@ -8,7 +8,7 @@ import paludis
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstallablePackage, PMInstalledPackage, PMBoundPackageKey, \
-		PMPackageState
+		PMPackageState, PMUseFlag
 from gentoopm.paludispm.atom import PaludisAtom, \
 		PaludisPackageKey, PaludisPackageVersion
 from gentoopm.paludispm.contents import PaludisPackageContents
@@ -38,6 +38,9 @@ class PaludisPackageDescription(PMPackageDescription):
 	def long(self):
 		k = self._pkg.long_description_key()
 		return k.parse_value() if k is not None else None
+
+class PaludisUseFlag(PMUseFlag):
+	pass
 
 class PaludisID(PMPackage, PaludisAtom):
 	def __init__(self, pkg, env):
@@ -112,6 +115,11 @@ class PaludisID(PMPackage, PaludisAtom):
 		return PaludisPackageDepSet(
 				self._pkg.post_dependencies_key().parse_value(),
 				self)
+
+	@property
+	def use(self):
+		iuse = self._pkg.find_metadata('IUSE').parse_value()
+		return SpaceSepTuple([PaludisUseFlag(x) for x in iuse])
 
 	@property
 	def _atom(self):

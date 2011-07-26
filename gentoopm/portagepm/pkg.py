@@ -8,7 +8,7 @@ from portage.versions import cpv_getkey, cpv_getversion, vercmp
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
-		PMPackageState
+		PMPackageState, PMUseFlag
 from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom, \
 		PortagePackageKey, PortagePackageVersion, _get_atom
@@ -54,6 +54,9 @@ class PortagePackageDescription(PMPackageDescription):
 		@bug: Portage doesn't support parsing metadata.xml.
 		"""
 		return None # XXX
+
+class PortageUseFlag(PMUseFlag):
+	pass
 
 class PortageDBCPV(PMPackage, CompletePortageAtom):
 	def __init__(self, cpv, dbapi):
@@ -104,6 +107,11 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 	@property
 	def repository(self):
 		raise None
+
+	@property
+	def use(self):
+		return SpaceSepTuple([PortageUseFlag(x) for x \
+				in self._aux_get('IUSE').split()])
 
 	@property
 	def slotted(self):
