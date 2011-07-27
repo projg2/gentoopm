@@ -241,6 +241,15 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		pass
 
+	@abstractproperty
+	def keywords(self):
+		"""
+		Package keywords.
+
+		@type: L{SpaceSepTuple}
+		"""
+		pass
+
 	@property
 	def environ(self):
 		"""

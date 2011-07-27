@@ -78,6 +78,10 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 		return SpaceSepTuple(self._pkg.homepage)
 
 	@property
+	def keywords(self):
+		return SpaceSepTuple(self._pkg.keywords)
+
+	@property
 	def defined_phases(self):
 		return SpaceSepTuple(self._pkg.defined_phases)
 

@@ -105,6 +105,11 @@ class PaludisID(PMPackage, PaludisAtom):
 		return SpaceSepTuple([str(x) for x in spec])
 
 	@property
+	def keywords(self):
+		kws = self._pkg.keywords_key().parse_value()
+		return SpaceSepTuple([str(x) for x in kws])
+
+	@property
 	def slot(self):
 		k = self._pkg.slot_key()
 		return str(k.parse_value())

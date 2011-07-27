@@ -112,6 +112,10 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 		return SpaceSepTuple(self._aux_get('HOMEPAGE'))
 
 	@property
+	def keywords(self):
+		return SpaceSepTuple(self._aux_get('KEYWORDS'))
+
+	@property
 	def slot(self):
 		return self._aux_get('SLOT')
 
