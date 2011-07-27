@@ -13,7 +13,7 @@ from gentoopm.paludispm.atom import PaludisAtom, \
 		PaludisPackageKey, PaludisPackageVersion
 from gentoopm.paludispm.contents import PaludisPackageContents
 from gentoopm.paludispm.depend import PaludisPackageDepSet
-from gentoopm.util import SpaceSepTuple
+from gentoopm.util import SpaceSepFrozenSet, SpaceSepTuple
 
 class PaludisBoundPackageKey(PaludisPackageKey, PMBoundPackageKey):
 	def __init__(self, key, pkg):
@@ -86,17 +86,17 @@ class PaludisID(PMPackage, PaludisAtom):
 	def inherits(self):
 		k = self._pkg.find_metadata('INHERITED')
 		if k is None:
-			return SpaceSepTuple(())
-		return SpaceSepTuple(k.parse_value())
+			return SpaceSepFrozenSet(())
+		return SpaceSepFrozenSet(k.parse_value())
 
 	@property
 	def defined_phases(self):
 		k = self._pkg.find_metadata('DEFINED_PHASES')
 		if k is None:
 			return None
-		ret = SpaceSepTuple(k.parse_value())
+		ret = SpaceSepFrozenSet(k.parse_value())
 		if ret == ('-',):
-			return SpaceSepTuple(())
+			return SpaceSepFrozenSet(())
 		return ret
 
 	@property
@@ -107,7 +107,7 @@ class PaludisID(PMPackage, PaludisAtom):
 	@property
 	def keywords(self):
 		kws = self._pkg.keywords_key().parse_value()
-		return SpaceSepTuple([str(x) for x in kws])
+		return SpaceSepFrozenSet([str(x) for x in kws])
 
 	@property
 	def slot(self):
@@ -139,7 +139,7 @@ class PaludisID(PMPackage, PaludisAtom):
 	@property
 	def use(self):
 		iuse = self._pkg.find_metadata('IUSE').parse_value()
-		return SpaceSepTuple([PaludisUseFlag(x) for x in iuse])
+		return SpaceSepFrozenSet([PaludisUseFlag(x) for x in iuse])
 
 	@property
 	def _atom(self):

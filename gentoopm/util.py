@@ -110,7 +110,16 @@ class StringCompat(StringifiedComparisons):
 	def __repr__(self):
 		return '%s(%s)' % (self.__class__.__name__, repr(str(self)))
 
-class SpaceSepTuple(tuple):
+class _SpaceSepIter(object):
+	def __getitem__(self, k):
+		if isinstance(k, str):
+			return self[self.index(k)]
+		return tuple.__getitem__(self, k)
+
+	def __str__(self):
+		return ' '.join(self)
+
+class SpaceSepTuple(tuple, _SpaceSepIter):
 	"""
 	A tuple subclass representing a space-separated list.
 	"""
@@ -120,13 +129,15 @@ class SpaceSepTuple(tuple):
 			s = s.split()
 		return tuple.__new__(self, s)
 
-	def __getitem__(self, k):
-		if isinstance(k, str):
-			return self[self.index(k)]
-		return tuple.__getitem__(self, k)
+class SpaceSepFrozenSet(frozenset, _SpaceSepIter):
+	"""
+	A frozenset subclass representing a space-separated list.
+	"""
 
-	def __str__(self):
-		return ' '.join(self)
+	def __new__(self, s):
+		if isinstance(s, str):
+			s = s.split()
+		return frozenset.__new__(self, s)
 
 def EnumTuple(name, *keys):
 	"""

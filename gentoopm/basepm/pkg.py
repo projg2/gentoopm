@@ -217,7 +217,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		Eclasses inherited by a package.
 
-		@type: L{SpaceSepTuple}
+		@type: L{SpaceSepFrozenSet}
 		"""
 		pass
 
@@ -225,10 +225,10 @@ class PMPackage(PMAtom, FillMissingComparisons):
 	def defined_phases(self):
 		"""
 		List of phase functions declared by a package, if available.
-		C{None} otherwise. Empty L{SpaceSepTuple} means no phase function
+		C{None} otherwise. Empty L{SpaceSepFrozenSet} means no phase function
 		is declared.
 
-		@type: L{SpaceSepTuple}/C{None}
+		@type: L{SpaceSepFrozenSet}/C{None}
 		"""
 		pass
 
@@ -246,7 +246,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		Package keywords.
 
-		@type: L{SpaceSepTuple}
+		@type: L{SpaceSepFrozenSet}
 		"""
 		pass
 
@@ -313,7 +313,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		Get the list of USE flags declared in the ebuild (C{IUSE}).
 
-		@type: L{SpaceSepTuple}(L{PMUseFlag})
+		@type: L{SpaceSepFrozenSet}(L{PMUseFlag})
 		"""
 		pass
 

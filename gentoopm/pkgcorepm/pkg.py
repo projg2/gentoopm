@@ -11,7 +11,7 @@ from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from gentoopm.pkgcorepm.atom import PkgCoreAtom, PkgCorePackageKey
 from gentoopm.pkgcorepm.contents import PkgCorePackageContents
 from gentoopm.pkgcorepm.depend import PkgCorePackageDepSet
-from gentoopm.util import SpaceSepTuple
+from gentoopm.util import SpaceSepTuple, SpaceSepFrozenSet
 
 class PkgCorePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):
@@ -79,15 +79,15 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 
 	@property
 	def keywords(self):
-		return SpaceSepTuple(self._pkg.keywords)
+		return SpaceSepFrozenSet(self._pkg.keywords)
 
 	@property
 	def defined_phases(self):
-		return SpaceSepTuple(self._pkg.defined_phases)
+		return SpaceSepFrozenSet(self._pkg.defined_phases)
 
 	@property
 	def use(self):
-		return SpaceSepTuple([PkgCoreUseFlag(x) for x in self._pkg.iuse])
+		return SpaceSepFrozenSet([PkgCoreUseFlag(x) for x in self._pkg.iuse])
 
 	@property
 	def slotted(self):
@@ -120,7 +120,7 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
 		except KeyError:
 			l = ()
 
-		return SpaceSepTuple(l)
+		return SpaceSepFrozenSet(l)
 
 	@property
 	def build_dependencies(self):
@@ -152,7 +152,7 @@ class PkgCoreInstalledPackage(PkgCorePackage, PMInstalledPackage):
 		except KeyError:
 			l = ()
 
-		return SpaceSepTuple(l)
+		return SpaceSepFrozenSet(l)
 
 	@property
 	def build_dependencies(self):

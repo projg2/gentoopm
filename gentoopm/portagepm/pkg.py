@@ -14,7 +14,7 @@ from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom, \
 		PortagePackageKey, PortagePackageVersion, _get_atom
 from gentoopm.portagepm.contents import PortagePackageContents
 from gentoopm.portagepm.depend import PortagePackageDepSet
-from gentoopm.util import SpaceSepTuple
+from gentoopm.util import SpaceSepTuple, SpaceSepFrozenSet
 
 class PortagePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):
@@ -98,14 +98,14 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def inherits(self):
-		return SpaceSepTuple(self._aux_get('INHERITED'))
+		return SpaceSepFrozenSet(self._aux_get('INHERITED'))
 
 	@property
 	def defined_phases(self):
 		v = self._aux_get('DEFINED_PHASES')
 		if v == '-':
-			return SpaceSepTuple(())
-		return SpaceSepTuple(v)
+			return SpaceSepFrozenSet(())
+		return SpaceSepFrozenSet(v)
 
 	@property
 	def homepages(self):
@@ -113,7 +113,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def keywords(self):
-		return SpaceSepTuple(self._aux_get('KEYWORDS'))
+		return SpaceSepFrozenSet(self._aux_get('KEYWORDS'))
 
 	@property
 	def slot(self):
@@ -125,7 +125,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def use(self):
-		return SpaceSepTuple([PortageUseFlag(x) for x \
+		return SpaceSepFrozenSet([PortageUseFlag(x) for x \
 				in self._aux_get('IUSE').split()])
 
 	@property
