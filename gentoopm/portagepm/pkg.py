@@ -128,16 +128,45 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 		return _get_atom(str(self))
 
 	@property
+	def _applied_use(self):
+		class LazyUseGetter(object):
+			def __init__(self, dbapi, cpv):
+				self._cpv = cpv
+				self._dbapi = dbapi
+				self._settings = dbapi.settings
+				self._use_cache = None
+
+			@property
+			def _use_set(self):
+				if self._use_cache is None:
+					s = self._settings.__class__(clone = self._settings)
+					# XXX: repos? _emerge.Package or compatible API?
+					s.setcpv(self._cpv, mydb = self._dbapi)
+					self._use_cache = frozenset(s['PORTAGE_USE'].split())
+				return self._use_cache
+
+			def __iter__(self):
+				return iter(self._use_set)
+
+			def __contains__(self, k):
+				return k in self._use_set
+
+		return LazyUseGetter(self._dbapi, self._cpv)
+
+	@property
 	def build_dependencies(self):
-		return PortagePackageDepSet(self._aux_get('DEPEND'))
+		return PortagePackageDepSet(self._aux_get('DEPEND'),
+				self._applied_use)
 
 	@property
 	def run_dependencies(self):
-		return PortagePackageDepSet(self._aux_get('RDEPEND'))
+		return PortagePackageDepSet(self._aux_get('RDEPEND'),
+				self._applied_use)
 
 	@property
 	def post_dependencies(self):
-		return PortagePackageDepSet(self._aux_get('PDEPEND'))
+		return PortagePackageDepSet(self._aux_get('PDEPEND'),
+				self._applied_use)
 
 	def __str__(self):
 		return '=%s' % self._cpv
