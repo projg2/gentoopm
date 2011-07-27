@@ -222,6 +222,17 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		pass
 
 	@abstractproperty
+	def defined_phases(self):
+		"""
+		List of phase functions declared by a package, if available.
+		C{None} otherwise. Empty L{SpaceSepTuple} means no phase function
+		is declared.
+
+		@type: L{SpaceSepTuple}/C{None}
+		"""
+		pass
+
+	@abstractproperty
 	def homepages(self):
 		"""
 		Homepages of a package.

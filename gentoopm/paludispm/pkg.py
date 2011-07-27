@@ -90,6 +90,16 @@ class PaludisID(PMPackage, PaludisAtom):
 		return SpaceSepTuple(k.parse_value())
 
 	@property
+	def defined_phases(self):
+		k = self._pkg.find_metadata('DEFINED_PHASES')
+		if k is None:
+			return None
+		ret = SpaceSepTuple(k.parse_value())
+		if ret == ('-',):
+			return SpaceSepTuple(())
+		return ret
+
+	@property
 	def homepages(self):
 		spec = self._pkg.homepage_key().parse_value()
 		return SpaceSepTuple([str(x) for x in spec])

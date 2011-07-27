@@ -101,6 +101,13 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 		return SpaceSepTuple(self._aux_get('INHERITED'))
 
 	@property
+	def defined_phases(self):
+		v = self._aux_get('DEFINED_PHASES')
+		if v == '-':
+			return SpaceSepTuple(())
+		return SpaceSepTuple(v)
+
+	@property
 	def homepages(self):
 		return SpaceSepTuple(self._aux_get('HOMEPAGE'))
 

@@ -78,6 +78,10 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 		return SpaceSepTuple(self._pkg.homepage)
 
 	@property
+	def defined_phases(self):
+		return SpaceSepTuple(self._pkg.defined_phases)
+
+	@property
 	def use(self):
 		return SpaceSepTuple([PkgCoreUseFlag(x) for x in self._pkg.iuse])
 
