@@ -130,7 +130,7 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
 
 	@property
 	def post_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg._raw_pkg.pdepends,
+		return PkgCorePackageDepSet(self._pkg._raw_pkg.post_rdepends,
 				self._pkg)
 
 	def __lt__(self, other):
