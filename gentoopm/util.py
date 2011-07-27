@@ -120,6 +120,11 @@ class SpaceSepTuple(tuple):
 			s = s.split()
 		return tuple.__new__(self, s)
 
+	def __getitem__(self, k):
+		if isinstance(k, str):
+			return self[self.index(k)]
+		return tuple.__getitem__(self, k)
+
 	def __str__(self):
 		return ' '.join(self)
 
