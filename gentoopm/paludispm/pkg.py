@@ -74,6 +74,11 @@ class PaludisID(PMPackage, PaludisAtom):
 		return PaludisPackageVersion(self._pkg.version)
 
 	@property
+	def eapi(self):
+		k = self._pkg.find_metadata('EAPI')
+		return str(k.parse_value())
+
+	@property
 	def description(self):
 		return PaludisPackageDescription(self._pkg)
 

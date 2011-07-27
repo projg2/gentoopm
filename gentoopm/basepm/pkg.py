@@ -195,6 +195,15 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		pass
 
 	@abstractproperty
+	def eapi(self):
+		"""
+		The EAPI used by the ebuild.
+
+		@type: string
+		"""
+		pass
+
+	@abstractproperty
 	def description(self):
 		"""
 		The description of the package.

@@ -89,6 +89,10 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 			return tuple(val)
 
 	@property
+	def eapi(self):
+		return self._aux_get('EAPI')
+
+	@property
 	def description(self):
 		return PortagePackageDescription(self)
 

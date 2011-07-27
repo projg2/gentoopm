@@ -66,6 +66,10 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 		return self._pkg.path
 
 	@property
+	def eapi(self):
+		return str(self._pkg.eapi)
+
+	@property
 	def description(self):
 		return PkgCorePackageDescription(self._pkg)
 
