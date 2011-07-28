@@ -8,7 +8,7 @@ from pkgcore.restrictions.boolean import OrRestriction, AndRestriction
 from pkgcore.restrictions.packages import Conditional
 
 from gentoopm.basepm.depend import PMPackageDepSet, PMConditionalDep, \
-	PMOneOfDep, PMAllOfDep, PMBaseDep
+	PMAnyOfDep, PMAllOfDep, PMBaseDep
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
 
 class PkgCoreBaseDep(PMBaseDep):
@@ -21,7 +21,7 @@ class PkgCoreBaseDep(PMBaseDep):
 			if isinstance(d, atom):
 				yield PkgCoreAtom(d)
 			elif isinstance(d, OrRestriction):
-				yield PkgCoreOneOfDep(d, self._pkg)
+				yield PkgCoreAnyOfDep(d, self._pkg)
 			elif isinstance(d, AndRestriction):
 				yield PkgCoreAllOfDep(d, self._pkg)
 			elif isinstance(d, Conditional) and d.attr == 'use':
@@ -30,7 +30,7 @@ class PkgCoreBaseDep(PMBaseDep):
 				raise NotImplementedError('Parsing %s not implemented' \
 						% repr(d))
 
-class PkgCoreOneOfDep(PMOneOfDep, PkgCoreBaseDep):
+class PkgCoreAnyOfDep(PMAnyOfDep, PkgCoreBaseDep):
 	pass
 
 class PkgCoreAllOfDep(PMAllOfDep, PkgCoreBaseDep):
@@ -60,14 +60,14 @@ class PkgCoreUncondDep(PkgCoreBaseDep):
 			if isinstance(d, atom):
 				yield PkgCoreAtom(d)
 			elif isinstance(d, OrRestriction):
-				yield PkgCoreUncondOneOfDep(d)
+				yield PkgCoreUncondAnyOfDep(d)
 			elif isinstance(d, AndRestriction):
 				yield PkgCoreUncondAllOfDep(d, self._pkg)
 			else:
 				raise NotImplementedError('Parsing %s not implemented' \
 						% repr(d))
 
-class PkgCoreUncondOneOfDep(PMOneOfDep, PkgCoreUncondDep):
+class PkgCoreUncondAnyOfDep(PMAnyOfDep, PkgCoreUncondDep):
 	pass
 
 class PkgCoreUncondAllOfDep(PMAllOfDep, PkgCoreUncondDep):

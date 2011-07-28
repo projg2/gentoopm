@@ -6,7 +6,7 @@
 from portage.dep import paren_reduce, use_reduce
 
 from gentoopm.basepm.depend import PMPackageDepSet, PMConditionalDep, \
-	PMOneOfDep, PMAllOfDep, PMBaseDep
+	PMAnyOfDep, PMAllOfDep, PMBaseDep
 from gentoopm.portagepm.atom import PortageAtom
 
 class PortageBaseDep(PMBaseDep):
@@ -18,7 +18,7 @@ class PortageBaseDep(PMBaseDep):
 		it = iter(self._deps)
 		for d in it:
 			if d == '||':
-				yield PortageOneOfDep(next(it), self._puse)
+				yield PortageAnyOfDep(next(it), self._puse)
 			elif d == '&&':
 				yield PortageAllOfDep(next(it), self._puse)
 			elif d.endswith('?'):
@@ -27,7 +27,7 @@ class PortageBaseDep(PMBaseDep):
 			else:
 				yield PortageAtom(d)
 
-class PortageOneOfDep(PMOneOfDep, PortageBaseDep):
+class PortageAnyOfDep(PMAnyOfDep, PortageBaseDep):
 	pass
 
 class PortageAllOfDep(PMAllOfDep, PortageBaseDep):
@@ -69,13 +69,13 @@ class PortageUncondDep(PortageBaseDep):
 		it = iter(self._deps)
 		for d in it:
 			if d == '||':
-				yield PortageUncondOneOfDep(next(it))
+				yield PortageUncondAnyOfDep(next(it))
 			elif d == '&&':
 				yield PortageUncondAllOfDep(next(it))
 			else:
 				yield PortageAtom(d)
 
-class PortageUncondOneOfDep(PMOneOfDep, PortageUncondDep):
+class PortageUncondAnyOfDep(PMAnyOfDep, PortageUncondDep):
 	pass
 
 class PortageUncondAllOfDep(PMAllOfDep, PortageUncondDep):

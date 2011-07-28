@@ -50,8 +50,8 @@ class PMUncondBaseDep(PMBaseDep):
 				if d.enabled:
 					for d in self._iter_deps(d):
 						yield d
-			elif isinstance(d, PMOneOfDep):
-				yield PMUncondOneOfDep(d)
+			elif isinstance(d, PMAnyOfDep):
+				yield PMUncondAnyOfDep(d)
 			else:
 				yield d
 
@@ -88,16 +88,16 @@ class PMAllOfDep(PMBaseDep):
 class PMUncondAllOfDep(PMAllOfDep, PMUncondBaseDep):
 	pass
 
-class PMOneOfDep(PMBaseDep):
+class PMAnyOfDep(PMBaseDep):
 	"""
 	A one-of dependency set (C{|| ( ... )}).
 	"""
 
 	@property
 	def without_conditionals(self):
-		return PMUncondOneOfDep(self)
+		return PMUncondAnyOfDep(self)
 
-class PMUncondOneOfDep(PMOneOfDep, PMUncondBaseDep):
+class PMUncondAnyOfDep(PMAnyOfDep, PMUncondBaseDep):
 	pass
 
 class PMPackageDepSet(PMAllOfDep):
