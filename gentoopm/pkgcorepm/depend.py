@@ -10,7 +10,7 @@ from pkgcore.restrictions.packages import Conditional
 from pkgcore.restrictions.values import ContainmentMatch
 
 from gentoopm.basepm.depend import PMPackageDepSet, PMConditionalDep, \
-	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMBaseDep
+	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMBaseDep, PMRequiredUseAtom
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
 
 class PkgCoreBaseDep(PMBaseDep):
@@ -24,7 +24,7 @@ class PkgCoreBaseDep(PMBaseDep):
 				yield PkgCoreAtom(d)
 			elif isinstance(d, ContainmentMatch): # REQUIRED_USE
 				assert(len(d.vals) == 1)
-				yield next(iter(d.vals))
+				yield PMRequiredUseAtom(next(iter(d.vals)))
 			elif isinstance(d, OrRestriction):
 				yield PkgCoreAnyOfDep(d, self._pkg)
 			elif isinstance(d, AndRestriction):

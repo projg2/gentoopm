@@ -5,6 +5,7 @@
 
 import paludis
 
+from gentoopm.basepm.depend import PMRequiredUseAtom
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstallablePackage, PMInstalledPackage, PMBoundPackageKey, \
@@ -141,7 +142,8 @@ class PaludisID(PMPackage, PaludisAtom):
 		k = self._pkg.find_metadata('REQUIRED_USE')
 		if k is None:
 			return None
-		return PaludisPackageDepSet(k.parse_value(), self)
+		return PaludisPackageDepSet(k.parse_value(), self,
+				PMRequiredUseAtom)
 
 	@property
 	def use(self):

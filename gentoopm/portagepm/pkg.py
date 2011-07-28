@@ -5,6 +5,7 @@
 
 from portage.versions import cpv_getkey, cpv_getversion, vercmp
 
+from gentoopm.basepm.depend import PMRequiredUseAtom
 from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
@@ -186,7 +187,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 	@property
 	def required_use(self):
 		return PortagePackageDepSet(self._aux_get('REQUIRED_USE'),
-				self._applied_use, str) # XXX
+				self._applied_use, PMRequiredUseAtom)
 
 	def __str__(self):
 		return '=%s' % self._cpv

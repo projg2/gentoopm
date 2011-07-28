@@ -20,8 +20,10 @@ class PaludisBaseDep(PMBaseDep):
 	def __iter__(self):
 		for d in self._deps:
 			if isinstance(d, paludis.PackageDepSpec):
+				assert(self._args.cls is None)
 				yield PaludisAtom(d, self._args.env)
 			elif isinstance(d, paludis.BlockDepSpec):
+				assert(self._args.cls is None)
 				yield PaludisAtom(d.blocking, self._args.env,
 						block = _block_re.match(d.text).group(0))
 			elif isinstance(d, paludis.AnyDepSpec):
@@ -33,8 +35,8 @@ class PaludisBaseDep(PMBaseDep):
 			elif isinstance(d, paludis.ConditionalDepSpec):
 				yield PaludisConditionalDep(d, self._args)
 			elif isinstance(d, paludis.PlainTextDepSpec):
-				# XXX: this is in REQUIRED_USE as well
-				yield str(d)
+				assert(self._args.cls is not None)
+				yield self._args.cls(str(d))
 			else:
 				raise NotImplementedError('Unable to parse %s' % repr(d))
 

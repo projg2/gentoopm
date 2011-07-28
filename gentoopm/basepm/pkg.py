@@ -318,6 +318,15 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		pass
 
 	@abstractproperty
+	def required_use(self):
+		"""
+		Get the C{REQUIRED_USE} specification.
+
+		@type: L{PMPackageDepSet}
+		"""
+		pass
+
+	@abstractproperty
 	def slotted(self):
 		"""
 		Return an atom matching all packages in the same slot as the associated

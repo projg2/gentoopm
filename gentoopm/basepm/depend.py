@@ -5,7 +5,49 @@
 
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.util import ABCObject
+from gentoopm.util import ABCObject, StringCompat
+
+class PMRequiredUseAtom(StringCompat):
+	"""
+	An atom for C{REQUIRED_USE} specification.
+	"""
+
+	def __init__(self, s):
+		self._blocks = s.startswith('!')
+		if self._blocks:
+			s = s[1:]
+		self._flag = s
+
+	@property
+	def name(self):
+		"""
+		Relevant USE flag name.
+
+		@type: string
+		"""
+		return self._flag
+
+	@property
+	def blocking(self):
+		"""
+		Whether the atom blocks the USE flag (requires it not to be set).
+
+		@type: bool
+		"""
+		return self._blocks
+
+	@property
+	def requiring(self):
+		"""
+		Whether the atom requires the USE flag to be set.
+
+		@type: bool
+		"""
+		return not self._blocks
+
+	def __str__(self):
+		return '%s%s' % ('!' if self._blocks else '',
+				self.name)
 
 class PMBaseDep(ABCObject):
 	"""
