@@ -4,11 +4,13 @@
 # Released under the terms of the 2-clause BSD license.
 
 from pkgcore.ebuild.atom import atom
-from pkgcore.restrictions.boolean import OrRestriction, AndRestriction
+from pkgcore.restrictions.boolean import OrRestriction, AndRestriction, \
+		JustOneRestriction
 from pkgcore.restrictions.packages import Conditional
+from pkgcore.restrictions.values import ContainmentMatch
 
 from gentoopm.basepm.depend import PMPackageDepSet, PMConditionalDep, \
-	PMAnyOfDep, PMAllOfDep, PMBaseDep
+	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMBaseDep
 from gentoopm.pkgcorepm.atom import PkgCoreAtom
 
 class PkgCoreBaseDep(PMBaseDep):
@@ -20,10 +22,15 @@ class PkgCoreBaseDep(PMBaseDep):
 		for d in self._deps:
 			if isinstance(d, atom):
 				yield PkgCoreAtom(d)
+			elif isinstance(d, ContainmentMatch): # REQUIRED_USE
+				assert(len(d.vals) == 1)
+				yield next(iter(d.vals))
 			elif isinstance(d, OrRestriction):
 				yield PkgCoreAnyOfDep(d, self._pkg)
 			elif isinstance(d, AndRestriction):
 				yield PkgCoreAllOfDep(d, self._pkg)
+			elif isinstance(d, JustOneRestriction):
+				yield PkgCoreExactlyOneOfDep(d, self._pkg)
 			elif isinstance(d, Conditional) and d.attr == 'use':
 				yield PkgCoreConditionalUseDep(d, self._pkg)
 			else:
@@ -34,6 +41,9 @@ class PkgCoreAnyOfDep(PMAnyOfDep, PkgCoreBaseDep):
 	pass
 
 class PkgCoreAllOfDep(PMAllOfDep, PkgCoreBaseDep):
+	pass
+
+class PkgCoreExactlyOneOfDep(PMExactlyOneOfDep, PkgCoreBaseDep):
 	pass
 
 class PkgCoreConditionalUseDep(PMConditionalDep, PkgCoreBaseDep):
@@ -63,6 +73,8 @@ class PkgCoreUncondDep(PkgCoreBaseDep):
 				yield PkgCoreUncondAnyOfDep(d)
 			elif isinstance(d, AndRestriction):
 				yield PkgCoreUncondAllOfDep(d, self._pkg)
+			elif isinstance(d, JustOneRestriction):
+				yield PkgCoreUncondExactlyOneOfDep(d, self._pkg)
 			else:
 				raise NotImplementedError('Parsing %s not implemented' \
 						% repr(d))
@@ -71,4 +83,7 @@ class PkgCoreUncondAnyOfDep(PMAnyOfDep, PkgCoreUncondDep):
 	pass
 
 class PkgCoreUncondAllOfDep(PMAllOfDep, PkgCoreUncondDep):
+	pass
+
+class PkgCoreUncondAllOfDep(PMExactlyOneOfDep, PkgCoreUncondDep):
 	pass

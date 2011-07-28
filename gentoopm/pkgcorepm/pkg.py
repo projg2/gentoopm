@@ -137,6 +137,11 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
 		return PkgCorePackageDepSet(self._pkg._raw_pkg.post_rdepends,
 				self._pkg)
 
+	@property
+	def required_use(self):
+		return PkgCorePackageDepSet(self._pkg._raw_pkg.required_use,
+				self._pkg)
+
 	def __lt__(self, other):
 		if not isinstance(other, PkgCorePackage):
 			raise TypeError('Unable to compare %s against %s' % \
@@ -167,6 +172,11 @@ class PkgCoreInstalledPackage(PkgCorePackage, PMInstalledPackage):
 	@property
 	def post_dependencies(self):
 		return PkgCorePackageDepSet(self._pkg.pdepends,
+				self._pkg)
+
+	@property
+	def required_use(self):
+		return PkgCorePackageDepSet(self._pkg.required_use,
 				self._pkg)
 
 	@property

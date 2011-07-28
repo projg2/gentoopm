@@ -137,6 +137,13 @@ class PaludisID(PMPackage, PaludisAtom):
 				self)
 
 	@property
+	def required_use(self):
+		k = self._pkg.find_metadata('REQUIRED_USE')
+		if k is None:
+			return None
+		return PaludisPackageDepSet(k.parse_value(), self)
+
+	@property
 	def use(self):
 		iuse = self._pkg.find_metadata('IUSE').parse_value()
 		return SpaceSepFrozenSet([PaludisUseFlag(x) for x in iuse])
