@@ -41,10 +41,10 @@ class PkgCoreConditionalUseDep(PMConditionalDep, PkgCoreBaseDep):
 	def enabled(self):
 		return self._deps.restriction.match(self._pkg.use)
 
-class PkgCorePackageDepSet(PMPackageDepSet, PkgCoreBaseDep):
+class PkgCorePackageDepSet(PMPackageDepSet, PkgCoreAllOfDep):
 	@property
 	def without_conditionals(self):
-		return PkgCoreUncondPackageDepSet(
+		return PkgCoreUncondAllOfDep(
 				self._deps.evaluate_depset(self._pkg.use))
 
 class PkgCoreUncondDep(PkgCoreBaseDep):
@@ -71,7 +71,4 @@ class PkgCoreUncondOneOfDep(PMOneOfDep, PkgCoreUncondDep):
 	pass
 
 class PkgCoreUncondAllOfDep(PMAllOfDep, PkgCoreUncondDep):
-	pass
-
-class PkgCoreUncondPackageDepSet(PkgCoreUncondDep):
 	pass

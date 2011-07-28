@@ -38,5 +38,5 @@ class PaludisConditionalDep(PMConditionalDep, PaludisBaseDep):
 	def enabled(self):
 		return self._deps.condition_met(self._pkg._env, self._pkg._pkg)
 
-class PaludisPackageDepSet(PMPackageDepSet, PaludisBaseDep):
+class PaludisPackageDepSet(PMPackageDepSet, PaludisAllOfDep):
 	pass

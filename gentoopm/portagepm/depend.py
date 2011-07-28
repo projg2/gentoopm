@@ -54,7 +54,7 @@ class PortagePackageDepSet(PMPackageDepSet, PortageBaseDep):
 
 	@property
 	def without_conditionals(self):
-		return PortageUncondPackageDepSet(
+		return PortageUncondAllOfDep(
 				use_reduce(self._depstr, self._puse))
 
 class PortageUncondDep(PortageBaseDep):
@@ -79,7 +79,4 @@ class PortageUncondOneOfDep(PMOneOfDep, PortageUncondDep):
 	pass
 
 class PortageUncondAllOfDep(PMAllOfDep, PortageUncondDep):
-	pass
-
-class PortageUncondPackageDepSet(PortageUncondDep):
 	pass

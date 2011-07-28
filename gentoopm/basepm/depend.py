@@ -100,9 +100,10 @@ class PMOneOfDep(PMBaseDep):
 class PMUncondOneOfDep(PMOneOfDep, PMUncondBaseDep):
 	pass
 
-class PMPackageDepSet(PMBaseDep):
+class PMPackageDepSet(PMAllOfDep):
 	"""
-	A base class representing a depset of a single package.
+	A base class representing a depset (or depset-like variable) of a single
+	package.
 	"""
 
 	@property
