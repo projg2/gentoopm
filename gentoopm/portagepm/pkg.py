@@ -171,22 +171,22 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 	@property
 	def build_dependencies(self):
 		return PortagePackageDepSet(self._aux_get('DEPEND'),
-				self._applied_use)
+				self._applied_use, PortageAtom)
 
 	@property
 	def run_dependencies(self):
 		return PortagePackageDepSet(self._aux_get('RDEPEND'),
-				self._applied_use)
+				self._applied_use, PortageAtom)
 
 	@property
 	def post_dependencies(self):
 		return PortagePackageDepSet(self._aux_get('PDEPEND'),
-				self._applied_use)
+				self._applied_use, PortageAtom)
 
 	@property
 	def required_use(self):
 		return PortagePackageDepSet(self._aux_get('REQUIRED_USE'),
-				self._applied_use)
+				self._applied_use, str) # XXX
 
 	def __str__(self):
 		return '=%s' % self._cpv
