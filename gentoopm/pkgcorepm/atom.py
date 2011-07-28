@@ -104,7 +104,7 @@ class PkgCoreAtom(PMAtom):
 				raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
 	def __contains__(self, pkg):
-		return self._r.match(pkg._pkg)
+		return self._r.match(pkg._pkg) != self.blocking
 
 	def __str__(self):
 		if self.complete:

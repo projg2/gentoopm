@@ -83,7 +83,7 @@ class PaludisAtom(PMAtom):
 				self._incomplete = True
 		self._env = env
 
-	def __contains__(self, pkg):
+	def _match(self, pkg):
 		# we have to implementing matching by hand, boo
 		other = pkg.atom
 		# 1) category, our may be unset
@@ -111,6 +111,9 @@ class PaludisAtom(PMAtom):
 				and self.repository != other.repository:
 			return False
 		return True
+
+	def __contains__(self, pkg):
+		return self._match(pkg) != self.blocking
 
 	def __str__(self):
 		if self._incomplete:

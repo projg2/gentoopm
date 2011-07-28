@@ -115,8 +115,11 @@ class PMAtom(ABCObject, StringifiedComparisons):
 	@abstractmethod
 	def __contains__(self, pkg):
 		"""
-		Check whether a package matches the atom (is contained in the set
-		of packages matched by atom).
+		Check whether a package is contained in the set of packages matched
+		by the atom.
+
+		Please note that with blockers, this function returns C{True} for all
+		atoms not blocked by the atom.
 
 		@param pkg: a package to match
 		@type pkg: L{PMPackage}

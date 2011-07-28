@@ -78,12 +78,15 @@ class CompletePortageAtom(PMAtom):
 	def __init__(self, a):
 		self._atom = a
 
-	def __contains__(self, pkg):
+	def _match(self, pkg):
 		# SLOT matching requires metadata so delay it.
-		if not match_from_list(self._atom, [pkg.id]):
+		if not match_from_list(self._atom, [pkg._cpv]):
 			return False
 		return not self._atom.slot \
 				or self._atom.slot == pkg.metadata.SLOT
+
+	def __contains__(self, pkg):
+		return self._match(pkg) != self.blocking
 
 	def __str__(self):
 		return str(self._atom)
@@ -94,7 +97,7 @@ class CompletePortageAtom(PMAtom):
 
 	@property
 	def blocking(self):
-		return self._atom.blocker
+		return bool(self._atom.blocker)
 
 	@property
 	def key(self):
