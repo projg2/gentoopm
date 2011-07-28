@@ -100,6 +100,18 @@ class PMAnyOfDep(PMBaseDep):
 class PMUncondAnyOfDep(PMAnyOfDep, PMUncondBaseDep):
 	pass
 
+class PMExactlyOneOfDep(PMBaseDep):
+	"""
+	An exactly-one-of (xor) dependency set (C{^^ ( ... )}).
+	"""
+
+	@property
+	def without_conditionals(self):
+		return PMUncondExactlyOneOfDep(self)
+
+class PMUncondExactlyOneOfDep(PMExactlyOneOfDep, PMUncondBaseDep):
+	pass
+
 class PMPackageDepSet(PMAllOfDep):
 	"""
 	A base class representing a depset (or depset-like variable) of a single
