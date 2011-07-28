@@ -117,6 +117,11 @@ class PkgCoreAtom(PMAtom):
 		return isinstance(self._r, atom)
 
 	@property
+	def blocking(self):
+		# incomplete atoms can't block
+		return self.complete and self._r.blocks
+
+	@property
 	def key(self):
 		if self.complete:
 			return PkgCorePackageKey(self._r)

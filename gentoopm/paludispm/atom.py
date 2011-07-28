@@ -122,6 +122,10 @@ class PaludisAtom(PMAtom):
 		return not self._incomplete
 
 	@property
+	def blocking(self):
+		return bool(self._blocking)
+
+	@property
 	def key(self):
 		if self.complete:
 			return PaludisPackageKey(self._atom.package)

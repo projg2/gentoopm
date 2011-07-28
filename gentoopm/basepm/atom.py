@@ -153,6 +153,19 @@ class PMAtom(ABCObject, StringifiedComparisons):
 		"""
 		pass
 
+	@abstractproperty
+	def blocking(self):
+		"""
+		Whether the atom represents a blocking atom.
+
+		Support for block atoms is limited. They may not be parseable from user
+		input (using L{PackageManager.Atom()}), and they should not be used as
+		arguments to matching functions.
+
+		@type: bool
+		"""
+		pass
+
 	@property
 	def associated(self):
 		"""

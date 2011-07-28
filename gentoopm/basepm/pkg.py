@@ -357,6 +357,10 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		return True
 
 	@property
+	def blocking(self):
+		return False
+
+	@property
 	def associated(self):
 		return True
 

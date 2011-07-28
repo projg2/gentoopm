@@ -93,6 +93,10 @@ class CompletePortageAtom(PMAtom):
 		return True
 
 	@property
+	def blocking(self):
+		return self._atom.blocker
+
+	@property
 	def key(self):
 		return PortagePackageKey(self._atom.cp)
 
