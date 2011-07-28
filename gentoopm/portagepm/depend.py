@@ -6,7 +6,7 @@
 from portage.dep import paren_reduce, use_reduce
 
 from gentoopm.basepm.depend import PMPackageDepSet, PMConditionalDep, \
-	PMAnyOfDep, PMAllOfDep, PMBaseDep
+	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMBaseDep
 from gentoopm.portagepm.atom import PortageAtom
 
 class PortageBaseDep(PMBaseDep):
@@ -21,6 +21,8 @@ class PortageBaseDep(PMBaseDep):
 				yield PortageAnyOfDep(next(it), self._puse)
 			elif d == '&&':
 				yield PortageAllOfDep(next(it), self._puse)
+			elif d == '__xor__?':
+				yield PortageExactlyOneOfDep(next(it), self._puse)
 			elif d.endswith('?'):
 				yield PortageConditionalUseDep(next(it),
 						self._puse, d.rstrip('?'))
@@ -31,6 +33,9 @@ class PortageAnyOfDep(PMAnyOfDep, PortageBaseDep):
 	pass
 
 class PortageAllOfDep(PMAllOfDep, PortageBaseDep):
+	pass
+
+class PortageExactlyOneOfDep(PMExactlyOneOfDep, PortageBaseDep):
 	pass
 
 class PortageConditionalUseDep(PMConditionalDep, PortageBaseDep):
@@ -44,7 +49,11 @@ class PortageConditionalUseDep(PMConditionalDep, PortageBaseDep):
 
 class PortagePackageDepSet(PMPackageDepSet, PortageBaseDep):
 	def __init__(self, s, puse):
-		self._depstr = s
+		self._use_reducable = not '^^' in s
+		if not self._use_reducable:
+			# ARGV, paren_reduce() doesn't handle ^^
+			# so we hack it to a __xor__?, UGLY!
+			self._depstr = s.replace('^^', '__xor__?')
 		PortageBaseDep.__init__(self, None, puse)
 
 	def __iter__(self):
@@ -54,8 +63,10 @@ class PortagePackageDepSet(PMPackageDepSet, PortageBaseDep):
 
 	@property
 	def without_conditionals(self):
-		return PortageUncondAllOfDep(
-				use_reduce(self._depstr, self._puse))
+		if self._use_reducable:
+			return PortageUncondAllOfDep(
+					use_reduce(self._depstr, self._puse))
+		return PMPackageDepSet.without_conditionals.fget(self)
 
 class PortageUncondDep(PortageBaseDep):
 	def __init__(self, deps):
@@ -79,4 +90,7 @@ class PortageUncondAnyOfDep(PMAnyOfDep, PortageUncondDep):
 	pass
 
 class PortageUncondAllOfDep(PMAllOfDep, PortageUncondDep):
+	pass
+
+class PortageUncondExactlyOneOfDep(PMExactlyOneOfDep, PortageUncondDep):
 	pass

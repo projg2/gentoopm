@@ -183,6 +183,11 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 		return PortagePackageDepSet(self._aux_get('PDEPEND'),
 				self._applied_use)
 
+	@property
+	def required_use(self):
+		return PortagePackageDepSet(self._aux_get('REQUIRED_USE'),
+				self._applied_use)
+
 	def __str__(self):
 		return '=%s' % self._cpv
 
