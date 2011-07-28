@@ -69,8 +69,9 @@ class PaludisAtom(PMAtom):
 				paludis.RepositoryNameError):
 			raise InvalidAtomStringError('Incorrect atom: %s' % s)
 
-	def __init__(self, s, env):
+	def __init__(self, s, env, block = ''):
 		self._incomplete = False
+		self._blocking = block
 		if isinstance(s, paludis.PackageDepSpec):
 			self._atom = s
 		else:
@@ -114,7 +115,7 @@ class PaludisAtom(PMAtom):
 	def __str__(self):
 		if self._incomplete:
 			raise ValueError('Unable to stringify incomplete atom')
-		return str(self._atom)
+		return '%s%s' % (self._blocking, str(self._atom))
 
 	@property
 	def complete(self):

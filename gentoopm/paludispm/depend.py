@@ -3,11 +3,13 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import paludis
+import paludis, re
 
 from gentoopm.basepm.depend import PMPackageDepSet, PMConditionalDep, \
 	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMBaseDep
 from gentoopm.paludispm.atom import PaludisAtom
+
+_block_re = re.compile('^!*')
 
 class PaludisBaseDep(PMBaseDep):
 	def __init__(self, deps, pkg):
@@ -18,6 +20,9 @@ class PaludisBaseDep(PMBaseDep):
 		for d in self._deps:
 			if isinstance(d, paludis.PackageDepSpec):
 				yield PaludisAtom(d, self._pkg._env)
+			elif isinstance(d, paludis.BlockDepSpec):
+				yield PaludisAtom(d.blocking, self._pkg._env,
+						block = _block_re.match(d.text).group(0))
 			elif isinstance(d, paludis.AnyDepSpec):
 				yield PaludisAnyOfDep(d, self._pkg)
 			elif isinstance(d, paludis.AllDepSpec):
