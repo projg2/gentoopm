@@ -74,10 +74,16 @@ class PaludisID(PMPackage, PaludisAtom):
 	def version(self):
 		return PaludisPackageVersion(self._pkg.version)
 
+	def _get_meta(self, key):
+		if isinstance(key, str):
+			key = self._pkg.find_metadata(key)
+		if key is None:
+			return ()
+		return key.parse_value()
+
 	@property
 	def eapi(self):
-		k = self._pkg.find_metadata('EAPI')
-		return str(k.parse_value())
+		return str(self._get_meta('EAPI'))
 
 	@property
 	def description(self):
@@ -85,35 +91,30 @@ class PaludisID(PMPackage, PaludisAtom):
 
 	@property
 	def inherits(self):
-		k = self._pkg.find_metadata('INHERITED')
-		if k is None:
-			return SpaceSepFrozenSet(())
-		return SpaceSepFrozenSet(k.parse_value())
+		return SpaceSepFrozenSet(self._get_meta('INHERITED'))
 
 	@property
 	def defined_phases(self):
-		k = self._pkg.find_metadata('DEFINED_PHASES')
-		if k is None:
+		ret = SpaceSepFrozenSet(self._get_meta('DEFINED_PHASES'))
+		if not ret:
 			return None
-		ret = SpaceSepFrozenSet(k.parse_value())
-		if ret == ('-',):
+		elif ret == ('-',):
 			return SpaceSepFrozenSet(())
 		return ret
 
 	@property
 	def homepages(self):
-		spec = self._pkg.homepage_key().parse_value()
+		spec = self._get_meta(self._pkg.homepage_key())
 		return SpaceSepTuple([str(x) for x in spec])
 
 	@property
 	def keywords(self):
-		kws = self._pkg.keywords_key().parse_value()
+		kws = self._get_meta(self._pkg.keywords_key())
 		return SpaceSepFrozenSet([str(x) for x in kws])
 
 	@property
 	def slot(self):
-		k = self._pkg.slot_key()
-		return str(k.parse_value())
+		return str(self._get_meta(self._pkg.slot_key()))
 
 	@property
 	def repository(self):
@@ -122,19 +123,19 @@ class PaludisID(PMPackage, PaludisAtom):
 	@property
 	def build_dependencies(self):
 		return PaludisPackageDepSet(
-				self._pkg.build_dependencies_key().parse_value(),
+				self._get_meta(self._pkg.build_dependencies_key()),
 				self)
 
 	@property
 	def run_dependencies(self):
 		return PaludisPackageDepSet(
-				self._pkg.run_dependencies_key().parse_value(),
+				self._get_meta(self._pkg.run_dependencies_key()),
 				self)
 
 	@property
 	def post_dependencies(self):
 		return PaludisPackageDepSet(
-				self._pkg.post_dependencies_key().parse_value(),
+				self._get_meta(self._pkg.post_dependencies_key()),
 				self)
 
 	@property
@@ -142,12 +143,13 @@ class PaludisID(PMPackage, PaludisAtom):
 		k = self._pkg.find_metadata('REQUIRED_USE')
 		if k is None:
 			return None
-		return PaludisPackageDepSet(k.parse_value(), self,
-				PMRequiredUseAtom)
+		return PaludisPackageDepSet(
+				self._get_meta('REQUIRED_USE'),
+				self, PMRequiredUseAtom)
 
 	@property
 	def use(self):
-		iuse = self._pkg.find_metadata('IUSE').parse_value()
+		iuse = self._get_meta('IUSE')
 		return SpaceSepFrozenSet([PaludisUseFlag(x) for x in iuse])
 
 	@property
@@ -172,7 +174,8 @@ class PaludisInstallableID(PaludisID, PMInstallablePackage):
 class PaludisInstalledID(PaludisID, PMInstalledPackage):
 	@property
 	def contents(self):
-		return PaludisPackageContents(self._pkg.contents_key().parse_value())
+		return PaludisPackageContents(
+				self._get_meta(self._pkg.contents_key()))
 
 class PaludisMetadata(PMPackageMetadata):
 	def __init__(self, pkg):
