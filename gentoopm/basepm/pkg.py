@@ -82,20 +82,7 @@ class PMUseFlag(ABCObject, StringCompat):
 		@param usestr: the IUSE atom (C{[+-]?flag})
 		@type usestr: string
 		"""
-		self._default = None
-		if usestr[0] in ('-', '+'):
-			self._default = (usestr[0] == '+')
-			usestr = usestr[1:]
-		self._name = usestr
-
-	@property
-	def default(self):
-		"""
-		The default state, if provided by the ebuild.
-
-		@type: bool/C{None}
-		"""
-		return self._default
+		self._name = usestr.lstrip('+-')
 
 	@property
 	def name(self):
