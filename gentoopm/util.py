@@ -113,7 +113,11 @@ class StringCompat(StringifiedComparisons):
 class _SpaceSepIter(object):
 	def __getitem__(self, k):
 		if isinstance(k, str):
-			return self[self.index(k)]
+			for i in self:
+				if i == k:
+					return i
+			else:
+				raise KeyError('No item matches %s' % repr(k))
 		return tuple.__getitem__(self, k)
 
 	def __str__(self):
