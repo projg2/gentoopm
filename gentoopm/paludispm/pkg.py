@@ -40,8 +40,31 @@ class PaludisPackageDescription(PMPackageDescription):
 		k = self._pkg.long_description_key()
 		return k.parse_value() if k is not None else None
 
-class PaludisUseFlag(PMUseFlag):
-	pass
+class PaludisChoice(PMUseFlag):
+	def __init__(self, choice, default = None):
+		self._c = choice
+		self._default = default
+
+	@property
+	def default(self):
+		return self._default
+
+	@property
+	def name(self):
+		return str(self._c.name_with_prefix)
+
+class PaludisChoiceSet(SpaceSepFrozenSet):
+	def __new__(self, choices, iuse):
+		iuse = SpaceSepFrozenSet([PMUseFlag(x) for x in iuse])
+		l = []
+		for group in choices:
+			if group.raw_name == 'build_options': # paludis specific
+				continue
+			for c in group:
+				if c.explicitly_listed:
+					miuse = iuse[str(c.name_with_prefix)]
+					l.append(PaludisChoice(c, miuse.default))
+		return SpaceSepFrozenSet.__new__(self, l)
 
 class PaludisID(PMPackage, PaludisAtom):
 	def __init__(self, pkg, env):
@@ -149,8 +172,9 @@ class PaludisID(PMPackage, PaludisAtom):
 
 	@property
 	def use(self):
-		iuse = self._get_meta('IUSE')
-		return SpaceSepFrozenSet([PaludisUseFlag(x) for x in iuse])
+		return PaludisChoiceSet(
+				self._get_meta(self._pkg.choices_key()),
+				self._get_meta('IUSE'))
 
 	@property
 	def _atom(self):
