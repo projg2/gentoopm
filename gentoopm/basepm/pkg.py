@@ -307,7 +307,10 @@ class PMPackage(PMAtom, FillMissingComparisons):
 	@abstractproperty
 	def use(self):
 		"""
-		Get the list of USE flags applying to the ebuild.
+		Get the list of USE flags applying to the ebuild. Iterating over the
+		list should return only the explicitly listed flags (C{IUSE}), though
+		it is also possible to explicitly get other flags (using indexing)
+		applying to the ebuild.
 
 		@type: L{SpaceSepFrozenSet}(L{PMUseFlag})
 		"""

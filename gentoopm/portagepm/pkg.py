@@ -74,6 +74,13 @@ class PortageUseSet(SpaceSepFrozenSet):
 		self._use = use
 		return SpaceSepFrozenSet.__new__(self, _get_iuse())
 
+	def __getitem__(self, k):
+		try:
+			return SpaceSepFrozenSet.__getitem__(self, k)
+		except KeyError:
+			# XXX, incorrect flags?
+			return PortageUseFlag(k, self._use)
+
 class PortageDBCPV(PMPackage, CompletePortageAtom):
 	def __init__(self, cpv, dbapi):
 		self._cpv = cpv

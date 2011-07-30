@@ -54,14 +54,26 @@ class PaludisChoice(PMUseFlag):
 
 class PaludisChoiceSet(SpaceSepFrozenSet):
 	def __new__(self, choices):
-		l = []
-		for group in choices:
-			if group.raw_name == 'build_options': # paludis specific
-				continue
-			for c in group:
-				if c.explicitly_listed:
-					l.append(PaludisChoice(c))
-		return SpaceSepFrozenSet.__new__(self, l)
+		def _get_iuse():
+			for group in choices:
+				if group.raw_name == 'build_options': # paludis specific
+					continue
+				for c in group:
+					if c.explicitly_listed:
+						yield PaludisChoice(c)
+
+		self._choices = choices
+		return SpaceSepFrozenSet.__new__(self, _get_iuse())
+
+	def __getitem__(self, k):
+		try:
+			return SpaceSepFrozenSet.__getitem__(self, k)
+		except KeyError:
+			for group in self._choices:
+				for c in group:
+					if str(c.name_with_prefix) == k:
+						return PaludisChoice(c)
+			raise
 
 class PaludisID(PMPackage, PaludisAtom):
 	def __init__(self, pkg, env):

@@ -63,6 +63,13 @@ class PkgCoreUseSet(SpaceSepFrozenSet):
 		self._use = use
 		return SpaceSepFrozenSet.__new__(self, _get_iuse())
 
+	def __getitem__(self, k):
+		try:
+			return SpaceSepFrozenSet.__getitem__(self, k)
+		except KeyError:
+			# XXX, incorrect flags?
+			return PkgCoreUseFlag(k, self._use)
+
 class PkgCorePackage(PMPackage, PkgCoreAtom):
 	def __init__(self, pkg, repo_index = 0):
 		self._pkg = pkg
