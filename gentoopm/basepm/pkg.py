@@ -93,6 +93,15 @@ class PMUseFlag(ABCObject, StringCompat):
 		"""
 		return self._name
 
+	@abstractproperty
+	def enabled(self):
+		"""
+		Whether the flag is enabled.
+
+		@type: bool
+		"""
+		pass
+
 	def __str__(self):
 		return self.name
 
@@ -298,7 +307,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 	@abstractproperty
 	def use(self):
 		"""
-		Get the list of USE flags declared in the ebuild (C{IUSE}).
+		Get the list of USE flags applying to the ebuild.
 
 		@type: L{SpaceSepFrozenSet}(L{PMUseFlag})
 		"""

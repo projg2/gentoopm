@@ -46,7 +46,22 @@ class PkgCorePackageDescription(PMPackageDescription):
 			return None
 
 class PkgCoreUseFlag(PMUseFlag):
-	pass
+	def __init__(self, s, enabled_use):
+		PMUseFlag.__init__(self, s)
+		self._enabled = self.name in enabled_use
+
+	@property
+	def enabled(self):
+		return self._enabled
+
+class PkgCoreUseSet(SpaceSepFrozenSet):
+	def __new__(self, iuse, use):
+		def _get_iuse():
+			for u in iuse:
+				yield PkgCoreUseFlag(u, use)
+
+		self._use = use
+		return SpaceSepFrozenSet.__new__(self, _get_iuse())
 
 class PkgCorePackage(PMPackage, PkgCoreAtom):
 	def __init__(self, pkg, repo_index = 0):
@@ -87,7 +102,7 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 
 	@property
 	def use(self):
-		return SpaceSepFrozenSet([PkgCoreUseFlag(x) for x in self._pkg.iuse])
+		return PkgCoreUseSet(self._pkg.iuse, self._pkg.use)
 
 	@property
 	def slotted(self):

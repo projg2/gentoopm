@@ -48,6 +48,10 @@ class PaludisChoice(PMUseFlag):
 	def name(self):
 		return str(self._c.name_with_prefix)
 
+	@property
+	def enabled(self):
+		return self._c.enabled
+
 class PaludisChoiceSet(SpaceSepFrozenSet):
 	def __new__(self, choices):
 		l = []

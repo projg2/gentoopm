@@ -57,7 +57,22 @@ class PortagePackageDescription(PMPackageDescription):
 		return None # XXX
 
 class PortageUseFlag(PMUseFlag):
-	pass
+	def __init__(self, s, enabled_use):
+		PMUseFlag.__init__(self, s)
+		self._enabled = self.name in enabled_use
+
+	@property
+	def enabled(self):
+		return self._enabled
+
+class PortageUseSet(SpaceSepFrozenSet):
+	def __new__(self, iuse, use):
+		def _get_iuse():
+			for u in iuse:
+				yield PortageUseFlag(u, use)
+
+		self._use = use
+		return SpaceSepFrozenSet.__new__(self, _get_iuse())
 
 class PortageDBCPV(PMPackage, CompletePortageAtom):
 	def __init__(self, cpv, dbapi):
@@ -126,8 +141,8 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def use(self):
-		return SpaceSepFrozenSet([PortageUseFlag(x) for x \
-				in self._aux_get('IUSE').split()])
+		return PortageUseSet(self._aux_get('IUSE').split(),
+				self._applied_use)
 
 	@property
 	def slotted(self):
