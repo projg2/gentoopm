@@ -112,11 +112,11 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 		return PkgCoreUseSet(self._pkg.iuse, self._pkg.use)
 
 	@property
-	def slotted(self):
+	def slotted_atom(self):
 		return PkgCoreAtom(self._pkg.slotted_atom)
 
 	@property
-	def unversioned(self):
+	def unversioned_atom(self):
 		return PkgCoreAtom(self._pkg.unversioned_atom)
 
 	@property

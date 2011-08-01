@@ -326,7 +326,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		pass
 
 	@abstractproperty
-	def slotted(self):
+	def slotted_atom(self):
 		"""
 		Return an atom matching all packages in the same slot as the associated
 		package.
@@ -338,8 +338,15 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		"""
 		pass
 
+	@property
+	def slotted(self):
+		"""
+		@deprecated: alias for L{PMPackage.slotted_atom}
+		"""
+		return self.slotted_atom
+
 	@abstractproperty
-	def unversioned(self):
+	def unversioned_atom(self):
 		"""
 		Return an atom matching all packages with the same key as the
 		associated package.
@@ -350,6 +357,13 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		@type: L{PMAtom}
 		"""
 		pass
+
+	@property
+	def unversioned(self):
+		"""
+		@deprecated: alias for L{PMPackage.unversioned_atom}
+		"""
+		return self.unversioned_atom
 
 	@abstractmethod
 	def __lt__(self, other):

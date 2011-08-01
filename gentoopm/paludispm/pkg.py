@@ -89,13 +89,13 @@ class PaludisID(PMPackage, PaludisAtom):
 		return self._pkg.fs_location_key().parse_value()
 
 	@property
-	def slotted(self):
+	def slotted_atom(self):
 		cp = str(self.key)
 		slot = self.slot
 		return PaludisAtom('%s:%s' % (cp, slot), self._env)
 
 	@property
-	def unversioned(self):
+	def unversioned_atom(self):
 		return PaludisAtom(str(self.key), self._env)
 
 	@property

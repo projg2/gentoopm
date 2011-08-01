@@ -152,13 +152,13 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 				self._applied_use)
 
 	@property
-	def slotted(self):
+	def slotted_atom(self):
 		cp = str(self.key)
 		slot = self.slot
 		return PortageAtom('%s:%s' % (cp, slot))
 
 	@property
-	def unversioned(self):
+	def unversioned_atom(self):
 		return PortageAtom(str(self.key))
 
 	@property
