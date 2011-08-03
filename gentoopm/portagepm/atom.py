@@ -83,7 +83,7 @@ class CompletePortageAtom(PMAtom):
 		if not match_from_list(self._atom, [pkg._cpv]):
 			return False
 		return not self._atom.slot \
-				or self._atom.slot == pkg.metadata.SLOT
+				or self._atom.slot == pkg.slot
 
 	def __contains__(self, pkg):
 		return self._match(pkg) != self.blocking

@@ -124,6 +124,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		@return: True if package matches
 		@rtype: bool
 		@raise KeyError: when invalid metadata key is referenced in kwargs
+		@todo: keyword matchers not yet re-defined for new metadata API.
 		"""
 
 		for f in args:
@@ -137,36 +138,9 @@ class PMPackage(PMAtom, FillMissingComparisons):
 				raise ValueError('Incorrect positional argument: %s' % f)
 
 		for k, m in kwargs.items():
-			try:
-				v = self.metadata[k]
-			except KeyError:
-				raise KeyError('Unmatched keyword argument: %s' % k)
-			else:
-				if not m == v:
-					return False
+			raise KeyError('Unmatched keyword argument: %s' % k)
 
 		return True
-
-	@property
-	def id(self):
-		"""
-		An unique identifier for the package.
-
-		@type: hashable
-		@deprecated: use the package itself or its C{hash()} instead
-		"""
-		return self
-
-	@property
-	def atom(self):
-		"""
-		Return an atom matching the package uniquely.
-
-		@type: L{PMAtom}
-		@deprecated: the package is now a subclass of L{PMAtom}
-			and can be used directly as an atom
-		"""
-		return self
 
 	@abstractproperty
 	def path(self):
@@ -177,16 +151,6 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		or the particular repository doesn't operate on local filesystem.
 
 		@type: string/C{None}
-		"""
-		pass
-
-	@abstractproperty
-	def metadata(self):
-		"""
-		The metadata accessor object for the package.
-
-		@type: L{PMPackageMetadata}
-		@deprecated: inconsistent, please use L{PMPackage} properties instead
 		"""
 		pass
 
@@ -328,42 +292,20 @@ class PMPackage(PMAtom, FillMissingComparisons):
 	@abstractproperty
 	def slotted_atom(self):
 		"""
-		Return an atom matching all packages in the same slot as the associated
-		package.
-
-		This method should be used on associated atoms only. When called
-		on an unassociated atom, it should raise an exception.
+		Return an atom matching all packages in the same slot as the package.
 
 		@type: L{PMAtom}
 		"""
 		pass
-
-	@property
-	def slotted(self):
-		"""
-		@deprecated: alias for L{PMPackage.slotted_atom}
-		"""
-		return self.slotted_atom
 
 	@abstractproperty
 	def unversioned_atom(self):
 		"""
-		Return an atom matching all packages with the same key as the
-		associated package.
-
-		This method should be used on associated atoms only. When called
-		on an unassociated atom, it should raise an exception.
+		Return an atom matching all packages with the same key as the package.
 
 		@type: L{PMAtom}
 		"""
 		pass
-
-	@property
-	def unversioned(self):
-		"""
-		@deprecated: alias for L{PMPackage.unversioned_atom}
-		"""
-		return self.unversioned_atom
 
 	@abstractmethod
 	def __lt__(self, other):
@@ -381,10 +323,6 @@ class PMPackage(PMAtom, FillMissingComparisons):
 	@property
 	def blocking(self):
 		return False
-
-	@property
-	def associated(self):
-		return True
 
 class PMInstallablePackage(PMPackage):
 	"""

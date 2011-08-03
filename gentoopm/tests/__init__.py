@@ -86,3 +86,8 @@ class PackageNames(object):
 
 	envsafe_metadata_key = 'DESCRIPTION'
 	""" Metadata key which should be safe to match with environment.bz2. """
+
+	@staticmethod
+	def envsafe_metadata_acc(pkg):
+		""" Package metadata accessor matching the L{envsafe_metadata_key}. """
+		return pkg.description.short

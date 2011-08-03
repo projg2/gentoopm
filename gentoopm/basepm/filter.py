@@ -32,6 +32,8 @@ class PMKeywordMatcher(ABCObject, FillMissingNotEqual):
 	A keyword matcher is a condition passed as an keyword argument
 	to the L{pkgset.PMPackageSet.filter()} function. It's basically an object
 	which will be compared against metadata value using C{==} operator.
+
+	@todo: Needs adjusting for new metadata accessors.
 	"""
 
 	@abstractmethod

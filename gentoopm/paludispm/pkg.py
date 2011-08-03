@@ -6,7 +6,6 @@
 import paludis
 
 from gentoopm.basepm.depend import PMRequiredUseAtom
-from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstallablePackage, PMInstalledPackage, PMBoundPackageKey, \
 		PMPackageState, PMUseFlag
@@ -79,10 +78,6 @@ class PaludisID(PMPackage, PaludisAtom):
 	def __init__(self, pkg, env):
 		self._pkg = pkg
 		self._env = env
-
-	@property
-	def metadata(self):
-		return PaludisMetadata(self._pkg)
 
 	@property
 	def path(self):
@@ -208,34 +203,3 @@ class PaludisInstalledID(PaludisID, PMInstalledPackage):
 	def contents(self):
 		return PaludisPackageContents(
 				self._get_meta(self._pkg.contents_key()))
-
-class PaludisMetadata(PMPackageMetadata):
-	def __init__(self, pkg):
-		self._pkg = pkg
-
-	def __getattr__(self, key):
-		"""
-		Get the value of a metadata key through an attribute.
-
-		@param key: the metadata key to catch
-		@type key: string
-		@return: the value of a metadata key, or C{''} when unset
-		@rtype: string
-		@raise AttributeError: when invalid metadata key referred
-		@raise NotImplementedError: when not-stringifiable key referred
-		@bug: not all values can be stringified, pretty printing API
-			hasn't been wrapped in Python yet
-		"""
-		if key not in self:
-			raise AttributeError('Unsupported metadata key: %s' % key)
-		m = self._pkg.find_metadata(key)
-		if m is None:
-			return ''
-		m = m.parse_value()
-		if isinstance(m, paludis.StringSetIterable) \
-				or isinstance(m, paludis.KeywordNameIterable):
-			return ' '.join([str(x) for x in m])
-		elif isinstance(m, paludis.AllDepSpec):
-			raise NotImplementedError('Parsing %s is not supported yet.' % key)
-		else:
-			return str(m)

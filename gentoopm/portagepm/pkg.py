@@ -6,7 +6,6 @@
 from portage.versions import cpv_getkey, cpv_getversion, vercmp
 
 from gentoopm.basepm.depend import PMRequiredUseAtom
-from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
 		PMPackageState, PMUseFlag
@@ -85,10 +84,6 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 	def __init__(self, cpv, dbapi):
 		self._cpv = cpv
 		self._dbapi = dbapi
-
-	@property
-	def metadata(self):
-		return PortageMetadata(self)
 
 	@property
 	def path(self):
@@ -256,12 +251,3 @@ class PortageVDBCPV(PortageDBCPV, PMInstalledPackage):
 	@property
 	def contents(self):
 		return PortagePackageContents(self._dbapi._dblink(self._cpv))
-
-class PortageMetadata(PMPackageMetadata):
-	def __init__(self, pkg):
-		self._pkg = pkg
-
-	def __getattr__(self, key):
-		if key not in self:
-			raise AttributeError('Unsupported metadata key: %s' % key)
-		return self._pkg._aux_get(key)

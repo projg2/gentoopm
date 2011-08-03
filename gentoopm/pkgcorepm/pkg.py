@@ -3,7 +3,6 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.basepm.metadata import PMPackageMetadata
 from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
 		PMPackageState, PMUseFlag
@@ -74,10 +73,6 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 	def __init__(self, pkg, repo_index = 0):
 		self._pkg = pkg
 		self._repo_index = repo_index
-
-	@property
-	def metadata(self):
-		return PkgCoreMetadata(self._pkg)
 
 	@property
 	def key(self):
@@ -210,41 +205,3 @@ class PkgCoreInstalledPackage(PkgCorePackage, PMInstalledPackage):
 			raise TypeError('Unable to compare %s against %s' % \
 					(self, other))
 		return self._pkg < other._pkg
-
-class PkgCoreMetadata(PMPackageMetadata):
-	def __init__(self, pkg):
-		self._pkg = pkg
-
-	@property
-	def INHERITED(self):
-		# vdb uses INHERITED
-		# ebuilds use _eclasses_
-		try:
-			return self._pkg.data['INHERITED']
-		except KeyError:
-			pass
-		try:
-			return ' '.join(self._pkg.data['_eclasses_'].keys())
-		except KeyError:
-			return ''
-
-	@property
-	def DEPEND(self):
-		return str(self._pkg.depends)
-
-	@property
-	def RDEPEND(self):
-		return str(self._pkg.rdepends)
-
-	@property
-	def PDEPEND(self):
-		return str(self._pkg.post_rdepends)
-
-	def __getattr__(self, key):
-		if key not in self:
-			raise AttributeError('Unsupported metadata key: %s' % key)
-		v = getattr(self._pkg, key.lower())
-		if isinstance(v, tuple) or isinstance(v, frozenset):
-			return ' '.join(v)
-		else:
-			return str(v)

@@ -19,8 +19,8 @@ class PackagesTestCase(PMTestCase):
 			ids = set()
 			key = None
 			for p in r.filter(PackageNames.single_complete):
-				self.assertFalse(p.id in ids)
-				ids.add(p.id)
+				self.assertFalse(p in ids)
+				ids.add(p)
 				if key is not None:
 					self.assertEqual(p.key, key)
 				else:
@@ -44,30 +44,15 @@ class PackagesTestCase(PMTestCase):
 			# get worst match
 			p = next(iter(sorted(r.filter(PackageNames.single_complete))))
 
-			self.assertEqual(p, r[p.atom])
-			self.assertEqual(p.key, r.select(p.atom.slotted).key)
-			self.assertEqual(p.key, r.select(p.atom.unversioned).key)
+			self.assertEqual(p, r[p])
+			self.assertEqual(p.key, r.select(p.slotted_atom).key)
+			self.assertEqual(p.key, r.select(p.unversioned_atom).key)
 
 	def test_metadata_inherited(self):
 		""" Check the INHERITED metadata var. It was known to cause problems
 			with pkgcore. """
 		for p in self._pkgs:
-			p.metadata['INHERITED']
-
-	def test_metadata_dict_attr(self):
-		""" Check whether metadata is accessible with dict & attrs. """
-		mks = ('EAPI', 'INHERITED', 'DESCRIPTION')
-		for p in self._pkgs:
-			for k in mks:
-				self.assertEqual(p.metadata[k], getattr(p.metadata, k))
-
-	def test_metadata_invalid(self):
-		""" Check whether invalid metadata access raises an exception. """
-		rk = 'FOOBAR'
-		for p in self._pkgs:
-			self.assertFalse(rk in p.metadata)
-			self.assertRaises(KeyError, lambda m, rk: m[rk], p.metadata, rk)
-			self.assertRaises(AttributeError, getattr, p.metadata, rk)
+			p.inherits
 
 	def test_description(self):
 		""" Check whether description works as expected. """
@@ -88,21 +73,24 @@ class PackagesTestCase(PMTestCase):
 	def test_environ_dict(self):
 		""" Try to access environment.bz2 via dict. """
 		rk = PackageNames.envsafe_metadata_key
+		ra = PackageNames.envsafe_metadata_acc
 		for p in (self._inst_pkg,):
-			self.assertEqual(p.metadata[rk], p.environ[rk])
+			self.assertEqual(ra(p), p.environ[rk])
 
 	def test_environ_copy(self):
 		""" Try to access environment.bz2 via .copy(). """
 		rk = PackageNames.envsafe_metadata_key
+		ra = PackageNames.envsafe_metadata_acc
 		for p in (self._inst_pkg,):
-			self.assertEqual(p.metadata[rk], p.environ.copy(rk)[rk])
+			self.assertEqual(ra(p), p.environ.copy(rk)[rk])
 
 	def test_environ_fork(self):
 		""" Test forking environment accessor. """
 		rk = PackageNames.envsafe_metadata_key
+		ra = PackageNames.envsafe_metadata_acc
 		for p in (self._inst_pkg,):
 			forkenv = p.environ.fork()
-			self.assertEqual(p.metadata[rk], forkenv[rk])
+			self.assertEqual(ra(p), forkenv[rk])
 			del forkenv
 
 	def test_contents(self):

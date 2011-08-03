@@ -28,11 +28,11 @@ class RepositoriesTestCase(PMTestCase):
 
 	def test_stack_repos_equiv(self):
 		patom = PackageNames.single_complete
-		plist = set([x.id for x in self._stack.filter(patom)])
+		plist = set(self._stack.filter(patom))
 		for r in self.pm.repositories:
 			for p in r.filter(patom):
-				self.assertTrue(p.id in plist)
-				plist.remove(p.id)
+				self.assertTrue(p in plist)
+				plist.remove(p)
 		self.assertFalse(plist) # empty
 
 	def tearDown(self):

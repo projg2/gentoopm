@@ -169,34 +169,6 @@ class PMAtom(ABCObject, StringifiedComparisons):
 		"""
 		pass
 
-	@property
-	def associated(self):
-		"""
-		Whether the atom is associated with a package.
-
-		If an atom is unassociated, it is impossible to transform it.
-
-		@type: bool
-		@deprecated: now L{PMPackage} is a subclass of L{PMAtom},
-			and that's the associated atom variant
-		"""
-		return False
-
-	def get_associated(self, repo):
-		"""
-		Return an atom associated with a matching package in the repository.
-
-		@param repo: Repository to find a match in.
-		@type repo: L{PMRepository}
-		@return: An associated atom.
-		@rtype: L{PMAtom}
-		@raise EmptyPackageSetError: when no packages match the atom
-		@raise AmbiguousPackageSetError: when packages with different keys
-			match the atom
-		@deprecated: redundant and unclear, please use C{repo[atom]} instead
-		"""
-		return repo.select(self)
-
 	@abstractproperty
 	def key(self):
 		"""
