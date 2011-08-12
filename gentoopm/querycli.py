@@ -108,11 +108,9 @@ class PMQueryCommands(object):
 
 			try:
 				from IPython import embed
-				raise ImportError
 			except ImportError:
 				try:
 					from IPython.Shell import IPShellEmbed
-					raise ImportError
 				except ImportError:
 					print('For better user experience, install IPython.')
 					from code import InteractiveConsole
