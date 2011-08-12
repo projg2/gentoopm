@@ -81,6 +81,8 @@ class SmartAttrGetter(object):
 			raise KeyError('Invalid keyword argument: %s' % self._k)
 
 class PMTransformedKeywordFilter(PMPackageMatcher):
+	# XXX: transform this to subclass of ..filters.AttributeMatch
+	# hardcode 'foo_bar' -> 'foo.bar' mappings instead of doing magic
 	def __init__(self, key, val):
 		self._getter = SmartAttrGetter(key)
 		self._val = val
