@@ -111,7 +111,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 	in the package tree.
 	"""
 
-	def _matches(self, *args, **kwargs):
+	def _matches(self, *args):
 		"""
 		Check whether the package matches passed filters. Please note that this
 		method may not be called at all if PM is capable of a more efficient
@@ -135,15 +135,6 @@ class PMPackage(PMAtom, FillMissingComparisons):
 					return False
 			else:
 				raise ValueError('Incorrect positional argument: %s' % f)
-
-		for k, m in kwargs.items():
-			try:
-				v = self.metadata[k]
-			except KeyError:
-				raise KeyError('Unmatched keyword argument: %s' % k)
-			else:
-				if not m == v:
-					return False
 
 		return True
 

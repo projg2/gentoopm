@@ -4,6 +4,8 @@
 # Released under the terms of the 2-clause BSD license.
 
 from abc import abstractmethod
+from operator import attrgetter
+import itertools
 
 from ..util import ABCObject, FillMissingNotEqual
 
@@ -44,3 +46,57 @@ class PMKeywordMatcher(ABCObject, FillMissingNotEqual):
 		@rtype: bool
 		"""
 		pass
+
+class SmartAttrGetter(object):
+	"""
+	A wrapper on attrgetter, supporting dots replaced by underscores. Uses the
+	first package matched to distinguish between real underscores and dots.
+	"""
+
+	def __init__(self, key):
+		self._k = key
+		self._getter = None
+
+	def __call__(self, obj):
+		if self._getter is not None:
+			return self._getter(obj)
+
+		def get_variants(args):
+			prev = None
+			for a in args:
+				if prev is not None:
+					yield ('%s_' % prev, '%s.' % prev)
+				prev = a
+			else:
+				yield (prev,)
+
+		variants = itertools.product(*get_variants(self._k.split('_')))
+		for v in variants:
+			self._getter = attrgetter(''.join(v))
+			try:
+				return self._getter(obj)
+			except AttributeError:
+				pass
+		else:
+			raise KeyError('Invalid keyword argument: %s' % self._k)
+
+class PMTransformedKeywordFilter(PMPackageMatcher):
+	def __init__(self, key, val):
+		self._getter = SmartAttrGetter(key)
+		self._val = val
+
+	def __call__(self, pkg):
+		return self._val == self._getter(pkg)
+
+def transform_keyword_filters(kwargs):
+	"""
+	Transform a number of keyword filters into positional args.
+
+	@param kwargs: keyword arguments, as passed to L{PMPackageSet.filter()}
+	@type kwargs: dict
+	@return: positional arguments representing the keyword filters
+	@rtype: tuple
+	"""
+
+	return tuple([PMTransformedKeywordFilter(k, v)
+			for k, v in kwargs.items()])
