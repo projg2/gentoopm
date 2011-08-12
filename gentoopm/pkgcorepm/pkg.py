@@ -3,15 +3,16 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
+from ..basepm.metadata import PMPackageMetadata
+from ..basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
 		PMPackageState, PMUseFlag
-from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
-from gentoopm.pkgcorepm.atom import PkgCoreAtom, PkgCorePackageKey
-from gentoopm.pkgcorepm.contents import PkgCorePackageContents
-from gentoopm.pkgcorepm.depend import PkgCorePackageDepSet
-from gentoopm.util import SpaceSepTuple, SpaceSepFrozenSet
+from ..basepm.pkgset import PMPackageSet, PMFilteredPackageSet
+from ..util import SpaceSepTuple, SpaceSepFrozenSet
+
+from .atom import PkgCoreAtom, PkgCorePackageKey
+from .contents import PkgCorePackageContents
+from .depend import PkgCorePackageDepSet
 
 class PkgCorePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):

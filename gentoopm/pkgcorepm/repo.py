@@ -7,12 +7,13 @@ from abc import abstractproperty
 
 import pkgcore.restrictions.boolean as br
 
-from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
+from ..basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
-from gentoopm.pkgcorepm.pkg import PkgCorePackageSet, PkgCoreFilteredPackageSet, \
+from ..util import FillMissingComparisons
+
+from .pkg import PkgCorePackageSet, PkgCoreFilteredPackageSet, \
 		PkgCoreInstallablePackage, PkgCoreInstalledPackage
-from gentoopm.pkgcorepm.filter import transform_filters
-from gentoopm.util import FillMissingComparisons
+from .filter import transform_filters
 
 class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):

@@ -6,7 +6,7 @@
 from collections import namedtuple
 from portage.dep import paren_reduce, use_reduce
 
-from gentoopm.basepm.depend import PMPackageDepSet, PMConditionalDep, \
+from ..basepm.depend import PMPackageDepSet, PMConditionalDep, \
 	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMBaseDep
 
 class PortageBaseDep(PMBaseDep):

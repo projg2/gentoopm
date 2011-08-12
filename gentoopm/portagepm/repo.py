@@ -9,12 +9,12 @@ from abc import abstractproperty
 import portage.exception as pe
 from portage.versions import catsplit
 
-from gentoopm.basepm.repo import PMRepositoryDict, PMEbuildRepository, \
-		PMRepository
-from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom
-from gentoopm.portagepm.pkg import PortageCPV, PortageVDBCPV, PortagePackageSet, \
+from ..basepm.repo import PMRepositoryDict, PMEbuildRepository, PMRepository
+from ..util import FillMissingComparisons
+
+from .atom import PortageAtom, CompletePortageAtom
+from .pkg import PortageCPV, PortageVDBCPV, PortagePackageSet, \
 		PortageFilteredPackageSet
-from gentoopm.util import FillMissingComparisons
 
 class PortageRepoDict(PMRepositoryDict):
 	def __iter__(self):

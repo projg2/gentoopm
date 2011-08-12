@@ -4,9 +4,9 @@
 # Released under the terms of the 2-clause BSD license.
 
 _supported_pms = {
-	'paludis': ('gentoopm.paludispm', 'PaludisPM'),
-	'pkgcore': ('gentoopm.pkgcorepm', 'PkgCorePM'),
-	'portage': ('gentoopm.portagepm', 'PortagePM')
+	'paludis': ('paludispm', 'PaludisPM'),
+	'pkgcore': ('pkgcorepm', 'PkgCorePM'),
+	'portage': ('portagepm', 'PortagePM')
 }
 
 def get_pm(pm_name):
@@ -23,7 +23,7 @@ def get_pm(pm_name):
 	"""
 
 	modname, clsname = _supported_pms[pm_name]
-	mod = __import__(modname, fromlist=[clsname], level=-1)
+	mod = __import__(modname, fromlist=[clsname], globals=globals(), level=1)
 	return getattr(mod, clsname)()
 
 def get_any_pm(pm_list):

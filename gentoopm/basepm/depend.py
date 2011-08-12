@@ -5,7 +5,7 @@
 
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.util import ABCObject, StringCompat
+from ..util import ABCObject, StringCompat
 
 class PMRequiredUseAtom(StringCompat):
 	"""

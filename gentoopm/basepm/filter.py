@@ -5,7 +5,7 @@
 
 from abc import abstractmethod
 
-from gentoopm.util import ABCObject, FillMissingNotEqual
+from ..util import ABCObject, FillMissingNotEqual
 
 class PMPackageMatcher(ABCObject):
 	"""

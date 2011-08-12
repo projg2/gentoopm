@@ -5,7 +5,7 @@
 
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.util import ABCObject, StringCompat, StringifiedComparisons, \
+from ..util import ABCObject, StringCompat, StringifiedComparisons, \
 		FillMissingComparisons
 
 class PMPackageKey(ABCObject, StringCompat, FillMissingComparisons):

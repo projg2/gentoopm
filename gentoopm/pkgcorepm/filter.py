@@ -5,8 +5,8 @@
 
 import pkgcore.restrictions.boolean as br
 
-from gentoopm.pkgcorepm.atom import PkgCoreAtom
-from gentoopm.pkgcorepm.pkg import PkgCorePackage
+from .atom import PkgCoreAtom
+from .pkg import PkgCorePackage
 
 def transform_filters(args, kwargs):
 	"""

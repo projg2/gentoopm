@@ -5,9 +5,9 @@
 
 import paludis, re
 
-from gentoopm.basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
+from ..basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
 		PMIncompletePackageKey
-from gentoopm.exceptions import InvalidAtomStringError
+from ..exceptions import InvalidAtomStringError
 
 _category_wildcard_re = re.compile(r'\w')
 

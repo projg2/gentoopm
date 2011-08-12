@@ -5,17 +5,18 @@
 
 from portage.versions import cpv_getkey, cpv_getversion, vercmp
 
-from gentoopm.basepm.depend import PMRequiredUseAtom
-from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
+from ..basepm.depend import PMRequiredUseAtom
+from ..basepm.metadata import PMPackageMetadata
+from ..basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
 		PMPackageState, PMUseFlag
-from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
-from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom, \
+from ..basepm.pkgset import PMPackageSet, PMFilteredPackageSet
+from ..util import SpaceSepTuple, SpaceSepFrozenSet
+
+from .atom import PortageAtom, CompletePortageAtom, \
 		PortagePackageKey, PortagePackageVersion, _get_atom
-from gentoopm.portagepm.contents import PortagePackageContents
-from gentoopm.portagepm.depend import PortagePackageDepSet
-from gentoopm.util import SpaceSepTuple, SpaceSepFrozenSet
+from .contents import PortagePackageContents
+from .depend import PortagePackageDepSet
 
 class PortagePackageSet(PMPackageSet):
 	def filter(self, *args, **kwargs):

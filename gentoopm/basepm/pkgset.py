@@ -5,8 +5,8 @@
 
 from abc import abstractmethod
 
-from gentoopm.exceptions import EmptyPackageSetError, AmbiguousPackageSetError
-from gentoopm.util import ABCObject, BoolCompat
+from ..exceptions import EmptyPackageSetError, AmbiguousPackageSetError
+from ..util import ABCObject, BoolCompat
 
 class PMPackageSet(ABCObject, BoolCompat):
 	""" A set of packages. """

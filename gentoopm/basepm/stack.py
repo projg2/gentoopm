@@ -3,8 +3,8 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.basepm.repo import PMRepository
-from gentoopm.basepm.pkgset import PMPackageSet
+from .repo import PMRepository
+from .pkgset import PMPackageSet
 
 class PMRepoStackWrapper(PMRepository):
 	"""

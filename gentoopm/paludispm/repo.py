@@ -7,11 +7,11 @@ from abc import abstractproperty
 
 import paludis
 
-from gentoopm.basepm.repo import PMRepository, PMRepositoryDict, \
-		PMEbuildRepository
-from gentoopm.paludispm.atom import PaludisAtom
-from gentoopm.paludispm.pkg import PaludisInstallableID, PaludisInstalledID
-from gentoopm.paludispm.pkgset import PaludisPackageSet
+from ..basepm.repo import PMRepository, PMRepositoryDict, PMEbuildRepository
+
+from .atom import PaludisAtom
+from .pkg import PaludisInstallableID, PaludisInstalledID
+from .pkgset import PaludisPackageSet
 
 class PaludisRepoDict(PMRepositoryDict):
 	def __iter__(self):

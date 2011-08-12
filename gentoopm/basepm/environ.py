@@ -5,7 +5,7 @@
 
 import bz2
 
-from gentoopm.bash import get_any_bashparser
+from ..bash import get_any_bashparser
 
 def _load_bp(bp, path):
 	"""

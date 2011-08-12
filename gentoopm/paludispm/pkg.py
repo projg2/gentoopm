@@ -5,16 +5,16 @@
 
 import paludis
 
-from gentoopm.basepm.depend import PMRequiredUseAtom
-from gentoopm.basepm.metadata import PMPackageMetadata
-from gentoopm.basepm.pkg import PMPackage, PMPackageDescription, \
+from ..basepm.depend import PMRequiredUseAtom
+from ..basepm.metadata import PMPackageMetadata
+from ..basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstallablePackage, PMInstalledPackage, PMBoundPackageKey, \
 		PMPackageState, PMUseFlag
-from gentoopm.paludispm.atom import PaludisAtom, \
-		PaludisPackageKey, PaludisPackageVersion
-from gentoopm.paludispm.contents import PaludisPackageContents
-from gentoopm.paludispm.depend import PaludisPackageDepSet
-from gentoopm.util import SpaceSepFrozenSet, SpaceSepTuple
+from ..util import SpaceSepFrozenSet, SpaceSepTuple
+
+from .atom import PaludisAtom, PaludisPackageKey, PaludisPackageVersion
+from .contents import PaludisPackageContents
+from .depend import PaludisPackageDepSet
 
 class PaludisBoundPackageKey(PaludisPackageKey, PMBoundPackageKey):
 	def __init__(self, key, pkg):

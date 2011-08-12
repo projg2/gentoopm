@@ -3,8 +3,9 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.exceptions import InvalidAtomStringError, AmbiguousPackageSetError
-from gentoopm.tests import PMTestCase, PackageNames
+from ..exceptions import InvalidAtomStringError, AmbiguousPackageSetError
+
+from . import PMTestCase, PackageNames
 
 class UserSpecifiedAtomTestCase(PMTestCase):
 	def setUp(self):

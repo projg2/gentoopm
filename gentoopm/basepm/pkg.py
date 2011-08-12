@@ -6,10 +6,10 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.basepm.atom import PMAtom, PMPackageKey
-from gentoopm.basepm.environ import PMPackageEnvironment
-from gentoopm.util import ABCObject, FillMissingComparisons, StringCompat, \
-		EnumTuple
+from ..util import ABCObject, FillMissingComparisons, StringCompat, EnumTuple
+
+from .atom import PMAtom, PMPackageKey
+from .environ import PMPackageEnvironment
 
 PMPackageState = EnumTuple('PMPackageState',
 		'installable',

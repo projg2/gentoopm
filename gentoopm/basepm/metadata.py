@@ -5,7 +5,7 @@
 
 from abc import abstractmethod
 
-from gentoopm.util import ABCObject
+from ..util import ABCObject
 
 # Keep a list common to all PMs.
 metadata_keys = (

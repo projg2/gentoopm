@@ -6,8 +6,8 @@
 import argparse, os.path
 from abc import abstractmethod
 
-from gentoopm import get_package_manager
-from gentoopm.util import ABCObject
+from . import get_package_manager
+from .util import ABCObject
 
 def _reponame(val):
 	"""

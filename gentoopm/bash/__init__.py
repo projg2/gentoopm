@@ -5,7 +5,7 @@
 
 from abc import abstractmethod
 
-from gentoopm.util import ABCObject
+from ..util import ABCObject
 
 class BashParser(ABCObject):
 	"""

@@ -21,7 +21,7 @@ def get_package_manager():
 	@raise Exception: No package manager could be imported.
 	"""
 
-	from gentoopm.preferences import get_preferred_pms
-	from gentoopm.submodules import get_any_pm
+	from .preferences import get_preferred_pms
+	from .submodules import get_any_pm
 
 	return get_any_pm(get_preferred_pms())

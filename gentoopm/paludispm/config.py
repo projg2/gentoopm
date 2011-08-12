@@ -3,7 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.basepm.config import PMConfig
+from ..basepm.config import PMConfig
 
 class PaludisConfig(PMConfig):
 	def __init__(self, env):

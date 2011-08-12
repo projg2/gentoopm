@@ -5,7 +5,7 @@
 
 import portage.data
 
-from gentoopm.basepm.config import PMConfig
+from ..basepm.config import PMConfig
 
 class PortageConfig(PMConfig):
 	def __init__(self, settings):

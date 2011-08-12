@@ -3,9 +3,10 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.basepm.pkgset import PMPackageSet, PMFilteredPackageSet
-from gentoopm.exceptions import EmptyPackageSetError, AmbiguousPackageSetError
-from gentoopm.paludispm.atom import PaludisAtom
+from ..basepm.pkgset import PMPackageSet, PMFilteredPackageSet
+from ..exceptions import EmptyPackageSetError, AmbiguousPackageSetError
+
+from .atom import PaludisAtom
 
 class PaludisPackageSet(object):
 	def __init__(self, env):

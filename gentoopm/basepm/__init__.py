@@ -5,8 +5,9 @@
 
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.basepm.stack import PMRepoStackWrapper
-from gentoopm.util import ABCObject
+from ..util import ABCObject
+
+from .stack import PMRepoStackWrapper
 
 class PackageManager(ABCObject):
 	"""

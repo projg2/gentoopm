@@ -5,7 +5,7 @@
 
 from abc import abstractproperty
 
-from gentoopm.util import ABCObject
+from ..util import ABCObject
 
 class PMConfig(ABCObject):
 	@abstractproperty

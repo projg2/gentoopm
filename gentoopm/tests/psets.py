@@ -3,9 +3,10 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.exceptions import AmbiguousPackageSetError, EmptyPackageSetError
-from gentoopm.tests import PMTestCase, PackageNames
-from gentoopm.util import BoolCompat
+from ..exceptions import AmbiguousPackageSetError, EmptyPackageSetError
+from ..util import BoolCompat
+
+from . import PMTestCase, PackageNames
 
 class IterChecker(BoolCompat):
 	def __init__(self, iterable):

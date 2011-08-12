@@ -5,7 +5,7 @@
 
 import pkgcore.os_data
 
-from gentoopm.basepm.config import PMConfig
+from ..basepm.config import PMConfig
 
 class PkgCoreConfig(PMConfig):
 	def __init__(self, domain):

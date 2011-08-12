@@ -6,10 +6,11 @@
 import os
 from portage import create_trees, VERSION
 
-from gentoopm.basepm import PackageManager
-from gentoopm.portagepm.atom import PortageAtom
-from gentoopm.portagepm.config import PortageConfig
-from gentoopm.portagepm.repo import PortageRepoDict, VDBRepository
+from ..basepm import PackageManager
+
+from .atom import PortageAtom
+from .config import PortageConfig
+from .repo import PortageRepoDict, VDBRepository
 
 class PortagePM(PackageManager):
 	name = 'portage'
