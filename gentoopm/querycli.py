@@ -98,6 +98,20 @@ class PMQueryCommands(object):
 				return 1
 			print(r.path)
 
+	class shell(PMQueryCommand):
+		"""
+		Run a Python shell with current PM selected.
+		"""
+		def __call__(self, pm, args):
+			try:
+				from IPython import embed
+			except ImportError:
+				self._arg.error('IPython >= 0.11 required for shell')
+				return 1
+
+			welc = "The %s PM is now available as 'pm' object." % pm.name
+			embed(banner2 = welc)
+
 	def __iter__(self):
 		for k in dir(self):
 			if k.startswith('_'):
