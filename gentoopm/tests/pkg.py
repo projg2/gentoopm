@@ -5,7 +5,7 @@
 
 import os.path
 
-from gentoopm.tests import PMTestCase, PackageNames
+from . import PMTestCase, PackageNames
 
 class PackagesTestCase(PMTestCase):
 	def setUp(self):

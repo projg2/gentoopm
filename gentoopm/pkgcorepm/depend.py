@@ -9,9 +9,10 @@ from pkgcore.restrictions.boolean import OrRestriction, AndRestriction, \
 from pkgcore.restrictions.packages import Conditional
 from pkgcore.restrictions.values import ContainmentMatch
 
-from gentoopm.basepm.depend import PMPackageDepSet, PMConditionalDep, \
+from ..basepm.depend import PMPackageDepSet, PMConditionalDep, \
 	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMBaseDep, PMRequiredUseAtom
-from gentoopm.pkgcorepm.atom import PkgCoreAtom
+
+from .atom import PkgCoreAtom
 
 class PkgCoreBaseDep(PMBaseDep):
 	def __init__(self, deps, pkg):

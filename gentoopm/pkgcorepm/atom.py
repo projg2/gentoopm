@@ -9,9 +9,9 @@ from pkgcore.ebuild.restricts import PackageDep, VersionMatch, \
 from pkgcore.restrictions.boolean import AndRestriction
 from pkgcore.util.parserestrict import parse_match, ParseError
 
-from gentoopm.basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
+from ..basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
 		PMIncompletePackageKey
-from gentoopm.exceptions import InvalidAtomStringError
+from ..exceptions import InvalidAtomStringError
 
 def _find_res(res, cls):
 	if isinstance(res, AndRestriction):

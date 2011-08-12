@@ -6,10 +6,10 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.basepm.atom import PMAtom, PMPackageKey
-from gentoopm.basepm.environ import PMPackageEnvironment
-from gentoopm.util import ABCObject, FillMissingComparisons, StringCompat, \
-		EnumTuple
+from ..util import ABCObject, FillMissingComparisons, StringCompat, EnumTuple
+
+from .atom import PMAtom, PMPackageKey
+from .environ import PMPackageEnvironment
 
 PMPackageState = EnumTuple('PMPackageState',
 		'installable',
@@ -111,7 +111,7 @@ class PMPackage(PMAtom, FillMissingComparisons):
 	in the package tree.
 	"""
 
-	def _matches(self, *args, **kwargs):
+	def _matches(self, *args):
 		"""
 		Check whether the package matches passed filters. Please note that this
 		method may not be called at all if PM is capable of a more efficient
@@ -136,9 +136,6 @@ class PMPackage(PMAtom, FillMissingComparisons):
 					return False
 			else:
 				raise ValueError('Incorrect positional argument: %s' % f)
-
-		for k, m in kwargs.items():
-			raise KeyError('Unmatched keyword argument: %s' % k)
 
 		return True
 

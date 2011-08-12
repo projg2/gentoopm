@@ -4,15 +4,20 @@
 # Released under the terms of the 2-clause BSD license.
 
 from pkgcore.config import load_config
+from pkgcore.const import VERSION
 
-from gentoopm.basepm import PackageManager
-from gentoopm.pkgcorepm.atom import PkgCoreAtom
-from gentoopm.pkgcorepm.config import PkgCoreConfig
-from gentoopm.pkgcorepm.repo import PkgCoreRepoDict, \
-		PkgCoreInstalledRepo
+from ..basepm import PackageManager
+
+from .atom import PkgCoreAtom
+from .config import PkgCoreConfig
+from .repo import PkgCoreRepoDict, PkgCoreInstalledRepo
 
 class PkgCorePM(PackageManager):
 	name = 'pkgcore'
+
+	@property
+	def version(self):
+		return VERSION
 
 	def reload_config(self):
 		c = load_config()

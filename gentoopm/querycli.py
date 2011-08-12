@@ -6,8 +6,8 @@
 import argparse, os.path
 from abc import abstractmethod
 
-from gentoopm import get_package_manager
-from gentoopm.util import ABCObject
+from . import get_package_manager
+from .util import ABCObject
 
 def _reponame(val):
 	"""
@@ -97,6 +97,32 @@ class PMQueryCommands(object):
 				self._arg.error('No repository named %s' % args.repo_name)
 				return 1
 			print(r.path)
+
+	class shell(PMQueryCommand):
+		"""
+		Run a Python shell with current PM selected.
+		"""
+		def __call__(self, pm, args):
+			welc = "The %s PM is now available as 'pm' object." % pm.name
+			kwargs = {}
+
+			try:
+				from IPython import embed
+			except ImportError:
+				try:
+					from IPython.Shell import IPShellEmbed
+				except ImportError:
+					print('For better user experience, install IPython.')
+					from code import InteractiveConsole
+					embed = InteractiveConsole({'pm': pm}).interact
+					kwargs['banner'] = welc
+				else:
+					embed = IPShellEmbed()
+					embed.set_banner(embed.IP.BANNER + '\n\n' + welc)
+			else:
+				kwargs['banner2'] = welc
+
+			embed(**kwargs)
 
 	def __iter__(self):
 		for k in dir(self):

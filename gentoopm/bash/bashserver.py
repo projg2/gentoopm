@@ -5,8 +5,9 @@
 
 import shutil, subprocess, tempfile
 
-from gentoopm.bash import BashParser
-from gentoopm.exceptions import InvalidBashCodeError
+from ..exceptions import InvalidBashCodeError
+
+from . import BashParser
 
 _bash_script = '''
 while

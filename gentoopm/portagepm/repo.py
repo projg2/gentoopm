@@ -9,12 +9,12 @@ from abc import abstractproperty
 import portage.exception as pe
 from portage.versions import catsplit
 
-from gentoopm.basepm.repo import PMRepositoryDict, PMEbuildRepository, \
-		PMRepository
-from gentoopm.portagepm.atom import PortageAtom, CompletePortageAtom
-from gentoopm.portagepm.pkg import PortageCPV, PortageVDBCPV, PortagePackageSet, \
+from ..basepm.repo import PMRepositoryDict, PMEbuildRepository, PMRepository
+from ..util import FillMissingComparisons
+
+from .atom import PortageAtom, CompletePortageAtom
+from .pkg import PortageCPV, PortageVDBCPV, PortagePackageSet, \
 		PortageFilteredPackageSet
-from gentoopm.util import FillMissingComparisons
 
 class PortageRepoDict(PMRepositoryDict):
 	def __iter__(self):
@@ -27,7 +27,14 @@ class PortageRepoDict(PMRepositoryDict):
 				repo_name = self._dbapi.repositories.get_name_for_location(key)
 			else:
 				repo_name = key
-			r = self._dbapi.repositories[repo_name]
+			try:
+				r = self._dbapi.repositories[repo_name]
+			except TypeError: # older portage doesn't have __getitem__() here
+				for r in self._dbapi.repositories:
+					if r.name == repo_name:
+						break
+				else:
+					raise KeyError(repo_name)
 		except KeyError:
 			raise KeyError('No repository matched key %s' % key)
 		else:

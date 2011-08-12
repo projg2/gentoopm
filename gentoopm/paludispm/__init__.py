@@ -10,14 +10,18 @@ try:
 except (NameError, AttributeError):
 	raise ImportError('paludis version too old (at least 0.64.2 required)')
 
-from gentoopm.basepm import PackageManager
-from gentoopm.paludispm.atom import PaludisAtom
-from gentoopm.paludispm.config import PaludisConfig
-from gentoopm.paludispm.repo import PaludisRepoDict, PaludisInstalledRepo, \
-		PaludisStackRepo
+from ..basepm import PackageManager
+
+from .atom import PaludisAtom
+from .config import PaludisConfig
+from .repo import PaludisRepoDict, PaludisInstalledRepo, PaludisStackRepo
 
 class PaludisPM(PackageManager):
 	name = 'paludis'
+
+	@property
+	def version(self):
+		return paludis.VERSION
 
 	def reload_config(self):
 		self._env = paludis.EnvironmentFactory.instance.create('')

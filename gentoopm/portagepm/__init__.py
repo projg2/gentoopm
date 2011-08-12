@@ -4,15 +4,20 @@
 # Released under the terms of the 2-clause BSD license.
 
 import os
-from portage import create_trees
+from portage import create_trees, VERSION
 
-from gentoopm.basepm import PackageManager
-from gentoopm.portagepm.atom import PortageAtom
-from gentoopm.portagepm.config import PortageConfig
-from gentoopm.portagepm.repo import PortageRepoDict, VDBRepository
+from ..basepm import PackageManager
+
+from .atom import PortageAtom
+from .config import PortageConfig
+from .repo import PortageRepoDict, VDBRepository
 
 class PortagePM(PackageManager):
 	name = 'portage'
+
+	@property
+	def version(self):
+		return VERSION
 
 	def reload_config(self):
 		# Similarly to emerge, care for PORTAGE_CONFIGROOT and ROOT.

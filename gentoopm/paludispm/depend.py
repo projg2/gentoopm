@@ -6,9 +6,10 @@
 import paludis, re
 from collections import namedtuple
 
-from gentoopm.basepm.depend import PMPackageDepSet, PMConditionalDep, \
+from ..basepm.depend import PMPackageDepSet, PMConditionalDep, \
 	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMBaseDep
-from gentoopm.paludispm.atom import PaludisAtom
+
+from .atom import PaludisAtom
 
 _block_re = re.compile('^!*')
 

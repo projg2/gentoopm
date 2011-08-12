@@ -3,7 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.tests import PMTestCase, PackageNames
+from . import PMTestCase, PackageNames
 
 class RepositoriesTestCase(PMTestCase):
 	def setUp(self):

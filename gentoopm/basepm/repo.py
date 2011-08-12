@@ -6,8 +6,9 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.basepm.pkgset import PMPackageSet
-from gentoopm.util import ABCObject, FillMissingComparisons
+from ..util import ABCObject, FillMissingComparisons
+
+from .pkgset import PMPackageSet
 
 class PMRepositoryDict(ABCObject):
 	"""

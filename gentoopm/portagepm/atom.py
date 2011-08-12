@@ -10,9 +10,9 @@ from portage.dbapi.dep_expand import dep_expand
 from portage.dep import match_from_list
 from portage.versions import catsplit, pkgsplit, cpv_getversion, vercmp
 
-from gentoopm.basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
+from ..basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
 		PMIncompletePackageKey
-from gentoopm.exceptions import InvalidAtomStringError
+from ..exceptions import InvalidAtomStringError
 
 class PortagePackageKey(PMPackageKey):
 	def __init__(self, cp):

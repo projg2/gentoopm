@@ -5,8 +5,10 @@
 
 from abc import abstractmethod
 
-from gentoopm.exceptions import EmptyPackageSetError, AmbiguousPackageSetError
-from gentoopm.util import ABCObject, BoolCompat
+from .filter import transform_keyword_filters
+
+from ..exceptions import EmptyPackageSetError, AmbiguousPackageSetError
+from ..util import ABCObject, BoolCompat
 
 class PMPackageSet(ABCObject, BoolCompat):
 	""" A set of packages. """
@@ -26,8 +28,13 @@ class PMPackageSet(ABCObject, BoolCompat):
 		Filter the packages based on arguments. Return a filtered package set.
 
 		The positional arguments can provide a number of L{PMPackageMatcher}s
-		and/or a L{PMAtom} instance. The keyword arguments match metadata keys
-		using '==' comparison with passed string (or L{PMKeywordMatcher}s).
+		(which are basically lambdas with a L{PMPackage} instance argument)
+		and/or a L{PMAtom} instance.
+
+		The keyword arguments match metadata keys using C{==} comparison with
+		the passed string (or L{PMKeywordMatcher}s). Keys are supposed to be
+		L{PMPackage} property names in Python; dots can be replaced by
+		underscores (e.g. C{description_short}) or passed using C{**} operator.
 
 		Multiple filters will be AND-ed together. Same applies for .filter()
 		called multiple times. You should, however, avoid passing multiple
@@ -166,12 +173,11 @@ class PMPackageSet(ABCObject, BoolCompat):
 class PMFilteredPackageSet(PMPackageSet):
 	def __init__(self, src, args, kwargs):
 		self._src = src
-		self._args = args
-		self._kwargs = kwargs
+		self._args = args + transform_keyword_filters(kwargs)
 
 	def __iter__(self):
 		for el in self._src:
-			if el._matches(*self._args, **self._kwargs):
+			if el._matches(*self._args):
 				yield el
 
 class PMSortedPackageSet(PMPackageSet):

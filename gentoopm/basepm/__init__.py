@@ -5,8 +5,9 @@
 
 from abc import abstractmethod, abstractproperty
 
-from gentoopm.basepm.stack import PMRepoStackWrapper
-from gentoopm.util import ABCObject
+from ..util import ABCObject
+
+from .stack import PMRepoStackWrapper
 
 class PackageManager(ABCObject):
 	"""
@@ -18,6 +19,15 @@ class PackageManager(ABCObject):
 		"""
 		Return the canonical name of the PM. The value should be static
 		and unique.
+
+		@type: string
+		"""
+		pass
+
+	@abstractproperty
+	def version(self):
+		"""
+		Return the PM version as a simple string.
 
 		@type: string
 		"""

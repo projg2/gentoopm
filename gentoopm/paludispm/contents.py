@@ -3,8 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from gentoopm.basepm.contents import PMPackageContents, \
-		PMContentObj
+from ..basepm.contents import PMPackageContents, PMContentObj
 
 class PaludisPackageContents(PMPackageContents):
 	def __init__(self, cont):
