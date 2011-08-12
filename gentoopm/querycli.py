@@ -103,14 +103,24 @@ class PMQueryCommands(object):
 		Run a Python shell with current PM selected.
 		"""
 		def __call__(self, pm, args):
+			welc = "The %s PM is now available as 'pm' object." % pm.name
+			kwargs = {}
+
 			try:
 				from IPython import embed
 			except ImportError:
-				self._arg.error('IPython >= 0.11 required for shell')
-				return 1
+				try:
+					from IPython.Shell import IPShellEmbed
+				except ImportError:
+					self._arg.error('IPython required for shell')
+					return 1
+				else:
+					embed = IPShellEmbed()
+					embed.set_banner(embed.IP.BANNER + '\n\n' + welc)
+			else:
+				kwargs['banner2'] = welc
 
-			welc = "The %s PM is now available as 'pm' object." % pm.name
-			embed(banner2 = welc)
+			embed(**kwargs)
 
 	def __iter__(self):
 		for k in dir(self):
