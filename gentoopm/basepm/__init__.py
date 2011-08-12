@@ -23,6 +23,15 @@ class PackageManager(ABCObject):
 		"""
 		pass
 
+	@abstractproperty
+	def version(self):
+		"""
+		Return the PM version as a simple string.
+
+		@type: string
+		"""
+		pass
+
 	@abstractmethod
 	def reload_config(self):
 		"""

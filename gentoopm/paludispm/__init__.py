@@ -19,6 +19,10 @@ from gentoopm.paludispm.repo import PaludisRepoDict, PaludisInstalledRepo, \
 class PaludisPM(PackageManager):
 	name = 'paludis'
 
+	@property
+	def version(self):
+		return paludis.VERSION
+
 	def reload_config(self):
 		self._env = paludis.EnvironmentFactory.instance.create('')
 
