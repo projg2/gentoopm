@@ -71,8 +71,17 @@ class PMQueryCommands(object):
 		"""
 		Get the name of a working, preferred PM.
 		"""
+		def __init__(self, argparser):
+			PMQueryCommand.__init__(self, argparser)
+			argparser.add_argument('-v', '--with-version',
+				action='store_true', dest='version',
+				help='Print the version as well')
+
 		def __call__(self, pm, args):
-			print(pm.name)
+			if args.version:
+				print('%s %s' % (pm.name, pm.version))
+			else:
+				print(pm.name)
 
 	class repositories(PMQueryCommand):
 		"""
