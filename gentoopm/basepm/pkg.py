@@ -119,8 +119,6 @@ class PMPackage(PMAtom, FillMissingComparisons):
 
 		@param args: list of package matchers
 		@type args: list(L{PMPackageMatcher},L{PMAtom})
-		@param kwargs: dict of keyword matchers
-		@type kwargs: dict(string -> L{PMKeywordMatcher})
 		@return: True if package matches
 		@rtype: bool
 		@raise KeyError: when invalid metadata key is referenced in kwargs

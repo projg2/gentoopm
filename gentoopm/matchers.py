@@ -16,8 +16,8 @@ class RegExp(PMKeywordMatcher):
 		"""
 		Instantiate the regexp matcher.
 
-		@param re: a regular expression to match values against
-		@type re: string/compiled regexp
+		@param regexp: a regular expression to match values against
+		@type regexp: string/compiled regexp
 		"""
 		if not hasattr(regexp, 'match'):
 			regexp = re.compile(regexp)

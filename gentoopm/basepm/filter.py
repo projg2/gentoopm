@@ -101,7 +101,8 @@ def transform_keyword_filters(kwargs):
 	"""
 	Transform a number of keyword filters into positional args.
 
-	@param kwargs: keyword arguments, as passed to L{PMPackageSet.filter()}
+	@param kwargs: keyword arguments, as passed
+		to L{basepm.pkgset.PMPackageSet.filter()}
 	@type kwargs: dict
 	@return: positional arguments representing the keyword filters
 	@rtype: iter(L{AttributeMatch})
