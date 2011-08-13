@@ -31,14 +31,31 @@ class Contains(PMKeywordMatcher):
 	A keyword attribute matcher checking for list membership.
 	"""
 
-	def __init__(self, elem):
-		self._elem = elem
+	def __init__(self, *elems):
+		"""
+		Instantiate the matcher for arguments. If multiple arguments are passed
+		in, at least one of them must be contained in the value.
+
+		@param elems: elements to match against the value contents
+		@type elems: any
+		"""
+
+		self._simple_matchers = set()
+		self._complex_matchers = []
+		for e in elems:
+			if isinstance(e, str):
+				self._simple_matchers.add(e)
+			else:
+				self._complex_matchers.append(e)
 
 	def __eq__(self, val):
-		if isinstance(self._elem, str):
-			return self._elem in val
-		else:
+		for n in self._simple_matchers:
+			if n in val:
+				return True
+
+		for n in self._complex_matchers:
 			for e in val:
-				if self._elem == e:
+				if n == e:
 					return True
-			return False
+
+		return False
