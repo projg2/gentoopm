@@ -37,7 +37,8 @@ class PkgCoreRepository(PkgCorePackageSet, PMRepository):
 	def __iter__(self):
 		index = self._index
 		for pkg in self._repo:
-			yield self._pkg_class(pkg, index)
+			if pkg.package_is_real:
+				yield self._pkg_class(pkg, index)
 
 	def filter(self, *args, **kwargs):
 		r = self
@@ -63,7 +64,8 @@ class PkgCoreFilteredRepo(PkgCoreRepository):
 	def __iter__(self):
 		index = self._index
 		for pkg in self._repo._repo.match(self._filt):
-			yield self._pkg_class(pkg, index)
+			if pkg.package_is_real:
+				yield self._pkg_class(pkg, index)
 
 	def filter(self, *args, **kwargs):
 		r = self
