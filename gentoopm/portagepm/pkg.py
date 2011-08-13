@@ -3,7 +3,6 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import itertools
 from portage.versions import cpv_getkey, cpv_getversion, vercmp
 
 from ..basepm.depend import PMRequiredUseAtom
@@ -101,7 +100,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 		return PortagePackageVersion(self._cpv)
 
 	def _aux_get(self, *keys):
-		val = itertools.imap(str, self._dbapi.aux_get(self._cpv, keys))
+		val = map(str, self._dbapi.aux_get(self._cpv, keys))
 		if len(keys) == 1:
 			return next(iter(val))
 		else:
@@ -231,8 +230,8 @@ class PortageCPV(PortageDBCPV, PMInstallablePackage):
 		return self._dbapi.getRepositoryName(self._tree)
 
 	def _aux_get(self, *keys):
-		val = itertools.imap(str, self._dbapi.aux_get(self._cpv,
-				keys, mytree = self._tree))
+		val = map(str, self._dbapi.aux_get(self._cpv, keys,
+				mytree = self._tree))
 		if len(keys) == 1:
 			return next(iter(val))
 		else:
