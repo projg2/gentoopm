@@ -6,7 +6,7 @@
 import argparse, os.path
 from abc import abstractmethod
 
-from . import get_package_manager
+from . import PV, get_package_manager
 from .util import ABCObject
 
 def _reponame(val):
@@ -144,6 +144,9 @@ class PMQueryCLI(object):
 	""" A CLI for gentoopmq. """
 	def __init__(self):
 		self.argparser = arg = argparse.ArgumentParser()
+
+		arg.add_argument('-V', '--version',
+			action='version', version='%s %s' % (arg.prog, PV))
 
 		subp = arg.add_subparsers(title = 'Sub-commands')
 		for cmd_name, cmd_help, cmd_class in PMQueryCommands():
