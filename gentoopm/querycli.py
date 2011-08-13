@@ -112,7 +112,17 @@ class PMQueryCommands(object):
 		Run a Python shell with current PM selected.
 		"""
 		def __call__(self, pm, args):
-			welc = "The %s PM is now available as 'pm' object." % pm.name
+			import gentoopm.filters as f
+			import gentoopm.matchers as m
+
+			our_imports = (
+					('pm', pm),
+					('f', f),
+					('m', m))
+
+			welc = '''The following objects have been imported for you:\n'''
+			welc += '\n'.join(['\t%s: %s' % (key, repr(var))
+					for key, var in our_imports])
 			kwargs = {}
 
 			try:
