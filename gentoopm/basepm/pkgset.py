@@ -3,6 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import itertools
 from abc import abstractmethod
 
 from .filter import transform_keyword_filters
@@ -173,7 +174,8 @@ class PMPackageSet(ABCObject, BoolCompat):
 class PMFilteredPackageSet(PMPackageSet):
 	def __init__(self, src, args, kwargs):
 		self._src = src
-		self._args = args + transform_keyword_filters(kwargs)
+		self._args = tuple(itertools.chain(args,
+				transform_keyword_filters(kwargs)))
 
 	def __iter__(self):
 		for el in self._src:

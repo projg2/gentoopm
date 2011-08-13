@@ -104,8 +104,7 @@ def transform_keyword_filters(kwargs):
 	@param kwargs: keyword arguments, as passed to L{PMPackageSet.filter()}
 	@type kwargs: dict
 	@return: positional arguments representing the keyword filters
-	@rtype: tuple
+	@rtype: iter(L{AttributeMatch})
 	"""
 
-	return tuple([PMTransformedKeywordFilter(k, v)
-			for k, v in kwargs.items()])
+	return itertools.starmap(PMTransformedKeywordFilter, kwargs.items())

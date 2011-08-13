@@ -3,6 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import itertools
 import paludis
 
 from ..basepm.depend import PMRequiredUseAtom
@@ -132,12 +133,12 @@ class PaludisID(PMPackage, PaludisAtom):
 	@property
 	def homepages(self):
 		spec = self._get_meta(self._pkg.homepage_key())
-		return SpaceSepTuple([str(x) for x in spec])
+		return SpaceSepTuple(itertools.imap(str, spec))
 
 	@property
 	def keywords(self):
 		kws = self._get_meta(self._pkg.keywords_key())
-		return SpaceSepFrozenSet([str(x) for x in kws])
+		return SpaceSepFrozenSet(itertools.imap(str, kws))
 
 	@property
 	def slot(self):
