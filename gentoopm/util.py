@@ -79,6 +79,8 @@ class StringCompat(StringifiedComparisons):
 		return hasattr(str, k)
 
 	def __getattr__(self, k):
+		if not self.__hasattr__(k):
+			raise AttributeError(k)
 		return getattr(str(self), k)
 
 	# other useful special methods
