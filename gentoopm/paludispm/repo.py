@@ -132,6 +132,10 @@ class PaludisLivefsRepository(PaludisBaseRepo, PMEbuildRepository):
 class PaludisInstalledRepo(PaludisBaseRepo):
 	_pkg_class = PaludisInstalledID
 
+	def __init__(self, env, root):
+		PaludisBaseRepo.__init__(self, env)
+		self._root = root
+
 	@property
 	def _filt(self):
-		return paludis.Filter.InstalledAtRoot('/')
+		return paludis.Filter.InstalledAtRoot(self._root)

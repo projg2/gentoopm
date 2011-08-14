@@ -29,6 +29,10 @@ class PkgCorePM(PackageManager):
 				self._domain)
 
 	@property
+	def root(self):
+		return self._domain.root
+
+	@property
 	def installed(self):
 		return PkgCoreInstalledRepo(self._domain.named_repos['vdb'],
 				self._domain)

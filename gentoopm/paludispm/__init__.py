@@ -31,8 +31,12 @@ class PaludisPM(PackageManager):
 		return PaludisRepoDict(self._env)
 
 	@property
+	def root(self):
+		return '/'
+
+	@property
 	def installed(self):
-		return PaludisInstalledRepo(self._env)
+		return PaludisInstalledRepo(self._env, self.root)
 
 	@property
 	def stack(self):

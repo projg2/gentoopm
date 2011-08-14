@@ -25,12 +25,17 @@ class PortagePM(PackageManager):
 				config_root = os.environ.get('PORTAGE_CONFIGROOT'),
 				target_root = os.environ.get('ROOT'))
 		tree = trees[max(trees)]
+		self._root = max(trees)
 		self._vardb = tree['vartree'].dbapi
 		self._portdb = tree['porttree'].dbapi
 
 	@property
 	def repositories(self):
 		return PortageRepoDict(self._portdb)
+
+	@property
+	def root(self):
+		return self._root
 
 	@property
 	def installed(self):

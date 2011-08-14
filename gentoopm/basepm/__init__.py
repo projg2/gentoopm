@@ -56,6 +56,15 @@ class PackageManager(ABCObject):
 		pass
 
 	@abstractproperty
+	def root(self):
+		"""
+		The root path as specified by current PM configuration.
+
+		@type: str
+		"""
+		pass
+
+	@abstractproperty
 	def installed(self):
 		"""
 		Repository with installed packages (vardb).
