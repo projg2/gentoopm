@@ -12,8 +12,10 @@ from ..exceptions import InvalidAtomStringError
 _category_wildcard_re = re.compile(r'\w')
 
 class PaludisPackageKey(PMPackageKey):
-	def __init__(self, key):
-		self._k = key
+	def __new__(self, key):
+		k = PMPackageKey.__new__(self, str(key))
+		k._k = key
+		return k
 
 	@property
 	def category(self):
@@ -23,16 +25,9 @@ class PaludisPackageKey(PMPackageKey):
 	def package(self):
 		return str(self._k.package)
 
-	def __str__(self):
-		return str(self._k)
-
 class PaludisIncompletePackageKey(PMIncompletePackageKey):
-	def __init__(self, key):
-		self._k = key
-
-	@property
-	def package(self):
-		return str(self._k)
+	def __new__(self, key):
+		return PMIncompletePackageKey.__new__(self, str(key))
 
 class PaludisPackageVersion(PMPackageVersion):
 	def __init__(self, ver):

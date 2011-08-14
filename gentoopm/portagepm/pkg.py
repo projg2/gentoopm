@@ -28,11 +28,12 @@ class PortageFilteredPackageSet(PortagePackageSet, PMFilteredPackageSet):
 	pass
 
 class PortageBoundPackageKey(PortagePackageKey, PMBoundPackageKey):
-	def __init__(self, cp, pkg):
-		PortagePackageKey.__init__(self, cp)
-		self._state = PMPackageState(
+	def __new__(self, cp, pkg):
+		k = PortagePackageKey.__new__(self, cp)
+		k._state = PMPackageState(
 				installable = isinstance(pkg, PortageCPV),
 				installed = isinstance(pkg, PortageVDBCPV))
+		return k
 
 	@property
 	def state(self):

@@ -26,8 +26,10 @@ def _find_res(res, cls):
 		return None
 
 class PkgCorePackageKey(PMPackageKey):
-	def __init__(self, atom):
-		self._atom = atom
+	def __new__(self, atom):
+		k = PMPackageKey.__new__(self, atom.key)
+		k._atom = atom
+		return k
 
 	@property
 	def category(self):
@@ -37,18 +39,12 @@ class PkgCorePackageKey(PMPackageKey):
 	def package(self):
 		return self._atom.package
 
-	def __str__(self):
-		return self._atom.key
-
 class PkgCoreIncompletePackageKey(PMIncompletePackageKey):
-	def __init__(self, r):
-		self._r = _find_res(r, PackageDep)
-		if self._r is None:
+	def __new__(self, r):
+		pd = _find_res(r, PackageDep)
+		if pd is None:
 			raise AssertionError('No PackageDep in restrictions.')
-
-	@property
-	def package(self):
-		return self._r.restriction.exact
+		return PMIncompletePackageKey.__new__(self, pd.restriction.exact)
 
 class PkgCorePackageVersion(PMPackageVersion):
 	def __init__(self, atom):

@@ -5,13 +5,22 @@
 
 from abc import abstractmethod, abstractproperty
 
-from ..util import ABCObject, StringCompat2, StringifiedComparisons, \
-		FillMissingComparisons
+from ..util import ABCObject, StringCompat, StringifiedComparisons, \
+		FillMissingComparisons, StringCompat2
 
-class PMPackageKey(ABCObject, StringCompat2, FillMissingComparisons):
+class PMPackageKey(ABCObject, StringCompat):
 	"""
 	A base class for a package key (CP/qualified package name).
 	"""
+
+	def __new__(self, key):
+		"""
+		Instantiate.
+
+		@param key: complete package key
+		@type key: string
+		"""
+		return StringCompat.__new__(self, key)
 
 	@abstractproperty
 	def category(self):
@@ -31,19 +40,6 @@ class PMPackageKey(ABCObject, StringCompat2, FillMissingComparisons):
 		"""
 		pass
 
-	@abstractmethod
-	def __str__(self):
-		"""
-		Return the stringified package key.
-
-		@return: Stringified package key.
-		@rtype: string
-		"""
-		pass
-
-	def __lt__(self, other):
-		return str(self) < str(other)
-
 class PMIncompletePackageKey(PMPackageKey):
 	"""
 	An incomplete package key (without a category).
@@ -57,8 +53,9 @@ class PMIncompletePackageKey(PMPackageKey):
 	def category(self):
 		return None
 
-	def __str__(self):
-		return self.package
+	@property
+	def package(self):
+		return str(self)
 
 class PMPackageVersion(ABCObject, StringCompat2):
 	"""

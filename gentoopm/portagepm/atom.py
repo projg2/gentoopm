@@ -15,19 +15,13 @@ from ..basepm.atom import PMAtom, PMPackageKey, PMPackageVersion, \
 from ..exceptions import InvalidAtomStringError
 
 class PortagePackageKey(PMPackageKey):
-	def __init__(self, cp):
-		self._cp = cp
-
 	@property
 	def category(self):
-		return catsplit(self._cp)[0]
+		return catsplit(self)[0]
 
 	@property
 	def package(self):
-		return catsplit(self._cp)[1]
-
-	def __str__(self):
-		return self._cp
+		return catsplit(self)[1]
 
 class PortageIncompletePackageKey(PMIncompletePackageKey, PortagePackageKey):
 	pass

@@ -16,11 +16,12 @@ from .contents import PaludisPackageContents
 from .depend import PaludisPackageDepSet
 
 class PaludisBoundPackageKey(PaludisPackageKey, PMBoundPackageKey):
-	def __init__(self, key, pkg):
-		PaludisPackageKey.__init__(self, key)
-		self._state = PMPackageState(
+	def __new__(self, key, pkg):
+		k = PaludisPackageKey.__new__(self, key)
+		k._state = PMPackageState(
 				installable = isinstance(pkg, PaludisInstallableID),
 				installed = isinstance(pkg, PaludisInstalledID))
+		return k
 
 	@property
 	def state(self):
