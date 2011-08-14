@@ -5,9 +5,9 @@
 
 from abc import abstractmethod, abstractproperty
 
-from ..util import ABCObject, StringCompat
+from ..util import ABCObject, StringCompat2
 
-class PMRequiredUseAtom(StringCompat):
+class PMRequiredUseAtom(StringCompat2):
 	"""
 	An atom for C{REQUIRED_USE} specification.
 	"""

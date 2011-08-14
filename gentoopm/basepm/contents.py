@@ -6,9 +6,9 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
-from ..util import ABCObject, StringCompat
+from ..util import ABCObject, StringCompat2
 
-class PMContentObj(StringCompat):
+class PMContentObj(StringCompat2):
 	def __init__(self, path):
 		self._path = os.path.normpath(path)
 

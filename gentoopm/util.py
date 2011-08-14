@@ -68,7 +68,7 @@ class BoolCompat(object):
 	def __nonzero__(self):
 		return self.__bool__()
 
-class StringCompat(StringifiedComparisons):
+class StringCompat2(StringifiedComparisons):
 	"""
 	A helper class providing objects with compatibility string functions,
 	working on stringified form of objects. In other words, it lets you use

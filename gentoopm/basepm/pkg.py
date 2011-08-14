@@ -6,7 +6,7 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
-from ..util import ABCObject, FillMissingComparisons, StringCompat, EnumTuple
+from ..util import ABCObject, FillMissingComparisons, StringCompat2, EnumTuple
 
 from .atom import PMAtom, PMPackageKey
 from .environ import PMPackageEnvironment
@@ -60,7 +60,7 @@ class PMPackageDescription(ABCObject):
 		"""
 		pass
 
-class PMUseFlag(ABCObject, StringCompat):
+class PMUseFlag(ABCObject, StringCompat2):
 	"""
 	A base class for a USE flag supported by a package.
 	"""

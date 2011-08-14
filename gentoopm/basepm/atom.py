@@ -5,10 +5,10 @@
 
 from abc import abstractmethod, abstractproperty
 
-from ..util import ABCObject, StringCompat, StringifiedComparisons, \
+from ..util import ABCObject, StringCompat2, StringifiedComparisons, \
 		FillMissingComparisons
 
-class PMPackageKey(ABCObject, StringCompat, FillMissingComparisons):
+class PMPackageKey(ABCObject, StringCompat2, FillMissingComparisons):
 	"""
 	A base class for a package key (CP/qualified package name).
 	"""
@@ -60,7 +60,7 @@ class PMIncompletePackageKey(PMPackageKey):
 	def __str__(self):
 		return self.package
 
-class PMPackageVersion(ABCObject, StringCompat):
+class PMPackageVersion(ABCObject, StringCompat2):
 	"""
 	A base class for a package version.
 	"""
