@@ -54,13 +54,6 @@ class PackagesTestCase(PMTestCase):
 		for p in self._pkgs:
 			p.inherits
 
-	def test_description(self):
-		""" Check whether description works as expected. """
-		for p in self._pkgs:
-			self.assertEqual(str(p.description),
-					p.description.long if p.description.long is not None
-					else p.description.short)
-
 	def test_inherits(self):
 		""" Check whether inherits are an iterable of stringifiables. """
 		for p in self._pkgs:

@@ -37,7 +37,7 @@ class PMBoundPackageKey(PMPackageKey):
 	def __hash__(self):
 		return hash((str(self), self.state))
 
-class PMPackageDescription(ABCObject, StringCompat):
+class PMPackageDescription(ABCObject):
 	"""
 	Description of a package.
 	"""
@@ -59,16 +59,6 @@ class PMPackageDescription(ABCObject, StringCompat):
 		@type: string/C{None}
 		"""
 		pass
-
-	def __str__(self):
-		"""
-		Stringify to the best package description. In other words, long package
-		description if available, short otherwise.
-
-		@returns: best package description
-		@rtype: string
-		"""
-		return str(self.long or self.short)
 
 class PMUseFlag(ABCObject, StringCompat):
 	"""
