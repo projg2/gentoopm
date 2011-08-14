@@ -123,9 +123,13 @@ class UncategorisedPackageWrapper(object):
 		self._pkg = pkg
 
 	@property
-	def id(self):
-		cpv = self._pkg.id
+	def _cpv(self):
+		cpv = self._pkg._cpv
 		return 'null/%s' % catsplit(cpv)[1]
+
+	@property
+	def slot(self):
+		return self._pkg.slot
 
 class UnexpandedPortageAtom(CompletePortageAtom):
 	"""
