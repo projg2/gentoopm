@@ -6,7 +6,7 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
-from ..util import ABCObject, FillMissingComparisons, StringCompat2, \
+from ..util import ABCObject, FillMissingComparisons, StringCompat, \
 		EnumTuple, FillMissingNotEqual
 
 from .atom import PMAtom, PMPackageKey
@@ -61,19 +61,19 @@ class PMPackageDescription(ABCObject):
 		"""
 		pass
 
-class PMUseFlag(ABCObject, StringCompat2):
+class PMUseFlag(ABCObject, StringCompat):
 	"""
 	A base class for a USE flag supported by a package.
 	"""
 
-	def __init__(self, usestr):
+	def __new__(self, usestr):
 		"""
 		Instantiate from an IUSE atom.
 
 		@param usestr: the IUSE atom (C{[+-]?flag})
 		@type usestr: string
 		"""
-		self._name = usestr.lstrip('+-')
+		return StringCompat.__new__(self, usestr.lstrip('+-'))
 
 	@property
 	def name(self):
@@ -82,7 +82,7 @@ class PMUseFlag(ABCObject, StringCompat2):
 
 		@type: string
 		"""
-		return self._name
+		return str(self)
 
 	@abstractproperty
 	def enabled(self):
@@ -92,9 +92,6 @@ class PMUseFlag(ABCObject, StringCompat2):
 		@type: bool
 		"""
 		pass
-
-	def __str__(self):
-		return self.name
 
 class PMPackage(PMAtom, FillMissingComparisons):
 	"""

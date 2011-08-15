@@ -41,12 +41,10 @@ class PaludisPackageDescription(PMPackageDescription):
 		return k.parse_value() if k is not None else None
 
 class PaludisChoice(PMUseFlag):
-	def __init__(self, choice):
-		self._c = choice
-
-	@property
-	def name(self):
-		return str(self._c.name_with_prefix)
+	def __new__(self, choice):
+		uf = PMUseFlag.__new__(self, str(choice.name_with_prefix))
+		uf._c = choice
+		return uf
 
 	@property
 	def enabled(self):

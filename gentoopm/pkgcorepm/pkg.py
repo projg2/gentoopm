@@ -46,9 +46,10 @@ class PkgCorePackageDescription(PMPackageDescription):
 			return None
 
 class PkgCoreUseFlag(PMUseFlag):
-	def __init__(self, s, enabled_use):
-		PMUseFlag.__init__(self, s)
-		self._enabled = self.name in enabled_use
+	def __new__(self, s, enabled_use):
+		uf = PMUseFlag.__new__(self, s)
+		uf._enabled = self.name in enabled_use
+		return uf
 
 	@property
 	def enabled(self):
