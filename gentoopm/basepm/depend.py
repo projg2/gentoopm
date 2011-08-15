@@ -5,18 +5,20 @@
 
 from abc import abstractmethod, abstractproperty
 
-from ..util import ABCObject, StringCompat2
+from ..util import ABCObject, StringCompat
 
-class PMRequiredUseAtom(StringCompat2):
+class PMRequiredUseAtom(StringCompat):
 	"""
 	An atom for C{REQUIRED_USE} specification.
 	"""
 
-	def __init__(self, s):
-		self._blocks = s.startswith('!')
-		if self._blocks:
+	def __new__(self, s):
+		rua = StringCompat.__new__(self, s)
+		rua._blocks = s.startswith('!')
+		if rua._blocks:
 			s = s[1:]
-		self._flag = s
+		rua._flag = s
+		return rua
 
 	@property
 	def name(self):
@@ -44,10 +46,6 @@ class PMRequiredUseAtom(StringCompat2):
 		@type: bool
 		"""
 		return not self._blocks
-
-	def __str__(self):
-		return '%s%s' % ('!' if self._blocks else '',
-				self.name)
 
 class PMBaseDep(ABCObject):
 	"""
