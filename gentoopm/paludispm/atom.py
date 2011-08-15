@@ -13,9 +13,10 @@ _category_wildcard_re = re.compile(r'\w')
 
 class PaludisPackageKey(PMPackageKey):
 	def __new__(self, key):
-		k = PMPackageKey.__new__(self, str(key))
-		k._k = key
-		return k
+		return PMPackageKey.__new__(self, str(key))
+
+	def __init__(self, key):
+		self._k = key
 
 	@property
 	def category(self):
@@ -31,9 +32,10 @@ class PaludisIncompletePackageKey(PMIncompletePackageKey):
 
 class PaludisPackageVersion(PMPackageVersion):
 	def __new__(self, ver):
-		v = PMPackageVersion.__new__(self, str(ver))
-		v._v = ver
-		return v
+		return PMPackageVersion.__new__(self, str(ver))
+
+	def __init__(self, ver):
+		self._v = ver
 
 	@property
 	def without_revision(self):

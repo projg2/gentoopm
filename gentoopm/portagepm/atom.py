@@ -29,9 +29,10 @@ class PortageIncompletePackageKey(PMIncompletePackageKey, PortagePackageKey):
 
 class PortagePackageVersion(PMPackageVersion):
 	def __new__(self, cpv):
-		v = PMPackageVersion.__new__(self, cpv_getversion(cpv))
-		v._cpv = cpv
-		return v
+		return PMPackageVersion.__new__(self, cpv_getversion(cpv))
+
+	def __init__(self, cpv):
+		self._cpv = cpv
 
 	@property
 	def without_revision(self):

@@ -29,11 +29,12 @@ class PortageFilteredPackageSet(PortagePackageSet, PMFilteredPackageSet):
 
 class PortageBoundPackageKey(PortagePackageKey, PMBoundPackageKey):
 	def __new__(self, cp, pkg):
-		k = PortagePackageKey.__new__(self, cp)
-		k._state = PMPackageState(
+		return PortagePackageKey.__new__(self, cp)
+
+	def __init__(self, cp, pkg):
+		self._state = PMPackageState(
 				installable = isinstance(pkg, PortageCPV),
 				installed = isinstance(pkg, PortageVDBCPV))
-		return k
 
 	@property
 	def state(self):
@@ -59,9 +60,10 @@ class PortagePackageDescription(PMPackageDescription):
 
 class PortageUseFlag(PMUseFlag):
 	def __new__(self, s, enabled_use):
-		uf = PMUseFlag.__new__(self, s)
-		uf._enabled = self.name in enabled_use
-		return uf
+		return PMUseFlag.__new__(self, s)
+
+	def __init__(self, s, enabled_use):
+		self._enabled = self.name in enabled_use
 
 	@property
 	def enabled(self):

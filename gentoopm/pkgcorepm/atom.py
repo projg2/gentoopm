@@ -27,9 +27,10 @@ def _find_res(res, cls):
 
 class PkgCorePackageKey(PMPackageKey):
 	def __new__(self, atom):
-		k = PMPackageKey.__new__(self, atom.key)
-		k._atom = atom
-		return k
+		return PMPackageKey.__new__(self, atom.key)
+
+	def __init__(self, atom):
+		self._atom = atom
 
 	@property
 	def category(self):
@@ -50,9 +51,10 @@ class PkgCorePackageVersion(PMPackageVersion):
 	def __new__(self, atom):
 		if atom.version is None:
 			raise AssertionError('Empty version in atom')
-		v = PMPackageVersion.__new__(self, atom.fullver)
-		v._atom = atom
-		return v
+		return PMPackageVersion.__new__(self, atom.fullver)
+
+	def __init__(self, atom):
+		self._atom = atom
 
 	@property
 	def without_revision(self):

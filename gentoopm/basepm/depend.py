@@ -12,13 +12,11 @@ class PMRequiredUseAtom(StringCompat):
 	An atom for C{REQUIRED_USE} specification.
 	"""
 
-	def __new__(self, s):
-		rua = StringCompat.__new__(self, s)
-		rua._blocks = s.startswith('!')
-		if rua._blocks:
+	def __init__(self, s):
+		self._blocks = s.startswith('!')
+		if self._blocks:
 			s = s[1:]
-		rua._flag = s
-		return rua
+		self._flag = s
 
 	@property
 	def name(self):

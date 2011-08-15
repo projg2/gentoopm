@@ -17,11 +17,12 @@ from .depend import PaludisPackageDepSet
 
 class PaludisBoundPackageKey(PaludisPackageKey, PMBoundPackageKey):
 	def __new__(self, key, pkg):
-		k = PaludisPackageKey.__new__(self, key)
-		k._state = PMPackageState(
+		return PaludisPackageKey.__new__(self, key)
+
+	def __init__(self, key, pkg):
+		self._state = PMPackageState(
 				installable = isinstance(pkg, PaludisInstallableID),
 				installed = isinstance(pkg, PaludisInstalledID))
-		return k
 
 	@property
 	def state(self):
@@ -42,9 +43,10 @@ class PaludisPackageDescription(PMPackageDescription):
 
 class PaludisChoice(PMUseFlag):
 	def __new__(self, choice):
-		uf = PMUseFlag.__new__(self, str(choice.name_with_prefix))
-		uf._c = choice
-		return uf
+		return PMUseFlag.__new__(self, str(choice.name_with_prefix))
+
+	def __init__(self, choice):
+		self._c = choice
 
 	@property
 	def enabled(self):
