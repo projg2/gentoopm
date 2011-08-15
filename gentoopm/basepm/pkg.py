@@ -6,7 +6,8 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
-from ..util import ABCObject, FillMissingComparisons, StringCompat2, EnumTuple
+from ..util import ABCObject, FillMissingComparisons, StringCompat2, \
+		EnumTuple, FillMissingNotEqual
 
 from .atom import PMAtom, PMPackageKey
 from .environ import PMPackageEnvironment
@@ -15,7 +16,7 @@ PMPackageState = EnumTuple('PMPackageState',
 		'installable',
 		'installed')
 
-class PMBoundPackageKey(PMPackageKey):
+class PMBoundPackageKey(FillMissingNotEqual, PMPackageKey):
 	"""
 	A package key bound to a specific package.
 	"""
