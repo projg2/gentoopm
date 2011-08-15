@@ -24,7 +24,8 @@ class PortagePackageKey(PMPackageKey):
 		return catsplit(self)[1]
 
 class PortageIncompletePackageKey(PMIncompletePackageKey, PortagePackageKey):
-	pass
+	def __new__(self, key):
+		return PMIncompletePackageKey.__new__(self, catsplit(key)[1])
 
 class PortagePackageVersion(PMPackageVersion):
 	def __init__(self, cpv):
