@@ -6,14 +6,11 @@
 import os.path
 from abc import abstractmethod, abstractproperty
 
-from ..util import ABCObject, StringCompat2
+from ..util import ABCObject, StringCompat
 
-class PMContentObj(StringCompat2):
-	def __init__(self, path):
-		self._path = os.path.normpath(path)
-
-	def __str__(self):
-		return self._path
+class PMContentObj(StringCompat):
+	def __new__(self, path):
+		return StringCompat.__new__(self, os.path.normpath(path))
 
 class PMPackageContents(ABCObject):
 	"""
