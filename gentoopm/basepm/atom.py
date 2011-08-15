@@ -6,7 +6,7 @@
 from abc import abstractmethod, abstractproperty
 
 from ..util import ABCObject, StringCompat, StringifiedComparisons, \
-		FillMissingComparisons, StringCompat2
+		FillMissingComparisons
 
 class PMPackageKey(ABCObject, StringCompat):
 	"""
@@ -57,10 +57,19 @@ class PMIncompletePackageKey(PMPackageKey):
 	def package(self):
 		return str(self)
 
-class PMPackageVersion(ABCObject, StringCompat2):
+class PMPackageVersion(ABCObject, FillMissingComparisons, StringCompat):
 	"""
 	A base class for a package version.
 	"""
+
+	def __new__(self, ver):
+		"""
+		Instantiate.
+
+		@param ver: complete package version
+		@type ver: string
+		"""
+		return StringCompat.__new__(self, ver)
 
 	@abstractproperty
 	def without_revision(self):
@@ -77,16 +86,6 @@ class PMPackageVersion(ABCObject, StringCompat2):
 		The ebuild revision.
 
 		@type: int
-		"""
-		pass
-
-	@abstractmethod
-	def __str__(self):
-		"""
-		Return the stringified package version.
-
-		@return: Stringified package version.
-		@rtype: string
 		"""
 		pass
 

@@ -47,10 +47,12 @@ class PkgCoreIncompletePackageKey(PMIncompletePackageKey):
 		return PMIncompletePackageKey.__new__(self, pd.restriction.exact)
 
 class PkgCorePackageVersion(PMPackageVersion):
-	def __init__(self, atom):
+	def __new__(self, atom):
 		if atom.version is None:
 			raise AssertionError('Empty version in atom')
-		self._atom = atom
+		v = PMPackageVersion.__new__(self, atom.fullver)
+		v._atom = atom
+		return v
 
 	@property
 	def without_revision(self):
@@ -60,19 +62,19 @@ class PkgCorePackageVersion(PMPackageVersion):
 	def revision(self):
 		return self._atom.revision or 0
 
-	def __str__(self):
-		return self._atom.fullver
-
 	def __lt__(self, other):
 		if self._atom.key != other._atom.key:
 			raise NotImplementedError('Unable to compare versions of distinct packages')
 		return self._atom < other._atom
 
 class PkgCoreIncompletePackageVersion(PMPackageVersion):
-	def __init__(self, r):
-		self._r = _find_res(r, VersionMatch)
-		if self._r is None:
+	def __new__(self, r):
+		vm = _find_res(r, VersionMatch)
+		if vm is None:
 			raise AssertionError('No VersionMatch in restrictions.')
+		v = PMPackageVersion.__new__(self, str(vm).split()[-1]) # XXX
+		v._r = vm
+		return v
 
 	@property
 	def without_revision(self):
@@ -84,10 +86,6 @@ class PkgCoreIncompletePackageVersion(PMPackageVersion):
 
 	def __lt__(self, other):
 		raise NotImplementedError('Unable to compare versions of incomplete atoms')
-
-	def __str__(self):
-		# XXX: ugly?
-		return str(self._r).split()[-1]
 
 class PkgCoreAtom(PMAtom):
 	def __init__(self, s):

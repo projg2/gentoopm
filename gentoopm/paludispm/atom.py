@@ -30,8 +30,10 @@ class PaludisIncompletePackageKey(PMIncompletePackageKey):
 		return PMIncompletePackageKey.__new__(self, str(key))
 
 class PaludisPackageVersion(PMPackageVersion):
-	def __init__(self, ver):
-		self._v = ver
+	def __new__(self, ver):
+		v = PMPackageVersion.__new__(self, str(ver))
+		v._v = ver
+		return v
 
 	@property
 	def without_revision(self):
@@ -42,9 +44,6 @@ class PaludisPackageVersion(PMPackageVersion):
 		rs = self._v.revision_only()
 		assert(rs.startswith('r'))
 		return int(rs[1:])
-
-	def __str__(self):
-		return str(self._v)
 
 	def __lt__(self, other):
 		return self._v < other._v

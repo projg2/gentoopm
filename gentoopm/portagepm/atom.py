@@ -28,8 +28,10 @@ class PortageIncompletePackageKey(PMIncompletePackageKey, PortagePackageKey):
 		return PMIncompletePackageKey.__new__(self, catsplit(key)[1])
 
 class PortagePackageVersion(PMPackageVersion):
-	def __init__(self, cpv):
-		self._cpv = cpv
+	def __new__(self, cpv):
+		v = PMPackageVersion.__new__(self, cpv_getversion(cpv))
+		v._cpv = cpv
+		return v
 
 	@property
 	def without_revision(self):
@@ -40,9 +42,6 @@ class PortagePackageVersion(PMPackageVersion):
 		rs = pkgsplit(self._cpv)[2]
 		assert(rs.startswith('r'))
 		return int(rs[1:])
-
-	def __str__(self):
-		return cpv_getversion(self._cpv)
 
 	def __lt__(self, other):
 		return vercmp(str(self), str(other)) < 0
