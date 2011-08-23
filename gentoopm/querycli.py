@@ -88,7 +88,7 @@ class PMQueryCommands(object):
 		Print the list of ebuild repositories.
 		"""
 		def __call__(self, pm, args):
-			return ' '.join([r.name for r in pm.repositories])
+			print(' '.join([r.name for r in pm.repositories]))
 
 	class repo_path(PMQueryCommand):
 		"""
