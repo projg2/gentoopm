@@ -93,6 +93,77 @@ class PMUseFlag(ABCObject, StringCompat):
 		"""
 		pass
 
+class PMPackageMaintainer(ABCObject, StringCompat):
+	"""
+	A base class for a package maintainer.
+	"""
+
+	def __new__(self, email, name = None):
+		"""
+		Instantiate the actual string. Requires other props prepared
+		beforehand.
+
+		@param email: maintainer's e-mail address
+		@type email: string
+		@param name: maintainer's real name
+		@type name: string/C{None}
+		"""
+
+		ret = ['<%s>' % email]
+		if name is not None:
+			ret.insert(0, name)
+
+		ret = StringCompat.__new__(self, ' '.join(ret))
+		ret._name = name
+		ret._email = email
+		return ret
+
+	@property
+	def name(self):
+		"""
+		Maintainer's real name.
+
+		@type: string/C{None}
+		"""
+		return self._name
+
+	@property
+	def email(self):
+		"""
+		Maintainer's e-mail address.
+
+		@type: string
+		"""
+		return self._email
+
+	@abstractproperty
+	def description(self):
+		"""
+		Detailed maintainership description.
+
+		@type: string/C{None}
+		"""
+		pass
+
+class PMPackageHerd(PMPackageMaintainer):
+	"""
+	A helper class for herd maintainers.
+	"""
+
+	def __new__(self, name):
+		"""
+		Instantiate for the named herd.
+
+		@param name: name of the herd
+		@type name: string
+		"""
+		return PMPackageMaintainer.__new__(self,
+				'%s@gentoo.org' % name)
+
+	@property
+	def description(self):
+		return None
+
 class PMPackage(PMAtom, FillMissingComparisons):
 	"""
 	An abstract class representing a single, uniquely-identified package
@@ -269,6 +340,15 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		Get the C{REQUIRED_USE} specification.
 
 		@type: L{PMPackageDepSet}
+		"""
+		pass
+
+	@abstractproperty
+	def maintainers(self):
+		"""
+		Get the package maintainer list.
+
+		@type: tuple(L{PMPackageMaintainer})
 		"""
 		pass
 

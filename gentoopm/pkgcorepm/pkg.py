@@ -5,7 +5,7 @@
 
 from ..basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
-		PMPackageState, PMUseFlag
+		PMPackageState, PMUseFlag, PMPackageMaintainer, PMPackageHerd
 from ..basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from ..util import SpaceSepTuple, SpaceSepFrozenSet
 
@@ -72,6 +72,30 @@ class PkgCoreUseSet(SpaceSepFrozenSet):
 			# XXX, incorrect flags?
 			return PkgCoreUseFlag(k, self._use)
 
+class PkgCorePackageMaintainer(PMPackageMaintainer):
+	def __new__(self, m):
+		ret = PMPackageMaintainer.__new__(self, m.email, m.name)
+		ret._m = m
+		return ret
+
+	@property
+	def description(self):
+		return self._m.description
+
+class PkgCorePackageHerd(PMPackageHerd):
+	pass
+
+class PkgCoreMaintainerTuple(tuple):
+	def __new__(self, maints, herds):
+		def _iter_maints():
+			for m in maints:
+				yield PkgCorePackageMaintainer(m)
+			for h in herds:
+				if h != 'no-herd':
+					yield PkgCorePackageHerd(h)
+
+		return tuple.__new__(self, _iter_maints())
+
 class PkgCorePackage(PMPackage, PkgCoreAtom):
 	def __init__(self, pkg, repo_index = 0):
 		self._pkg = pkg
@@ -108,6 +132,10 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 	@property
 	def use(self):
 		return PkgCoreUseSet(self._pkg.iuse, self._pkg.use)
+
+	@property
+	def maintainers(self):
+		return PkgCoreMaintainerTuple(self._pkg.maintainers, self._pkg.herds)
 
 	@property
 	def slotted_atom(self):
