@@ -346,9 +346,9 @@ class PMPackage(PMAtom, FillMissingComparisons):
 	@abstractproperty
 	def maintainers(self):
 		"""
-		Get the package maintainer list.
+		Get the package maintainer list (or C{None} if unavailable).
 
-		@type: tuple(L{PMPackageMaintainer})
+		@type: tuple(L{PMPackageMaintainer})/C{None}
 		"""
 		pass
 
