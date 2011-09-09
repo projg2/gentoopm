@@ -68,14 +68,24 @@ class BoolCompat(object):
 	def __nonzero__(self):
 		return self.__bool__()
 
-class StringCompat(str):
-	"""
-	A helper class to create objects inheriting from string. It is basically
-	like subclassing str directly but with a nice C{repr()}.
-	"""
+try:
+	class StringCompat(unicode):
+		"""
+		A helper class to create objects inheriting from string. It is basically
+		like subclassing str directly but with a nice C{repr()}.
+		"""
 
-	def __repr__(self):
-		return '%s(%s)' % (self.__class__.__name__, repr(str(self)))
+		def __repr__(self):
+			return '%s(%s)' % (self.__class__.__name__, repr(unicode(self)))
+except NameError:
+	class StringCompat(str):
+		"""
+		A helper class to create objects inheriting from string. It is basically
+		like subclassing str directly but with a nice C{repr()}.
+		"""
+
+		def __repr__(self):
+			return '%s(%s)' % (self.__class__.__name__, repr(str(self)))
 
 class _SpaceSepIter(object):
 	def __getitem__(self, k):
