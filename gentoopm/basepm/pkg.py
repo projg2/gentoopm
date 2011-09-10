@@ -158,7 +158,8 @@ class PMPackageHerd(PMPackageMaintainer):
 		@type name: string
 		"""
 		return PMPackageMaintainer.__new__(self,
-				'%s@gentoo.org' % name)
+				'%s@gentoo.org' % name, # XXX
+				'%s herd' % name)
 
 	@property
 	def description(self):
