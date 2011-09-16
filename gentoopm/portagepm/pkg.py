@@ -151,10 +151,6 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 				self._applied_use)
 
 	@property
-	def maintainers(self):
-		return None
-
-	@property
 	def slotted_atom(self):
 		cp = str(self.key)
 		slot = self.slot
@@ -236,6 +232,10 @@ class PortageCPV(PortageDBCPV, PMInstallablePackage):
 	@property
 	def repository(self):
 		return self._dbapi.getRepositoryName(self._tree)
+
+	@property
+	def maintainers(self):
+		return None
 
 	def _aux_get(self, *keys):
 		val = map(str, self._dbapi.aux_get(self._cpv, keys,

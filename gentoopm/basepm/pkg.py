@@ -345,15 +345,6 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		pass
 
 	@abstractproperty
-	def maintainers(self):
-		"""
-		Get the package maintainer list (or C{None} if unavailable).
-
-		@type: tuple(L{PMPackageMaintainer})/C{None}
-		"""
-		pass
-
-	@abstractproperty
 	def slotted_atom(self):
 		"""
 		Return an atom matching all packages in the same slot as the package.
@@ -392,7 +383,15 @@ class PMInstallablePackage(PMPackage):
 	"""
 	An abstract class for a package which can be installed.
 	"""
-	pass
+
+	@abstractproperty
+	def maintainers(self):
+		"""
+		Get the package maintainer list (or C{None} if unavailable).
+
+		@type: tuple(L{PMPackageMaintainer})/C{None}
+		"""
+		pass
 
 class PMInstalledPackage(PMPackage):
 	"""

@@ -134,10 +134,6 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 		return PkgCoreUseSet(self._pkg.iuse, self._pkg.use)
 
 	@property
-	def maintainers(self):
-		return PkgCoreMaintainerTuple(self._pkg.maintainers, self._pkg.herds)
-
-	@property
 	def slotted_atom(self):
 		return PkgCoreAtom(self._pkg.slotted_atom)
 
@@ -189,6 +185,10 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
 	def required_use(self):
 		return PkgCorePackageDepSet(self._pkg._raw_pkg.required_use,
 				self._pkg)
+
+	@property
+	def maintainers(self):
+		return PkgCoreMaintainerTuple(self._pkg.maintainers, self._pkg.herds)
 
 	def __lt__(self, other):
 		if not isinstance(other, PkgCorePackage):

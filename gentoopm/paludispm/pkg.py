@@ -181,11 +181,6 @@ class PaludisID(PMPackage, PaludisAtom):
 				self._get_meta(self._pkg.choices_key()))
 
 	@property
-	def maintainers(self):
-		# XXX: find_metadata() + magic
-		return None
-
-	@property
 	def _atom(self):
 		return self._pkg.uniquely_identifying_spec()
 
@@ -202,7 +197,10 @@ class PaludisID(PMPackage, PaludisAtom):
 						other.repository, self.repository)
 
 class PaludisInstallableID(PaludisID, PMInstallablePackage):
-	pass
+	@property
+	def maintainers(self):
+		# XXX: find_metadata() + magic
+		return None
 
 class PaludisInstalledID(PaludisID, PMInstalledPackage):
 	@property
