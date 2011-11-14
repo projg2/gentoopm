@@ -25,8 +25,7 @@ class PkgCorePM(PackageManager):
 
 	@property
 	def repositories(self):
-		return PkgCoreRepoDict(self._domain.named_repos['repo-stack'],
-				self._domain)
+		return PkgCoreRepoDict(self._domain)
 
 	@property
 	def root(self):

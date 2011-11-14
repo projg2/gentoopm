@@ -17,11 +17,10 @@ from .filter import transform_filters
 
 class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):
-		for i, r in enumerate(self._stack.trees):
+		for i, r in enumerate(self._domain.named_repos['repo-stack'].trees):
 			yield PkgCoreEbuildRepo(r, self._domain, i)
 
-	def __init__(self, stack, domain):
-		self._stack = stack
+	def __init__(self, domain):
 		self._domain = domain
 
 class PkgCoreRepository(PkgCorePackageSet, PMRepository):
