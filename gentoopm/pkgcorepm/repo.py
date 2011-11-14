@@ -26,9 +26,12 @@ class PkgCoreRepoDict(PMRepositoryDict):
 
 			trees = filter(_match_ebuild_repos,
 					self._domain.named_repos.values())
+			rev = -1
+		else:
+			rev = 1
 
 		for i, r in enumerate(trees):
-			yield PkgCoreEbuildRepo(r, self._domain, i)
+			yield PkgCoreEbuildRepo(r, self._domain, rev * i)
 
 	def __init__(self, domain):
 		self._domain = domain
