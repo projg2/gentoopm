@@ -69,10 +69,10 @@ class PackageNames(object):
 	switch to another packages when one of them stops to work.
 	"""
 
-	single = 'coreutils'
+	single = 'bash'
 	""" Incomplete atom matching a single package. """
 
-	single_complete = 'sys-apps/coreutils'
+	single_complete = 'app-shells/bash'
 	""" Complete atom matching a single package. """
 
 	multiple = 'pms'
