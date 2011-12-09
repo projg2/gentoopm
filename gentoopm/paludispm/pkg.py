@@ -205,5 +205,8 @@ class PaludisInstallableID(PaludisID, PMInstallablePackage):
 class PaludisInstalledID(PaludisID, PMInstalledPackage):
 	@property
 	def contents(self):
-		return PaludisPackageContents(
-				self._get_meta(self._pkg.contents_key()))
+		try:
+			return PaludisPackageContents(self._pkg.contents())
+		except AttributeError:
+			return PaludisPackageContents(
+					self._get_meta(self._pkg.contents_key()))
