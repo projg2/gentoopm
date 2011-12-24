@@ -287,10 +287,10 @@ class PMPackage(PMAtom, FillMissingComparisons):
 				except OSError:
 					return -1
 
-			files = ('environment.bz2', 'environment')
+			files = [os.path.join(p, fn) for fn
+					in ('environment.bz2', 'environment')]
 			# Take the newer one.
-			fn = sorted(files, key=_mtime_if_exists, reverse=True)[0]
-			p = os.path.join(p, fn)
+			p = sorted(files, key=_mtime_if_exists, reverse=True)[0]
 
 		if not os.path.exists(p):
 			return None
