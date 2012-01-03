@@ -59,8 +59,13 @@ class PaludisChoiceSet(SpaceSepFrozenSet):
 				if group.raw_name == 'build_options': # paludis specific
 					continue
 				for c in group:
-					if c.explicitly_listed:
-						yield PaludisChoice(c)
+					try:
+						if c.origin != paludis.ChoiceOrigin.EXPLICIT:
+							continue
+					except AttributeError:
+						if not c.explicitly_listed:
+							continue
+					yield PaludisChoice(c)
 
 		self._choices = choices
 		return SpaceSepFrozenSet.__new__(self, _get_iuse())
