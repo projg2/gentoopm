@@ -92,5 +92,11 @@ class PackagesTestCase(PMTestCase):
 		f = next(iter(p.contents))
 		self.assertTrue(f in p.contents)
 
+	def test_use(self):
+		""" Test .use. """
+		p = self._inst_pkg
+		fl = PackageNames.single_use
+		self.assertTrue(fl in p.use)
+
 	def tearDown(self):
 		pass

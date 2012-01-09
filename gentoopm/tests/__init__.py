@@ -75,6 +75,9 @@ class PackageNames(object):
 	single_complete = 'app-shells/bash'
 	""" Complete atom matching a single package. """
 
+	single_use = 'nls'
+	""" A USEflag which should be available on the package above. """
+
 	multiple = 'pms'
 	""" Incomplete atom matching multiple packages. """
 
