@@ -33,8 +33,12 @@ class PkgCorePM(PackageManager):
 
 	@property
 	def installed(self):
-		return PkgCoreInstalledRepo(self._domain.named_repos['vdb'],
-				self._domain)
+		try:
+			repos = self._domain.repos_raw
+		except AttributeError:
+			repos = self._domain.named_repos
+
+		return PkgCoreInstalledRepo(repos['vdb'], self._domain)
 
 	@property
 	def Atom(self):

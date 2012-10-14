@@ -20,12 +20,16 @@ class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):
 		try:
 			trees = self._domain.named_repos['repo-stack'].trees
-		except KeyError: # pkgcore-0.7.5+
+		except (KeyError, AttributeError): # pkgcore-0.7.5+
 			def _match_ebuild_repos(x):
 				return isinstance(x, UnconfiguredTree)
 
-			trees = filter(_match_ebuild_repos,
-					self._domain.named_repos.values())
+			try:
+				all_repos = self._domain.repos_raw
+			except AttributeError:
+				all_repos = self._domain.named_repos
+
+			trees = filter(_match_ebuild_repos, all_repos.values())
 			rev = -1
 		else:
 			rev = 1
