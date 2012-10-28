@@ -43,6 +43,12 @@ class TestCommand(Command):
 	def run(self):
 		sys.path.insert(0, self.build_lib)
 
+		try:
+			from imp import reload
+		except ImportError:
+			pass
+		reload(sys.modules['gentoopm'])
+
 		import unittest
 		import gentoopm.submodules, gentoopm.tests
 
