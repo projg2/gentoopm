@@ -33,12 +33,16 @@ class TestCommand(Command):
 	user_options = []
 
 	def initialize_options(self):
-		pass
+		self.build_base = None
+		self.build_lib = None
 
 	def finalize_options(self):
-		pass
+		self.set_undefined_options('build',
+			('build_lib', 'build_lib'))
 
 	def run(self):
+		sys.path.insert(0, self.build_lib)
+
 		import unittest
 		import gentoopm.submodules, gentoopm.tests
 
