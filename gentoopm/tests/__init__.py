@@ -60,7 +60,7 @@ class PMTestLoader(unittest.TestLoader):
 
 	def loadTestsFromModule(self, mod):
 		if isinstance(mod, str):
-			mod = __import__(mod, fromlist=['.'], level=-1)
+			mod = __import__(mod, fromlist=['.'], level=2)
 		return unittest.TestLoader.loadTestsFromModule(self, mod)
 
 class PackageNames(object):
