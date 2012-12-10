@@ -126,7 +126,12 @@ class PortageFilteredRepo(PortageFilteredDBRepo):
 		try:
 			it = self._dbapi.xmatch("match-all", a)
 		except pe.AmbiguousPackageName as e:
-			for pkgcand in e.args[0]:
+			try:
+				candidates = e.args[0]
+			except IndexError: # pypy?
+				candidates = e.value
+
+			for pkgcand in candidates:
 				for p in PortageHackedFilteredRepo(self, pkgcand):
 					yield p
 		else:
