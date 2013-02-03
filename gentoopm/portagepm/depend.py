@@ -17,7 +17,9 @@ class PortageBaseDep(PMBaseDep):
 	def __iter__(self):
 		it = iter(self._deps)
 		for d in it:
-			if d == '||':
+			if isinstance(d, list):
+				yield PortageAllOfDep(it, self._args)
+			elif d == '||':
 				yield PortageAnyOfDep(next(it), self._args)
 			elif d == '&&':
 				yield PortageAllOfDep(next(it), self._args)
