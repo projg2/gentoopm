@@ -59,6 +59,8 @@ class TestCommand(Command):
 				pm_inst = gentoopm.submodules.get_pm(pm)
 			except ImportError:
 				print('%s not available, skipping tests.' % pm)
+			except Exception as e:
+				print('Unable to use %s: %s' % (pm, e))
 			else:
 				l = gentoopm.tests.PMTestLoader(pm_inst)
 
