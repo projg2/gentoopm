@@ -18,7 +18,7 @@ def _load_bp(bp, path):
 	"""
 
 	def _try_file(t):
-		f = t(path, 'r')
+		f = t(path, 'rb')
 		try:
 			bp.load_file(f)
 		finally:
