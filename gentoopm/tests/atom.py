@@ -14,8 +14,9 @@ class UserSpecifiedAtomTestCase(PMTestCase):
 		self._associated_atom = self.pm.stack.select(self._complete_atom)
 
 	def test_invalid_atoms(self):
-		for atstr in ('<>foo', '=bar', '*/*::baz'):
-			self.assertRaises(InvalidAtomStringError, self.pm.Atom, atstr)
+		self.assertRaises(InvalidAtomStringError, self.pm.Atom, '<>foo')
+		self.assertRaises(InvalidAtomStringError, self.pm.Atom, '=bar')
+		self.assertRaises(InvalidAtomStringError, self.pm.Atom, '*/*::baz')
 
 	def test_incomplete_atom(self):
 		a = self._incomplete_atom
@@ -26,9 +27,14 @@ class UserSpecifiedAtomTestCase(PMTestCase):
 		self.assertTrue(a.complete)
 
 	def test_atom_stringification(self):
-		for atstr in ('foo/bar', '>=baz/bar-100', 'foo/baz:10',
-				'bar/baz::foo', '>=foo/fooz-29.5:bazmania', '~baz/inga-4.1:2::foo'):
-			self.assertEqual(atstr, str(self.pm.Atom(atstr)))
+		self.assertEqual('foo/bar', str(self.pm.Atom('foo/bar')))
+		self.assertEqual('>=baz/bar-100', str(self.pm.Atom('>=baz/bar-100')))
+		self.assertEqual('foo/baz:10', str(self.pm.Atom('foo/baz:10')))
+		self.assertEqual('bar/baz::foo', str(self.pm.Atom('bar/baz::foo')))
+		self.assertEqual('>=foo/fooz-29.5:bazmania',
+			str(self.pm.Atom('>=foo/fooz-29.5:bazmania')))
+		self.assertEqual('~baz/inga-4.1:2::foo',
+			str(self.pm.Atom('~baz/inga-4.1:2::foo')))
 
 	def test_atom_transformations(self):
 		a = self._associated_atom
