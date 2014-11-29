@@ -16,7 +16,6 @@ class UserSpecifiedAtomTestCase(PMTestCase):
 	def test_invalid_atoms(self):
 		self.assertRaises(InvalidAtomStringError, self.pm.Atom, '<>foo')
 		self.assertRaises(InvalidAtomStringError, self.pm.Atom, '=bar')
-		self.assertRaises(InvalidAtomStringError, self.pm.Atom, '*/*::baz')
 
 	def test_incomplete_atom(self):
 		a = self._incomplete_atom
