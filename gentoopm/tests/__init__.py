@@ -70,10 +70,10 @@ class PackageNames(object):
 	switch to another packages when one of them stops to work.
 	"""
 
-	single = 'bash'
+	single = 'make'
 	""" Incomplete atom matching a single package. """
 
-	single_complete = 'app-shells/bash'
+	single_complete = 'sys-devel/make'
 	""" Complete atom matching a single package. """
 
 	single_use = 'nls'
