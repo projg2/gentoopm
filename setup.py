@@ -55,6 +55,10 @@ class TestCommand(Command):
 
 		maintestsuite = unittest.TestSuite()
 
+		# common tests
+		commonloader = gentoopm.tests.PMTestLoader(None)
+		maintestsuite.addTests(commonloader.loadTestsFromModule('gentoopm.tests.bash'))
+
 		for pm in gentoopm.submodules._supported_pms:
 			try:
 				pm_inst = gentoopm.submodules.get_pm(pm)
