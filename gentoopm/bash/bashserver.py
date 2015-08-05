@@ -76,6 +76,10 @@ class BashServer(BashParser):
 	def __getitem__(self, k):
 		return self._cmd_print(k)[0]
 
+	def __call__(self, code):
+		self._write('( %s ) &>/dev/null; printf "%%d\\0" "${?}"' % code)
+		return int(self._read1())
+
 	def copy(self, *varlist):
 		ret = self._cmd_print(*varlist)
 		return dict(zip(varlist, ret))

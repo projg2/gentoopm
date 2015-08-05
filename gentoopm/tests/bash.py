@@ -39,6 +39,15 @@ declare VAR4=test
 			'VAR4': 'test',
 		})
 
+	def test_call(self):
+		data = io.BytesIO(b'''
+test_function() {
+	return 42
+}
+''')
+		self._bash_server.load_file(data)
+		self.assertEqual(self._bash_server('test_function'), 42)
+
 	def test_random_output(self):
 		''' Test if random output is discarded correctly. '''
 		data = io.BytesIO(b'''
