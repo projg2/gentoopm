@@ -41,6 +41,7 @@ class TestCommand(Command):
 			('build_lib', 'build_lib'))
 
 	def run(self):
+		self.run_command('build_py')
 		sys.path.insert(0, self.build_lib)
 
 		try:
