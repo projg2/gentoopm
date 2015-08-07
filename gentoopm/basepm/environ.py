@@ -54,8 +54,8 @@ class LazyBashParser(object):
 	def __getitem__(self, k):
 		return self._parser[k]
 
-    def __call__(self, code):
-        return self._parser(code)
+	def __call__(self, code):
+		return self._parser(code)
 
 	def copy(self, *v):
 		return self._parser.copy(*v)
@@ -90,7 +90,7 @@ class PMPackageEnvironment(object):
 
 	def __call__(self, code):
 		"""
-        Run the given bash code and return the exit code.
+		Run the given bash code and return the exit code.
 
 		@param code: bash code to run
 		@type code: string
