@@ -4,7 +4,10 @@
 # Released under the terms of the 2-clause BSD license.
 
 from pkgcore.config import load_config
-from pkgcore.const import VERSION
+try:
+    from pkgcore import __version__ as pkgcore_version
+except ImportError:
+    from pkgcore.const import VERSION as pkgcore_version
 
 from ..basepm import PackageManager
 
@@ -17,7 +20,7 @@ class PkgCorePM(PackageManager):
 
 	@property
 	def version(self):
-		return VERSION
+		return pkgcore_version
 
 	def reload_config(self):
 		c = load_config()
