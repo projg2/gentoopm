@@ -85,6 +85,9 @@ class PackageNames(object):
 	empty = 'example/example'
 	""" Atom matching no packages. """
 
+	subslotted = 'dev-libs/openssl'
+	""" Atom matching a subslotted package. """
+
 	repository = 'gentoo'
 	""" Repository name guaranteed to match. """
 

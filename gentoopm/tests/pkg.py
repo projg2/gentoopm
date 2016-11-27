@@ -11,6 +11,7 @@ class PackagesTestCase(PMTestCase):
 	def setUp(self):
 		self._inst_pkg = self.pm.installed.select(PackageNames.single_complete)
 		self._stack_pkg = self.pm.stack.select(PackageNames.single_complete)
+		self._subslotted_pkg = self.pm.stack.select(PackageNames.subslotted)
 		self._pkgs = (self._inst_pkg, self._stack_pkg)
 
 	def test_key_id(self):
@@ -97,6 +98,13 @@ class PackagesTestCase(PMTestCase):
 		p = self._inst_pkg
 		fl = PackageNames.single_use
 		self.assertTrue(fl in p.use)
+
+	def test_slot(self):
+		""" Test .slot and friends. """
+		p = self._subslotted_pkg
+		# ensure that subslot is not included in slot nor slotted atom
+		self.assertTrue('/' not in p.slot)
+		self.assertTrue('/' not in str(p.slotted_atom).split(':')[1])
 
 	def tearDown(self):
 		pass
