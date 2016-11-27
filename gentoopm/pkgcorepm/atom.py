@@ -134,6 +134,18 @@ class PkgCoreAtom(PMAtom):
 		except AssertionError:
 			return None
 
+	@staticmethod
+	def strip_slotop(r):
+		""" Strip slot op from slot/subslot restriction string """
+		if r is None:
+			return None
+		s = r.restriction.exact
+		if s.endswith('=') or s.endswith('*'):
+			if len(s) == 1:
+				return None
+			s = s[:-1]
+		return s
+
 	@property
 	def slot(self):
 		if self.complete:
@@ -141,8 +153,7 @@ class PkgCoreAtom(PMAtom):
 					else None
 		else:
 			r = _find_res(self._r, SlotDep)
-			return r.restriction.exact if r is not None \
-					else None
+			return self.strip_slotop(r)
 
 	@property
 	def subslot(self):
@@ -151,8 +162,7 @@ class PkgCoreAtom(PMAtom):
 					else None
 		else:
 			r = _find_res(self._r, SubSlotDep)
-			return r.restriction.exact if r is not None \
-					else None
+			return self.strip_slotop(r)
 
 	@property
 	def slot_operator(self):
@@ -160,7 +170,15 @@ class PkgCoreAtom(PMAtom):
 			return self._r.slot_operator if self._r.slot_operator \
 					else None
 		else:
-			raise NotImplementedError('TODO')
+			# now the fun part -- it's either in SubSlotDep or SlotDep
+			r = _find_res(self._r, SubSlotDep)
+			if r is None:
+				r = _find_res(self._r, SlotDep)
+			if r is None:
+				return None
+			s = r.restriction.exact
+			if s.endswith('=') or s.endswith('*'):
+				return s[-1]
 
 	@property
 	def repository(self):

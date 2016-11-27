@@ -135,5 +135,30 @@ class UserSpecifiedAtomTestCase(PMTestCase):
 		self.assertTrue(e.subslot is None)
 		self.assertTrue(e.slot_operator is None)
 
+	def test_unqualified_atom_slots(self):
+		# Paludis does not allow dependency syntax on user-specified slots
+		# FIXME: figure out how to test it better
+		if self.pm.name != 'paludis':
+			a = self.pm.Atom('bar:=')
+			self.assertTrue(a.slot is None)
+			self.assertTrue(a.subslot is None)
+			self.assertEqual(a.slot_operator, '=')
+			b = self.pm.Atom('bar:*')
+			self.assertTrue(b.slot is None)
+			self.assertTrue(b.subslot is None)
+			self.assertEqual(b.slot_operator, '*')
+			c = self.pm.Atom('bar:1=')
+			self.assertEqual(c.slot, '1')
+			self.assertTrue(c.subslot is None)
+			self.assertEqual(c.slot_operator, '=')
+		d = self.pm.Atom('bar:1/2')
+		self.assertEqual(d.slot, '1')
+		self.assertEqual(d.subslot, '2')
+		self.assertTrue(d.slot_operator is None)
+		e = self.pm.Atom('bar:1')
+		self.assertEqual(e.slot, '1')
+		self.assertTrue(e.subslot is None)
+		self.assertTrue(e.slot_operator is None)
+
 	def tearDown(self):
 		pass
