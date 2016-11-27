@@ -155,6 +155,14 @@ class PkgCoreAtom(PMAtom):
 					else None
 
 	@property
+	def slot_operator(self):
+		if self.complete:
+			return self._r.slot_operator if self._r.slot_operator \
+					else None
+		else:
+			raise NotImplementedError('TODO')
+
+	@property
 	def repository(self):
 		if self.complete:
 			return self._r.repo_id

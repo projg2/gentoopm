@@ -150,6 +150,10 @@ class PaludisAtom(PMAtom):
 		raise NotImplementedError('Paludis does not expose subslots at the moment')
 
 	@property
+	def slot_operator(self):
+		raise NotImplementedError('TODO')
+
+	@property
 	def repository(self):
 		if self._atom.in_repository is None:
 			return None

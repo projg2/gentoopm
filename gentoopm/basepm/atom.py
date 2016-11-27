@@ -202,6 +202,15 @@ class PMAtom(ABCObject, StringifiedComparisons):
 		pass
 
 	@abstractproperty
+	def slot_operator(self):
+		"""
+		The package slot operator (None, '=' or '*').
+
+		@type: string/C{None}
+		"""
+		pass
+
+	@abstractproperty
 	def repository(self):
 		"""
 		The package repository name (if specified).
