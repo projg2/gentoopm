@@ -139,7 +139,14 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def slot(self):
-		return self._aux_get('SLOT').partition('/')[0]
+		return self._aux_get('SLOT').split('/')[0]
+
+	@property
+	def subslot(self):
+		split_slot = self._aux_get('SLOT').split('/')
+		assert len(split_slot) <= 2
+		# subslot defaults to slot if not explicitly provided
+		return split_slot[-1]
 
 	@property
 	def repository(self):

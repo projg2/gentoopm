@@ -105,6 +105,13 @@ class PackagesTestCase(PMTestCase):
 		# ensure that subslot is not included in slot nor slotted atom
 		self.assertTrue('/' not in p.slot)
 		self.assertTrue('/' not in str(p.slotted_atom).split(':')[1])
+		# ensure that subslot is not null
+		self.assertTrue(p.subslot)
+
+	def test_non_subslotted(self):
+		""" Test .subslot on package not using explicit subslots. """
+		p = self._stack_pkg
+		self.assertEqual(p.slot, p.subslot)
 
 	def tearDown(self):
 		pass

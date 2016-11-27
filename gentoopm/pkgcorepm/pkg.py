@@ -134,6 +134,10 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
 		return PkgCoreUseSet(self._pkg.iuse, self._pkg.use)
 
 	@property
+	def slot_operator(self):
+		return None
+
+	@property
 	def slotted_atom(self):
 		return PkgCoreAtom(self._pkg.slotted_atom)
 
