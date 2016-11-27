@@ -139,7 +139,7 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 
 	@property
 	def slot(self):
-		return self._aux_get('SLOT')
+		return self._aux_get('SLOT').partition('/')[0]
 
 	@property
 	def repository(self):
