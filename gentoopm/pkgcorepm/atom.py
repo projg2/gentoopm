@@ -5,7 +5,7 @@
 
 from pkgcore.ebuild.atom import atom
 from pkgcore.ebuild.restricts import PackageDep, VersionMatch, \
-		RepositoryDep, SlotDep
+		RepositoryDep, SlotDep, SubSlotDep
 from pkgcore.restrictions.boolean import AndRestriction
 from pkgcore.util.parserestrict import parse_match, ParseError
 
@@ -141,6 +141,16 @@ class PkgCoreAtom(PMAtom):
 					else None
 		else:
 			r = _find_res(self._r, SlotDep)
+			return r.restriction.exact if r is not None \
+					else None
+
+	@property
+	def subslot(self):
+		if self.complete:
+			return self._r.subslot if self._r.subslot \
+					else None
+		else:
+			r = _find_res(self._r, SubSlotDep)
 			return r.restriction.exact if r is not None \
 					else None
 

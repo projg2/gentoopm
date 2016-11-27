@@ -116,12 +116,19 @@ class UserSpecifiedAtomTestCase(PMTestCase):
 		if self.pm.name != 'paludis':
 			a = self.pm.Atom('app-foo/bar:=')
 			self.assertTrue(a.slot is None)
+			self.assertTrue(a.subslot is None)
 			b = self.pm.Atom('app-foo/bar:*')
 			self.assertTrue(b.slot is None)
+			self.assertTrue(b.subslot is None)
 			c = self.pm.Atom('app-foo/bar:1=')
 			self.assertEqual(c.slot, '1')
+			self.assertTrue(c.subslot is None)
 		d = self.pm.Atom('app-foo/bar:1/2')
 		self.assertEqual(d.slot, '1')
+		self.assertEqual(d.subslot, '2')
+		e = self.pm.Atom('app-foo/bar:1')
+		self.assertEqual(e.slot, '1')
+		self.assertTrue(e.subslot is None)
 
 	def tearDown(self):
 		pass

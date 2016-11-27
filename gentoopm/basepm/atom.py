@@ -186,7 +186,16 @@ class PMAtom(ABCObject, StringifiedComparisons):
 	@abstractproperty
 	def slot(self):
 		"""
-		The package slot (if specified).
+		The package slot (without subslot, if specified).
+
+		@type: string/C{None}
+		"""
+		pass
+
+	@abstractproperty
+	def subslot(self):
+		"""
+		The package subslot restriction (if specified).
 
 		@type: string/C{None}
 		"""

@@ -146,6 +146,10 @@ class PaludisAtom(PMAtom):
 		return str(self._atom.slot_requirement.slot)
 
 	@property
+	def subslot(self):
+		raise NotImplementedError('Paludis does not expose subslots at the moment')
+
+	@property
 	def repository(self):
 		if self._atom.in_repository is None:
 			return None

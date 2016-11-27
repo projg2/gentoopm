@@ -110,6 +110,10 @@ class CompletePortageAtom(PMAtom):
 		return self._atom.slot
 
 	@property
+	def subslot(self):
+		return self._atom.sub_slot
+
+	@property
 	def repository(self):
 		return self._atom.repo
 
@@ -125,6 +129,10 @@ class UncategorisedPackageWrapper(object):
 	@property
 	def slot(self):
 		return self._pkg.slot
+
+	@property
+	def subslot(self):
+		return self._pkg.sub_slot
 
 class UnexpandedPortageAtom(CompletePortageAtom):
 	"""
