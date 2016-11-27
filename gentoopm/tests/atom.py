@@ -110,5 +110,18 @@ class UserSpecifiedAtomTestCase(PMTestCase):
 		self.assertTrue(a.slot is None)
 		self.assertTrue(a.repository is None)
 
+	def test_atom_slots(self):
+		# Paludis does not allow dependency syntax on user-specified slots
+		# FIXME: figure out how to test it better
+		if self.pm.name != 'paludis':
+			a = self.pm.Atom('app-foo/bar:=')
+			self.assertTrue(a.slot is None)
+			b = self.pm.Atom('app-foo/bar:*')
+			self.assertTrue(b.slot is None)
+			c = self.pm.Atom('app-foo/bar:1=')
+			self.assertEqual(c.slot, '1')
+		d = self.pm.Atom('app-foo/bar:1/2')
+		self.assertEqual(d.slot, '1')
+
 	def tearDown(self):
 		pass
