@@ -137,7 +137,7 @@ class PkgCoreAtom(PMAtom):
 	@property
 	def slot(self):
 		if self.complete:
-			return self._r.slot[0] if self._r.slot \
+			return self._r.slot if self._r.slot \
 					else None
 		else:
 			r = _find_res(self._r, SlotDep)
