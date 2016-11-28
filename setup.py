@@ -5,7 +5,7 @@
 
 from distutils.core import setup, Command
 
-import os.path, subprocess, sys
+import errno, os, os.path, shutil, subprocess, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 try:
@@ -28,6 +28,37 @@ class DocCommand(Command):
 		subprocess.check_call(['epydoc', '--verbose', '--html',
 			'--output', 'doc', 'gentoopm'])
 
+class BuildTestsCommand(Command):
+	description = 'copy and configure tests'
+	user_options = []
+
+	def initialize_options(self):
+		self.build_base = None
+		self.test_dir = None
+
+	def finalize_options(self):
+		self.set_undefined_options('build',
+			('build_base', 'build_base'))
+		self.test_dir = os.path.join(self.build_base, 'test-root')
+
+	def run(self):
+		try:
+			shutil.rmtree(self.test_dir)
+		except OSError as e:
+			if e.errno != errno.ENOENT:
+				raise
+		shutil.copytree('test-root', self.test_dir, symlinks=True)
+
+		abs_test_dir = os.path.abspath(self.test_dir)
+		make_conf = os.path.join(self.test_dir, 'etc/portage/make.conf')
+		repos_conf = os.path.join(self.test_dir, 'etc/portage/repos.conf')
+		with open(os.path.join(make_conf), 'a') as f:
+			f.write('ROOT="%s"\n' % abs_test_dir)
+			f.write('PORTDIR="%s"\n' % os.path.join(abs_test_dir, 'usr/portage'))
+		with open(os.path.join(repos_conf), 'w') as f:
+			f.write('[gentoo]\n')
+			f.write('location=%s\n' % os.path.join(abs_test_dir, 'usr/portage'))
+
 class TestCommand(Command):
 	description = 'run tests'
 	user_options = []
@@ -35,12 +66,18 @@ class TestCommand(Command):
 	def initialize_options(self):
 		self.build_base = None
 		self.build_lib = None
+		self.test_dir = None
 
 	def finalize_options(self):
 		self.set_undefined_options('build',
 			('build_lib', 'build_lib'))
+		self.set_undefined_options('build_tests',
+			('test_dir', 'test_dir'))
 
 	def run(self):
+		self.run_command('build_tests')
+		os.environ['PORTAGE_CONFIGROOT'] = os.path.abspath(self.test_dir)
+
 		self.run_command('build_py')
 		sys.path.insert(0, self.build_lib)
 
@@ -112,6 +149,7 @@ setup(
 		],
 
 		cmdclass = {
+			'build_tests': BuildTestsCommand,
 			'doc': DocCommand,
 			'test': TestCommand
 		}

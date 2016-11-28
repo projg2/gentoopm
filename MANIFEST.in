@@ -1,2 +1,3 @@
 include COPYING
 include UNSTABLE-API-WARNING
+include test-root/**

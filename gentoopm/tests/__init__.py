@@ -70,22 +70,22 @@ class PackageNames(object):
 	switch to another packages when one of them stops to work.
 	"""
 
-	single = 'make'
+	single = 'single'
 	""" Incomplete atom matching a single package. """
 
-	single_complete = 'sys-devel/make'
+	single_complete = 'a/single'
 	""" Complete atom matching a single package. """
 
-	single_use = 'nls'
+	single_use = 'example-flag'
 	""" A USEflag which should be available on the package above. """
 
-	multiple = 'pms'
+	multiple = 'multi'
 	""" Incomplete atom matching multiple packages. """
 
-	empty = 'example/example'
+	empty = 'a/nonexist'
 	""" Atom matching no packages. """
 
-	subslotted = 'dev-libs/openssl'
+	subslotted = 'a/subslotted'
 	""" Atom matching a subslotted package. """
 
 	repository = 'gentoo'

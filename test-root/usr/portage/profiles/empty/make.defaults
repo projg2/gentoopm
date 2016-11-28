@@ -1,0 +1,6 @@
+ARCH=foo
+# pkgcore needs all that
+CHOST=foo-unknown-linux-gnu
+CFLAGS=''
+CXXFLAGS=''
+LDFLAGS=''
