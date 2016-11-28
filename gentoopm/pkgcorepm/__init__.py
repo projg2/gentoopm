@@ -3,6 +3,8 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import os
+
 from pkgcore.config import load_config
 try:
     from pkgcore import __version__ as pkgcore_version
@@ -23,6 +25,9 @@ class PkgCorePM(PackageManager):
 		return pkgcore_version
 
 	def reload_config(self):
+		if (self.config_root != '' and (self.config_root !=
+				os.environ.get('PORTAGE_CONFIGROOT', ''))):
+			raise NotImplementedError('pkgcore supports only PORTAGE_CONFIGROOT')
 		c = load_config()
 		self._domain = c.get_default('domain')
 

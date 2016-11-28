@@ -4,6 +4,7 @@
 # Released under the terms of the 2-clause BSD license.
 
 from abc import abstractmethod, abstractproperty
+import os
 
 from ..util import ABCObject
 
@@ -13,6 +14,8 @@ class PackageManager(ABCObject):
 	"""
 	Base abstract class for a package manager.
 	"""
+
+	config_root = ""
 
 	@abstractproperty
 	def name(self):
@@ -43,7 +46,14 @@ class PackageManager(ABCObject):
 		"""
 		pass
 
-	def __init__(self):
+	def __init__(self, config_root=''):
+		"""
+		Initialize the new package manager instance.
+
+		@param config_root: Configuration root location
+		@type config_root: string
+		"""
+		self.config_root = config_root or os.environ['PORTAGE_CONFIGROOT']
 		self.reload_config()
 
 	@abstractproperty

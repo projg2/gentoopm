@@ -24,7 +24,8 @@ class PaludisPM(PackageManager):
 		return paludis.VERSION
 
 	def reload_config(self):
-		self._env = paludis.EnvironmentFactory.instance.create('')
+		config = 'portage:%s' % self.config_root
+		self._env = paludis.EnvironmentFactory.instance.create(config)
 
 	@property
 	def repositories(self):
@@ -32,11 +33,12 @@ class PaludisPM(PackageManager):
 
 	@property
 	def root(self):
+		# FIXME
 		return '/'
 
 	@property
 	def installed(self):
-		return PaludisInstalledRepo(self._env, self.root)
+		return PaludisInstalledRepo(self._env, self.config_root)
 
 	@property
 	def stack(self):
