@@ -57,7 +57,11 @@ class BashServer(BashParser):
 		f = self._bashproc.stdout
 		buf = b' '
 		while not buf.endswith(b'\0'):
-			buf += f.read(1)
+			x = f.read(1)
+			if len(x) < 1:
+				# end-of-file
+				raise InvalidBashCodeError()
+			buf += x
 		return buf[1:-1].decode('utf-8')
 
 	def _write(self, *cmds):
