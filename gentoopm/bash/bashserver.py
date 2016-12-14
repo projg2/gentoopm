@@ -43,15 +43,14 @@ class BashServer(BashParser):
 
 			self._write('exit 0',
 					'bash -n %s &>/dev/null && printf "OK\\0" || printf "FAIL\\0"' % repr(f.name))
-			resp = self._read1()
 
-			if resp == 'OK':
-				self._write('source %s &>/dev/null; printf "DONE\\0"' % repr(f.name))
+			if self._read1() != 'OK':
+				raise InvalidBashCodeError()
+
+			self._write('source %s &>/dev/null; printf "DONE\\0"' % repr(f.name))
+
 			if self._read1() != 'DONE':
 				raise AssertionError('Sourcing unexpected caused stdout output')
-
-		if resp != 'OK':
-			raise InvalidBashCodeError()
 
 	def _read1(self):
 		f = self._bashproc.stdout
