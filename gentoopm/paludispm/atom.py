@@ -141,17 +141,54 @@ class PaludisAtom(PMAtom):
 
 	@property
 	def slot(self):
-		if self._atom.slot_requirement is None:
+		sreq = self._atom.slot_requirement
+		if sreq is None:
 			return None
-		return str(self._atom.slot_requirement.slot)
+		if isinstance(sreq, paludis.SlotExactPartialRequirement): # :x
+			return str(sreq.slot)
+		if isinstance(sreq, paludis.SlotExactFullRequirement): # :x/y
+			return str(sreq.slots[0])
+		if isinstance(sreq, paludis.SlotAnyAtAllLockedRequirement): # :=
+			return None
+		if isinstance(sreq, paludis.SlotAnyPartialLockedRequirement): # :x=
+			return None
+		if isinstance(sreq, paludis.SlotAnyUnlockedRequirement): # :*
+			return None
+		raise NotImplementedError('Unknown slot requirement type %s' % repr(sreq))
 
 	@property
 	def subslot(self):
-		raise NotImplementedError('Paludis does not expose subslots at the moment')
+		sreq = self._atom.slot_requirement
+		if sreq is None:
+			return None
+		if isinstance(sreq, paludis.SlotExactPartialRequirement): # :x
+			return None
+		if isinstance(sreq, paludis.SlotExactFullRequirement): # :x/y
+			return str(sreq.slots[1])
+		if isinstance(sreq, paludis.SlotAnyAtAllLockedRequirement): # :=
+			return None
+		if isinstance(sreq, paludis.SlotAnyPartialLockedRequirement): # :x=
+			return None
+		if isinstance(sreq, paludis.SlotAnyUnlockedRequirement): # :*
+			return None
+		raise NotImplementedError('Unknown slot requirement type %s' % repr(sreq))
 
 	@property
 	def slot_operator(self):
-		raise NotImplementedError('TODO')
+		sreq = self._atom.slot_requirement
+		if sreq is None:
+			return None
+		if isinstance(sreq, paludis.SlotExactPartialRequirement): # :x
+			return None
+		if isinstance(sreq, paludis.SlotExactFullRequirement): # :x/y
+			return None
+		if isinstance(sreq, paludis.SlotAnyAtAllLockedRequirement): # :=
+			return '='
+		if isinstance(sreq, paludis.SlotAnyPartialLockedRequirement): # :x=
+			return '='
+		if isinstance(sreq, paludis.SlotAnyUnlockedRequirement): # :*
+			return '*'
+		raise NotImplementedError('Unknown slot requirement type %s' % repr(sreq))
 
 	@property
 	def repository(self):

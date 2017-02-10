@@ -148,10 +148,13 @@ class PaludisID(PMPackage, PaludisAtom):
 	@property
 	def slot(self):
 		slot = self._get_meta(self._pkg.slot_key())
-		if hasattr(slot, 'raw_value'): # paludis-1.4
-			return slot.raw_value
-		else:
-			return str(slot)
+		return slot.raw_value.split('/')[0]
+
+	@property
+	def subslot(self):
+		slot = self._get_meta(self._pkg.slot_key())
+		# (implicit fallback to slot if no explicit subslot)
+		return slot.raw_value.split('/')[-1]
 
 	@property
 	def repository(self):
