@@ -53,7 +53,7 @@ class PackageManager(ABCObject):
 		@param config_root: Configuration root location
 		@type config_root: string
 		"""
-		self.config_root = config_root or os.environ.get('PORTAGE_CONFIGROOT')
+		self.config_root = config_root or os.environ.get('PORTAGE_CONFIGROOT', '')
 		self.reload_config()
 
 	@abstractproperty
