@@ -7,6 +7,7 @@ import argparse, os.path
 from abc import abstractmethod
 
 from . import PV, get_package_manager
+from .submodules import _supported_pms, get_pm
 from .util import ABCObject
 
 def _reponame(val):
@@ -154,9 +155,13 @@ class PMQueryCLI(object):
 	""" A CLI for gentoopmq. """
 	def __init__(self):
 		self.argparser = arg = argparse.ArgumentParser()
+		all_pms = frozenset(_supported_pms)
 
 		arg.add_argument('-V', '--version',
 			action='version', version='%s %s' % (arg.prog, PV))
+		arg.add_argument('-p', '--package-manager',
+			action='store', help='Use a specific package manager',
+			choices=all_pms)
 
 		subp = arg.add_subparsers(title = 'Sub-commands')
 		for cmd_name, cmd_help, cmd_class in PMQueryCommands():
@@ -168,9 +173,12 @@ class PMQueryCLI(object):
 		arg.prog = os.path.basename(argv[0])
 		args = arg.parse_args(argv[1:])
 
-		try:
-			pm = get_package_manager()
-		except Exception:
-			arg.error('No working package manager could be found.')
+		if args.package_manager is not None:
+			pm = get_pm(args.package_manager)
+		else:
+			try:
+				pm = get_package_manager()
+			except Exception:
+				arg.error('No working package manager could be found.')
 
 		return args.instance(pm, args) or 0
