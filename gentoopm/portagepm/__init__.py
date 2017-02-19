@@ -20,9 +20,10 @@ class PortagePM(PackageManager):
 		return VERSION
 
 	def reload_config(self):
-		# Similarly to emerge, care for PORTAGE_CONFIGROOT and ROOT.
-		trees = create_trees(
-				config_root = self.config_root)
+		kwargs = {}
+		if self.config_root:
+			kwargs['config_root'] = self.config_root
+		trees = create_trees(**kwargs)
 		tree = trees[max(trees)]
 		self._root = max(trees)
 		self._vardb = tree['vartree'].dbapi
