@@ -4,13 +4,14 @@
 # Released under the terms of the 2-clause BSD license.
 
 from pkgcore.ebuild.atom import atom
-from pkgcore.restrictions.boolean import OrRestriction, AndRestriction, \
-		JustOneRestriction
+from pkgcore.restrictions.boolean import (OrRestriction, AndRestriction,
+		JustOneRestriction, AtMostOneOfRestriction)
 from pkgcore.restrictions.packages import Conditional
 from pkgcore.restrictions.values import ContainmentMatch
 
-from ..basepm.depend import PMPackageDepSet, PMConditionalDep, \
-	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMBaseDep, PMRequiredUseAtom
+from ..basepm.depend import (PMPackageDepSet, PMConditionalDep,
+	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMAtMostOneOfDep,
+	PMBaseDep, PMRequiredUseAtom)
 
 from .atom import PkgCoreAtom
 
@@ -32,6 +33,8 @@ class PkgCoreBaseDep(PMBaseDep):
 				yield PkgCoreAllOfDep(d, self._pkg)
 			elif isinstance(d, JustOneRestriction):
 				yield PkgCoreExactlyOneOfDep(d, self._pkg)
+			elif isinstance(d, AtMostOneOfRestriction):
+				yield PkgCoreAtMostOneOfDep(d, self._pkg)
 			elif isinstance(d, Conditional) and d.attr == 'use':
 				yield PkgCoreConditionalUseDep(d, self._pkg)
 			else:
@@ -45,6 +48,9 @@ class PkgCoreAllOfDep(PMAllOfDep, PkgCoreBaseDep):
 	pass
 
 class PkgCoreExactlyOneOfDep(PMExactlyOneOfDep, PkgCoreBaseDep):
+	pass
+
+class PkgCoreAtMostOneOfDep(PMAtMostOneOfDep, PkgCoreBaseDep):
 	pass
 
 class PkgCoreConditionalUseDep(PMConditionalDep, PkgCoreBaseDep):
@@ -76,6 +82,8 @@ class PkgCoreUncondDep(PkgCoreBaseDep):
 				yield PkgCoreUncondAllOfDep(d, self._pkg)
 			elif isinstance(d, JustOneRestriction):
 				yield PkgCoreUncondExactlyOneOfDep(d, self._pkg)
+			elif isinstance(d, AtMostOneOfRestriction):
+				yield PkgCoreUncondAtMostOneOfDep(d, self._pkg)
 			else:
 				raise NotImplementedError('Parsing %s not implemented' \
 						% repr(d))
@@ -87,4 +95,7 @@ class PkgCoreUncondAllOfDep(PMAllOfDep, PkgCoreUncondDep):
 	pass
 
 class PkgCoreUncondAllOfDep(PMExactlyOneOfDep, PkgCoreUncondDep):
+	pass
+
+class PkgCoreUncondAllOfDep(PMAtMostOneOfDep, PkgCoreUncondDep):
 	pass

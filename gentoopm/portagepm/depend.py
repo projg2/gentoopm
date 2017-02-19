@@ -6,8 +6,9 @@
 from collections import namedtuple
 from portage.dep import paren_reduce, use_reduce
 
-from ..basepm.depend import PMPackageDepSet, PMConditionalDep, \
-	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMBaseDep
+from ..basepm.depend import (PMPackageDepSet, PMConditionalDep,
+	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMAtMostOneOfDep,
+	PMBaseDep)
 
 class PortageBaseDep(PMBaseDep):
 	def __init__(self, deps, args):
@@ -23,6 +24,8 @@ class PortageBaseDep(PMBaseDep):
 				yield PortageAnyOfDep(next(it), self._args)
 			elif d == '&&':
 				yield PortageAllOfDep(next(it), self._args)
+			elif d == '??':
+				yield PortageAtMostOneOfDep(next(it), self._args)
 			elif d == '__xor__?':
 				yield PortageExactlyOneOfDep(next(it), self._args)
 			elif d.endswith('?'):
@@ -38,6 +41,9 @@ class PortageAllOfDep(PMAllOfDep, PortageBaseDep):
 	pass
 
 class PortageExactlyOneOfDep(PMExactlyOneOfDep, PortageBaseDep):
+	pass
+
+class PortageAtMostOneOfDep(PMAtMostOneOfDep, PortageBaseDep):
 	pass
 
 class PortageConditionalUseDep(PMConditionalDep, PortageBaseDep):
@@ -84,6 +90,10 @@ class PortageUncondDep(PortageBaseDep):
 				yield PortageUncondAnyOfDep(next(it), self._args)
 			elif d == '&&':
 				yield PortageUncondAllOfDep(next(it), self._args)
+			elif d == '??':
+				yield PortageUncondAtMostOneOfDep(next(it), self._args)
+			elif d == '__xor__?':
+				yield PortageUncondExactlyOneOfDep(next(it), self._args)
 			else:
 				yield self._args.cls(d)
 
@@ -94,4 +104,7 @@ class PortageUncondAllOfDep(PMAllOfDep, PortageUncondDep):
 	pass
 
 class PortageUncondExactlyOneOfDep(PMExactlyOneOfDep, PortageUncondDep):
+	pass
+
+class PortageUncondAtMostOneOfDep(PMAtMostOneOfDep, PortageUncondDep):
 	pass

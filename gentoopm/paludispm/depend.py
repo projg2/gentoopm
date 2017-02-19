@@ -6,8 +6,9 @@
 import paludis, re
 from collections import namedtuple
 
-from ..basepm.depend import PMPackageDepSet, PMConditionalDep, \
-	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMBaseDep
+from ..basepm.depend import (PMPackageDepSet, PMConditionalDep,
+	PMAnyOfDep, PMAllOfDep, PMExactlyOneOfDep, PMAtMostOneOfDep,
+	PMBaseDep)
 
 from .atom import PaludisAtom
 
@@ -33,6 +34,8 @@ class PaludisBaseDep(PMBaseDep):
 				yield PaludisAllOfDep(d, self._args)
 			elif isinstance(d, paludis.ExactlyOneDepSpec):
 				yield PaludisExactlyOneOfDep(d, self._args)
+			elif isinstance(d, paludis.AtMostOneDepSpec):
+				yield PaludisAtMostOneOfDep(d, self._args)
 			elif isinstance(d, paludis.ConditionalDepSpec):
 				yield PaludisConditionalDep(d, self._args)
 			elif isinstance(d, paludis.PlainTextDepSpec):
@@ -48,6 +51,9 @@ class PaludisAllOfDep(PMAllOfDep, PaludisBaseDep):
 	pass
 
 class PaludisExactlyOneOfDep(PMExactlyOneOfDep, PaludisBaseDep):
+	pass
+
+class PaludisAtMostOneOfDep(PMAtMostOneOfDep, PaludisBaseDep):
 	pass
 
 class PaludisConditionalDep(PMConditionalDep, PaludisBaseDep):

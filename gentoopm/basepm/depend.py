@@ -150,6 +150,18 @@ class PMExactlyOneOfDep(PMBaseDep):
 class PMUncondExactlyOneOfDep(PMExactlyOneOfDep, PMUncondBaseDep):
 	pass
 
+class PMAtMostOneOfDep(PMBaseDep):
+	"""
+	An at-most-one-of dependency set (C{?? ( ... )}).
+	"""
+
+	@property
+	def without_conditionals(self):
+		return PMUncondAtMostOneOfDep(self)
+
+class PMUncondAtMostOneOfDep(PMAtMostOneOfDep, PMUncondBaseDep):
+	pass
+
 class PMPackageDepSet(PMAllOfDep):
 	"""
 	A base class representing a depset (or depset-like variable) of a single
