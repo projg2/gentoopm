@@ -1,14 +1,14 @@
 #!/usr/bin/python
 #	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2017 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import functools, paludis
 
 try:
-	paludis.PackageDepSpec.slot_requirement
+	paludis.SlotExactFullRequirement.slots
 except (NameError, AttributeError):
-	raise ImportError('paludis version too old (at least 0.64.2 required)')
+	raise ImportError('paludis version too old (at least git d15113c5058/3.0.0 required)')
 
 from ..basepm import PackageManager
 
