@@ -118,7 +118,7 @@ class TestCommand(Command):
 				testsuite.addTests(l.loadTestsFromModule('gentoopm.tests.repo'))
 				maintestsuite.addTests(testsuite)
 
-		r = unittest.TextTestRunner()
+		r = unittest.TextTestRunner(verbosity=2)
 		res = r.run(maintestsuite)
 		sys.exit(0 if res.wasSuccessful() else 1)
 
