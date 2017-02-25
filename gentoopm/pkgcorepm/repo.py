@@ -1,15 +1,12 @@
 #!/usr/bin/python
 #	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2017 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 from abc import abstractproperty
 
 import pkgcore.restrictions.boolean as br
-try:
-    from pkgcore.ebuild.repository import _UnconfiguredTree
-except ImportError:
-    from pkgcore.ebuild.repository import UnconfiguredTree as _UnconfiguredTree
+from pkgcore.ebuild.repository import _UnconfiguredTree
 
 from ..basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
@@ -21,24 +18,14 @@ from .filter import transform_filters
 
 class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):
-		try:
-			trees = self._domain.named_repos['repo-stack'].trees
-		except (KeyError, AttributeError): # pkgcore-0.7.5+
-			def _match_ebuild_repos(x):
-				return isinstance(x, _UnconfiguredTree)
+		def _match_ebuild_repos(x):
+			return isinstance(x, _UnconfiguredTree)
 
-			try:
-				all_repos = self._domain.repos_raw
-			except AttributeError:
-				all_repos = self._domain.named_repos
-
-			trees = filter(_match_ebuild_repos, all_repos.values())
-			rev = -1
-		else:
-			rev = 1
+		all_repos = self._domain.repos_raw
+		trees = filter(_match_ebuild_repos, all_repos.values())
 
 		for i, r in enumerate(trees):
-			yield PkgCoreEbuildRepo(r, self._domain, rev * i)
+			yield PkgCoreEbuildRepo(r, self._domain, -i)
 
 	def __init__(self, domain):
 		self._domain = domain

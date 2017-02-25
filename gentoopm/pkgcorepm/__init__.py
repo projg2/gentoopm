@@ -1,15 +1,12 @@
 #!/usr/bin/python
 #	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2017 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import os
 
+from pkgcore import __version__ as pkgcore_version
 from pkgcore.config import load_config
-try:
-    from pkgcore import __version__ as pkgcore_version
-except ImportError:
-    from pkgcore.const import VERSION as pkgcore_version
 
 from ..basepm import PackageManager
 
@@ -41,11 +38,7 @@ class PkgCorePM(PackageManager):
 
 	@property
 	def installed(self):
-		try:
-			repos = self._domain.repos_raw
-		except AttributeError:
-			repos = self._domain.named_repos
-
+		repos = self._domain.repos_raw
 		return PkgCoreInstalledRepo(repos['vdb'], self._domain)
 
 	@property
