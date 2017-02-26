@@ -4,6 +4,7 @@
 # Released under the terms of the 2-clause BSD license.
 
 from abc import abstractmethod
+import atexit
 
 from ..util import ABCObject
 
@@ -58,4 +59,6 @@ def get_any_bashparser():
 	@rtype: L{BashParser}
 	"""
 	from gentoopm.bash.bashserver import BashServer
-	return BashServer()
+	s = BashServer()
+	atexit.register(s.terminate)
+	return s

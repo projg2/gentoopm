@@ -20,7 +20,7 @@ declare VAR4=test
 		self._bash_server = BashServer()
 
 	def tearDown(self):
-		del self._bash_server
+		self._bash_server.terminate()
 
 	def test_getitem(self):
 		self._bash_server.load_file(io.BytesIO(self.basic_data))

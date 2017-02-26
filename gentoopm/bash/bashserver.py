@@ -32,9 +32,11 @@ class BashServer(BashParser):
 			stdin = subprocess.PIPE, stdout = subprocess.PIPE,
 			env = {})
 
-	def __del__(self):
-		self._bashproc.terminate()
-		self._bashproc.communicate()
+	def terminate(self):
+		if self._bashproc is not None:
+			self._bashproc.terminate()
+			self._bashproc.communicate()
+			self._bashproc = None
 
 	def load_file(self, envf):
 		with tempfile.NamedTemporaryFile('w+b') as f:
@@ -53,6 +55,7 @@ class BashServer(BashParser):
 				raise AssertionError('Sourcing unexpected caused stdout output')
 
 	def _read1(self):
+		assert self._bashproc is not None
 		f = self._bashproc.stdout
 		buf = b' '
 		while not buf.endswith(b'\0'):
@@ -64,6 +67,7 @@ class BashServer(BashParser):
 		return buf[1:-1].decode('utf-8')
 
 	def _write(self, *cmds):
+		assert self._bashproc is not None
 		for cmd in cmds:
 			self._bashproc.stdin.write(('%s\n' % cmd).encode('ASCII'))
 		self._bashproc.stdin.flush()
