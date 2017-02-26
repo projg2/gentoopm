@@ -78,7 +78,7 @@ class TestCommand(Command):
 		self.run_command('build_tests')
 		# Portage is influenced by a lot of envvars, so sanitize it
 		for k in list(os.environ):
-			if k not in ('PATH',):
+			if k not in ('PATH',) and not k.startswith('SANDBOX_'):
 				del os.environ[k]
 		os.environ['PORTAGE_CONFIGROOT'] = os.path.abspath(self.test_dir)
 
