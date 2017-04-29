@@ -145,26 +145,6 @@ class PMPackageMaintainer(ABCObject, StringCompat):
 		"""
 		pass
 
-class PMPackageHerd(PMPackageMaintainer):
-	"""
-	A helper class for herd maintainers.
-	"""
-
-	def __new__(self, name):
-		"""
-		Instantiate for the named herd.
-
-		@param name: name of the herd
-		@type name: string
-		"""
-		return PMPackageMaintainer.__new__(self,
-				'%s@gentoo.org' % name, # XXX
-				'%s herd' % name)
-
-	@property
-	def description(self):
-		return None
-
 class PMPackage(PMAtom, FillMissingComparisons):
 	"""
 	An abstract class representing a single, uniquely-identified package
