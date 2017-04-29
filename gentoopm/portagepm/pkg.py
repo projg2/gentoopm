@@ -1,14 +1,18 @@
 #!/usr/bin/python
 #	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2017 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import errno
+import os.path
+
 from portage.versions import cpv_getkey, cpv_getversion, vercmp
+from portage.xml.metadata import MetaDataXML
 
 from ..basepm.depend import PMRequiredUseAtom
 from ..basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
-		PMPackageState, PMUseFlag
+		PMPackageState, PMUseFlag, PMPackageMaintainer
 from ..basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from ..util import SpaceSepTuple, SpaceSepFrozenSet
 
@@ -84,6 +88,16 @@ class PortageUseSet(SpaceSepFrozenSet):
 		except KeyError:
 			# XXX, incorrect flags?
 			return PortageUseFlag(k, self._use)
+
+class PortagePackageMaintainer(PMPackageMaintainer):
+	def __new__(self, m):
+		ret = PMPackageMaintainer.__new__(self, m.email, m.name)
+		ret._m = m
+		return ret
+
+	@property
+	def description(self):
+		return self._m.description
 
 class PortageDBCPV(PMPackage, CompletePortageAtom):
 	def __init__(self, cpv, dbapi):
@@ -247,7 +261,17 @@ class PortageCPV(PortageDBCPV, PMInstallablePackage):
 
 	@property
 	def maintainers(self):
-		return None
+		# yes, seriously, the only API portage has is direct parser
+		# for the XML file
+		xml_path = os.path.join(os.path.dirname(self.path), 'metadata.xml')
+		try:
+			meta = MetaDataXML(xml_path, None)
+		except OSError as e:
+			if e.errno == errno.ENOENT:
+				return ()
+			raise
+
+		return tuple(PortagePackageMaintainer(m) for m in meta.maintainers())
 
 	def _aux_get(self, *keys):
 		val = map(str, self._dbapi.aux_get(self._cpv, keys,
