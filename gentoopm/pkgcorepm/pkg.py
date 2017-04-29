@@ -5,7 +5,7 @@
 
 from ..basepm.pkg import PMPackage, PMPackageDescription, \
 		PMInstalledPackage, PMInstallablePackage, PMBoundPackageKey, \
-		PMPackageState, PMUseFlag, PMPackageMaintainer, PMPackageHerd
+		PMPackageState, PMUseFlag, PMPackageMaintainer
 from ..basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from ..util import SpaceSepTuple, SpaceSepFrozenSet
 
@@ -82,17 +82,11 @@ class PkgCorePackageMaintainer(PMPackageMaintainer):
 	def description(self):
 		return self._m.description
 
-class PkgCorePackageHerd(PMPackageHerd):
-	pass
-
 class PkgCoreMaintainerTuple(tuple):
-	def __new__(self, maints, herds):
+	def __new__(self, maints):
 		def _iter_maints():
 			for m in maints:
 				yield PkgCorePackageMaintainer(m)
-			for h in herds:
-				if h != 'no-herd':
-					yield PkgCorePackageHerd(h)
 
 		return tuple.__new__(self, _iter_maints())
 
@@ -192,7 +186,7 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
 
 	@property
 	def maintainers(self):
-		return PkgCoreMaintainerTuple(self._pkg.maintainers, self._pkg.herds)
+		return PkgCoreMaintainerTuple(self._pkg.maintainers)
 
 	def __lt__(self, other):
 		if not isinstance(other, PkgCorePackage):
