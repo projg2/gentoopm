@@ -113,5 +113,24 @@ class PackagesTestCase(PMTestCase):
 		p = self._stack_pkg
 		self.assertEqual(p.slot, p.subslot)
 
+	def test_maintainers(self):
+		""" Test .maintainers on a package having them. """
+		p = self._stack_pkg
+		# TODO: remove this hack once portage&paludis give us maintainers
+		if p.maintainers is None:
+			self.skipTest('Maintainers not implemented?')
+		m_emails = [m.email for m in p.maintainers]
+		self.assertTrue(len(m_emails) == 2)
+		self.assertTrue('test@example.com' in m_emails)
+		self.assertTrue('test2@example.com' in m_emails)
+
+	def test_no_maintainers(self):
+		""" Test .maintainres on a package not having them. """
+		p = self._subslotted_pkg
+		# TODO: remove this hack once portage&paludis give us maintainers
+		if p.maintainers is None:
+			self.skipTest('Maintainers not implemented?')
+		self.assertTrue(len(p.maintainers) == 0)
+
 	def tearDown(self):
 		pass
