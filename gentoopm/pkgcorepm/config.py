@@ -1,7 +1,9 @@
 #!/usr/bin/python
 #	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2017 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
+
+import os
 
 import pkgcore.os_data
 
@@ -13,7 +15,8 @@ class PkgCoreConfig(PMConfig):
 
 	@property
 	def userpriv_enabled(self):
-		return 'userpriv' in self._domain.settings['FEATURES']
+		return ('userpriv' in self._domain.settings['FEATURES']
+				and os.getuid() == 0)
 
 	@property
 	def userpriv_uid(self):
