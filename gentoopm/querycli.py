@@ -124,28 +124,29 @@ class PMQueryCommands(object):
 			PMQueryCommand.__init__(self, argparser)
 			argparser.add_argument('-b', '--best', action='store_true',
 				help='Print only the best version')
-			argparser.add_argument('package_atom',
+			argparser.add_argument('package_atom', nargs='+',
 				help='The package atom to match')
 
 		def __call__(self, pm, args):
-			try:
-				a = pm.Atom(args.package_atom)
-			except InvalidAtomStringError as e:
-				self._arg.error(e)
-				return 1
-
-			pkgs = pm.stack.filter(a)
-			if args.best:
+			for in_atom in args.package_atom:
 				try:
-					pkgs = [pkgs.best]
-				except AmbiguousPackageSetError:
-					self._arg.error('Multiple disjoint packages match %s' % args.package_atom)
+					a = pm.Atom(in_atom)
+				except InvalidAtomStringError as e:
+					self._arg.error(e)
 					return 1
-				except EmptyPackageSetError:
-					self._arg.error('No packages match %s' % args.package_atom)
-					return 1
-			for p in pkgs:
-				print(p)
+
+				pkgs = pm.stack.filter(a)
+				if args.best:
+					try:
+						pkgs = (pkgs.best,)
+					except AmbiguousPackageSetError:
+						self._arg.error('Multiple disjoint packages match %s' % in_atom)
+						return 1
+					except EmptyPackageSetError:
+						self._arg.error('No packages match %s' % in_atom)
+						return 1
+				for p in pkgs:
+					print(p)
 
 	# === shell ===
 
