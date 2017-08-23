@@ -1,12 +1,13 @@
 #!/usr/bin/python
 #	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2017 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import argparse, os.path
 from abc import abstractmethod
 
 from . import PV, get_package_manager
+from .exceptions import InvalidAtomStringError
 from .submodules import _supported_pms, get_pm
 from .util import ABCObject
 
@@ -111,6 +112,26 @@ class PMQueryCommands(object):
 				self._arg.error('No repository named %s' % args.repo_name)
 				return 1
 			print(r.path)
+
+	# === package matching ===
+
+	class match(PMQueryCommand):
+		"""
+		Print packages matching the specified atom.
+		"""
+		def __init__(self, argparser):
+			PMQueryCommand.__init__(self, argparser)
+			argparser.add_argument('package_atom',
+				help='The package atom to match')
+
+		def __call__(self, pm, args):
+			try:
+				a = pm.Atom(args.package_atom)
+			except InvalidAtomStringError as e:
+				self._arg.error(e)
+				return 1
+			for p in pm.stack.filter(a):
+				print(p)
 
 	# === shell ===
 
