@@ -68,6 +68,8 @@ class PMQueryCommand(ABCObject):
 class PMQueryCommands(object):
 	""" The container of all standard gentoopmq commands. """
 
+	# === generic information ===
+
 	class package_manager(PMQueryCommand):
 		"""
 		Get the name of a working, preferred PM.
@@ -83,6 +85,8 @@ class PMQueryCommands(object):
 				print('%s %s' % (pm.name, pm.version))
 			else:
 				print(pm.name)
+
+	# === repository info ===
 
 	class repositories(PMQueryCommand):
 		"""
@@ -107,6 +111,8 @@ class PMQueryCommands(object):
 				self._arg.error('No repository named %s' % args.repo_name)
 				return 1
 			print(r.path)
+
+	# === shell ===
 
 	class shell(PMQueryCommand):
 		"""
