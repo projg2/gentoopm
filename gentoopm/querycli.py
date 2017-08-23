@@ -7,7 +7,8 @@ import argparse, os.path
 from abc import abstractmethod
 
 from . import PV, get_package_manager
-from .exceptions import InvalidAtomStringError
+from .exceptions import (AmbiguousPackageSetError, EmptyPackageSetError,
+		InvalidAtomStringError)
 from .submodules import _supported_pms, get_pm
 from .util import ABCObject
 
@@ -121,6 +122,8 @@ class PMQueryCommands(object):
 		"""
 		def __init__(self, argparser):
 			PMQueryCommand.__init__(self, argparser)
+			argparser.add_argument('-b', '--best', action='store_true',
+				help='Print only the best version')
 			argparser.add_argument('package_atom',
 				help='The package atom to match')
 
@@ -130,7 +133,18 @@ class PMQueryCommands(object):
 			except InvalidAtomStringError as e:
 				self._arg.error(e)
 				return 1
-			for p in pm.stack.filter(a):
+
+			pkgs = pm.stack.filter(a)
+			if args.best:
+				try:
+					pkgs = [pkgs.best]
+				except AmbiguousPackageSetError:
+					self._arg.error('Multiple disjoint packages match %s' % args.package_atom)
+					return 1
+				except EmptyPackageSetError:
+					self._arg.error('No packages match %s' % args.package_atom)
+					return 1
+			for p in pkgs:
 				print(p)
 
 	# === shell ===
