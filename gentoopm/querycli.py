@@ -12,6 +12,7 @@ from .exceptions import (AmbiguousPackageSetError, EmptyPackageSetError,
 from .submodules import _supported_pms, get_pm
 from .util import ABCObject
 
+
 def _reponame(val):
 	"""
 	Check the value for correctness as repository name. In fact, it only ensures
@@ -25,6 +26,22 @@ def _reponame(val):
 	if os.path.isabs(val):
 		raise ValueError('Invalid repository name: %s' % val)
 	return val
+
+
+def AtomFormatDict(a):
+	return {
+		'key': a.key,
+		'path': a.path,
+		'repository': a.repository,
+		'slot': a.slot,
+		'subslot': a.subslot,
+		'version': a.version,
+
+		'slotted_atom': a.slotted_atom,
+		'versioned_atom': a,
+		'unversioned_atom': a.unversioned_atom,
+	}
+
 
 class PMQueryCommand(ABCObject):
 	""" A single gentoopmq command. """
@@ -124,6 +141,12 @@ class PMQueryCommands(object):
 			PMQueryCommand.__init__(self, argparser)
 			argparser.add_argument('-b', '--best', action='store_true',
 				help='Print only the best version')
+			argparser.add_argument('-f', '--format', default='{versioned_atom}',
+				help=('Output format string (can include: '
+					+ '{versioned_atom}, {unversioned_atom}, {slotted_atom}, '
+					+ '{key}, {key.category}, {key.package}, '
+					+ '{version}, {version.revision}, {version.without_revision}, '
+					+ '{slot}, {subslot}, {repository}, {path})'))
 			argparser.add_argument('package_atom', nargs='+',
 				help='The package atom to match')
 
@@ -146,7 +169,7 @@ class PMQueryCommands(object):
 						self._arg.error('No packages match %s' % in_atom)
 						return 1
 				for p in pkgs:
-					print(p)
+					print(args.format.format(**AtomFormatDict(p)))
 
 	# === shell ===
 
