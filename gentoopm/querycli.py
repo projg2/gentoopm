@@ -141,6 +141,8 @@ class PMQueryCommands(object):
 			PMQueryCommand.__init__(self, argparser)
 			argparser.add_argument('-b', '--best', action='store_true',
 				help='Print only the best version')
+			argparser.add_argument('-s', '--best-in-slot', action='store_true',
+				help='Print the best version in each available slot')
 			argparser.add_argument('-f', '--format', default='{versioned_atom}',
 				help=('Output format string (can include: '
 					+ '{versioned_atom}, {unversioned_atom}, {slotted_atom}, '
@@ -151,6 +153,9 @@ class PMQueryCommands(object):
 				help='The package atom to match')
 
 		def __call__(self, pm, args):
+			if args.best and args.best_in_slot:
+				self._arg.error('--best and --best-in-slot are mutually exclusive')
+
 			for in_atom in args.package_atom:
 				try:
 					a = pm.Atom(in_atom)
@@ -159,6 +164,8 @@ class PMQueryCommands(object):
 					return 1
 
 				pkgs = pm.stack.filter(a)
+				if args.best_in_slot:
+					pkgs = [pg.best for pg in pkgs.group_by('slotted_atom')]
 				if args.best:
 					try:
 						pkgs = (pkgs.best,)
