@@ -1,15 +1,18 @@
 #!/usr/bin/python
 #	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2017 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import itertools
 from abc import abstractmethod
+from collections import defaultdict
+from operator import attrgetter
 
 from .filter import transform_keyword_filters
 
 from ..exceptions import EmptyPackageSetError, AmbiguousPackageSetError
 from ..util import ABCObject, BoolCompat
+
 
 class PMPackageSet(ABCObject, BoolCompat):
 	""" A set of packages. """
@@ -110,6 +113,21 @@ class PMPackageSet(ABCObject, BoolCompat):
 		"""
 		return PMSortedPackageSet(self)
 
+	def group_by(self, *criteria):
+		"""
+		Return a pseudo-dict of packages grouped by the specified criteria.
+		The key for each group is a combination of all the criteria.
+
+		The criteria should be specified as L{PMPackage} attribute names.
+
+		@param criteria: list of criteria
+		@type criteria: list(string)
+		@return: package group dict
+		@rtype: L{PMPackageGroupDict}
+		@raise KeyError: when invalid metadata key is referenced in criteria
+		"""
+		return PMPackageGroupDict(self, criteria)
+
 	def __getitem__(self, filt):
 		"""
 		Select a single package matching an atom (or filter). Unlike L{select()},
@@ -171,6 +189,16 @@ class PMPackageSet(ABCObject, BoolCompat):
 			return False
 		return True
 
+
+class PMPassThroughPackageSet(PMPackageSet):
+	def __init__(self, src):
+		self._src = src
+
+	def __iter__(self):
+		for el in self._src:
+			yield el
+
+
 class PMFilteredPackageSet(PMPackageSet):
 	def __init__(self, src, args, kwargs):
 		self._src = src
@@ -182,9 +210,29 @@ class PMFilteredPackageSet(PMPackageSet):
 			if el._matches(*self._args):
 				yield el
 
+
 class PMSortedPackageSet(PMPackageSet):
 	def __init__(self, src):
 		self._src = src
 
 	def __iter__(self):
 		return iter(sorted(self._src))
+
+
+class PMPackageGroupDict(object):
+	def __init__(self, src, criteria):
+		self._src = src
+		self._criteria = criteria
+
+	def items(self):
+		out = defaultdict(list)
+		getters = [attrgetter(c) for c in self._criteria]
+		for p in self._src:
+			key = tuple(g(p) for g in getters)
+			out[key].append(p)
+		for k, v in out.items():
+			yield (k, PMPassThroughPackageSet(v))
+
+	def __iter__(self):
+		for k, v in self.items():
+			yield v
