@@ -266,7 +266,7 @@ class PortageCPV(PortageDBCPV, PMInstallablePackage):
 		xml_path = os.path.join(os.path.dirname(self.path), 'metadata.xml')
 		try:
 			meta = MetaDataXML(xml_path, None)
-		except OSError as e:
+		except (IOError, OSError) as e:
 			if e.errno == errno.ENOENT:
 				return ()
 			raise
