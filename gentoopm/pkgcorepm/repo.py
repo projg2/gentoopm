@@ -6,7 +6,10 @@
 from abc import abstractproperty
 
 import pkgcore.restrictions.boolean as br
-from pkgcore.ebuild.repository import _UnconfiguredTree
+try:
+	from pkgcore.ebuild.repository import UnconfiguredTree
+except ImportError:
+	from pkgcore.ebuild.repository import _UnconfiguredTree as UnconfiguredTree
 
 from ..basepm.repo import PMRepository, PMRepositoryDict, \
 		PMEbuildRepository
@@ -19,7 +22,7 @@ from .filter import transform_filters
 class PkgCoreRepoDict(PMRepositoryDict):
 	def __iter__(self):
 		def _match_ebuild_repos(x):
-			return isinstance(x, _UnconfiguredTree)
+			return isinstance(x, UnconfiguredTree)
 
 		all_repos = self._domain.repos_raw
 		trees = filter(_match_ebuild_repos, all_repos.values())
