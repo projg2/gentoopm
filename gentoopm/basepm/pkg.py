@@ -286,6 +286,16 @@ class PMPackage(PMAtom, FillMissingComparisons):
 		pass
 
 	@abstractproperty
+	def cbuild_build_dependencies(self):
+		"""
+		Get the package CBUILD build dependencies (C{BDEPEND}).
+		Equivalent to build_dependencies on EAPIs not supporting BDEPEND.
+
+		@type: L{PMPackageDepSet}
+		"""
+		pass
+
+	@abstractproperty
 	def run_dependencies(self):
 		"""
 		Get the package runtime dependencies (C{RDEPEND}).

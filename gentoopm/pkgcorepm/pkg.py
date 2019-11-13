@@ -174,6 +174,17 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
 					self._pkg)
 
 	@property
+	def cbuild_build_dependencies(self):
+		if self.eapi in (str(x) for x in range(0, 7)):
+			return self.build_dependencies
+		try:
+			return PkgCorePackageDepSet(self._pkg._raw_pkg.bdepend,
+					self._pkg)
+		except AttributeError:
+			return PkgCorePackageDepSet(self._pkg._raw_pkg.bdepends,
+					self._pkg)
+
+	@property
 	def run_dependencies(self):
 		try:
 			return PkgCorePackageDepSet(self._pkg._raw_pkg.rdepend,
@@ -224,6 +235,17 @@ class PkgCoreInstalledPackage(PkgCorePackage, PMInstalledPackage):
 					self._pkg)
 		except AttributeError:
 			return PkgCorePackageDepSet(self._pkg.depends,
+					self._pkg)
+
+	@property
+	def cbuild_build_dependencies(self):
+		if self.eapi in (str(x) for x in range(0, 7)):
+			return self.build_dependencies
+		try:
+			return PkgCorePackageDepSet(self._pkg.bdepend,
+					self._pkg)
+		except AttributeError:
+			return PkgCorePackageDepSet(self._pkg.bdepends,
 					self._pkg)
 
 	@property

@@ -167,6 +167,11 @@ class PaludisID(PMPackage, PaludisAtom):
 				self)
 
 	@property
+	def cbuild_build_dependencies(self):
+		# paludis does not implement EAPI 7
+		return self.build_dependencies
+
+	@property
 	def run_dependencies(self):
 		return PaludisPackageDepSet(
 				self._get_meta(self._pkg.run_dependencies_key()),

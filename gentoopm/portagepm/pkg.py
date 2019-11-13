@@ -217,6 +217,13 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
 				self._applied_use, PortageAtom)
 
 	@property
+	def cbuild_build_dependencies(self):
+		if self.eapi in (str(x) for x in range(0, 7)):
+			return self.build_dependencies
+		return PortagePackageDepSet(self._aux_get('BDEPEND'),
+				self._applied_use, PortageAtom)
+
+	@property
 	def run_dependencies(self):
 		return PortagePackageDepSet(self._aux_get('RDEPEND'),
 				self._applied_use, PortageAtom)
