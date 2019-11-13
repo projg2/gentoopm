@@ -75,7 +75,10 @@ class PkgCoreIncompletePackageVersion(PMPackageVersion):
 		if vm is None:
 			raise AssertionError('No VersionMatch in restrictions.')
 		v = PMPackageVersion.__new__(self, str(vm).split()[-1]) # XXX
-		v._r = vm
+		try:
+			v._r = vm.restriction
+		except AttributeError:
+			v._r = vm
 		return v
 
 	@property
