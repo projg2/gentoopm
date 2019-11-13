@@ -166,18 +166,30 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
 
 	@property
 	def build_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg._raw_pkg.depends,
-				self._pkg)
+		try:
+			return PkgCorePackageDepSet(self._pkg._raw_pkg.depend,
+					self._pkg)
+		except AttributeError:
+			return PkgCorePackageDepSet(self._pkg._raw_pkg.depends,
+					self._pkg)
 
 	@property
 	def run_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg._raw_pkg.rdepends,
-				self._pkg)
+		try:
+			return PkgCorePackageDepSet(self._pkg._raw_pkg.rdepend,
+					self._pkg)
+		except AttributeError:
+			return PkgCorePackageDepSet(self._pkg._raw_pkg.rdepends,
+					self._pkg)
 
 	@property
 	def post_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg._raw_pkg.post_rdepends,
-				self._pkg)
+		try:
+			return PkgCorePackageDepSet(self._pkg._raw_pkg.pdepend,
+					self._pkg)
+		except AttributeError:
+			return PkgCorePackageDepSet(self._pkg._raw_pkg.pdepends,
+					self._pkg)
 
 	@property
 	def required_use(self):
@@ -207,18 +219,30 @@ class PkgCoreInstalledPackage(PkgCorePackage, PMInstalledPackage):
 
 	@property
 	def build_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg.depends,
-				self._pkg)
+		try:
+			return PkgCorePackageDepSet(self._pkg.depend,
+					self._pkg)
+		except AttributeError:
+			return PkgCorePackageDepSet(self._pkg.depends,
+					self._pkg)
 
 	@property
 	def run_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg.rdepends,
-				self._pkg)
+		try:
+			return PkgCorePackageDepSet(self._pkg.rdepend,
+					self._pkg)
+		except AttributeError:
+			return PkgCorePackageDepSet(self._pkg.rdepends,
+					self._pkg)
 
 	@property
 	def post_dependencies(self):
-		return PkgCorePackageDepSet(self._pkg.pdepends,
-				self._pkg)
+		try:
+			return PkgCorePackageDepSet(self._pkg.pdepend,
+					self._pkg)
+		except AttributeError:
+			return PkgCorePackageDepSet(self._pkg.pdepends,
+					self._pkg)
 
 	@property
 	def required_use(self):
