@@ -49,7 +49,15 @@ class LazyBashParser(object):
 		self._curr_path = path
 		if self._parser is None:
 			self._parser = get_any_bashparser()
-		_load_bp(self._parser, path)
+		try:
+			_load_bp(self._parser, path)
+		except Exception as e:
+			try:
+				self._parser.terminate()
+			except:
+				pass
+			self._parser = None
+			raise e
 
 	def __getitem__(self, k):
 		return self._parser[k]
