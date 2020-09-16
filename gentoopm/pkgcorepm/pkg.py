@@ -211,6 +211,13 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
 	def maintainers(self):
 		return PkgCoreMaintainerTuple(self._pkg.maintainers)
 
+	@property
+	def repo_masked(self):
+		for m in self._pkg.repo.masked:
+			if m.match(self._pkg):
+				return True
+		return False
+
 	def __lt__(self, other):
 		if not isinstance(other, PkgCorePackage):
 			raise TypeError('Unable to compare %s against %s' % \

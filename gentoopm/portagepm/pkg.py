@@ -280,6 +280,10 @@ class PortageCPV(PortageDBCPV, PMInstallablePackage):
 
 		return tuple(PortagePackageMaintainer(m) for m in meta.maintainers())
 
+	@property
+	def repo_masked(self):
+		raise NotImplementedError('.repo_masked is not implemented for Portage')
+
 	def _aux_get(self, *keys):
 		val = map(str, self._dbapi.aux_get(self._cpv, keys,
 				mytree = self._tree))

@@ -219,6 +219,10 @@ class PaludisInstallableID(PaludisID, PMInstallablePackage):
 		# XXX: find_metadata() + magic
 		return None
 
+	@property
+	def repo_masked(self):
+		raise NotImplementedError('.repo_masked is not implemented for Paludis')
+
 class PaludisInstalledID(PaludisID, PMInstalledPackage):
 	@property
 	def contents(self):

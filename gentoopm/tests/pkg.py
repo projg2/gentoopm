@@ -12,6 +12,8 @@ class PackagesTestCase(PMTestCase):
 		self._inst_pkg = self.pm.installed.select(PackageNames.single_complete)
 		self._stack_pkg = self.pm.stack.select(PackageNames.single_complete)
 		self._subslotted_pkg = self.pm.stack.select(PackageNames.subslotted)
+		self._pmasked_pkg = self.pm.stack.select(PackageNames.pmasked)
+		self._nonpmasked_pkg = self.pm.stack.select(PackageNames.nonpmasked)
 		self._pkgs = (self._inst_pkg, self._stack_pkg)
 
 	def test_key_id(self):
@@ -131,6 +133,20 @@ class PackagesTestCase(PMTestCase):
 		if p.maintainers is None:
 			self.skipTest('Maintainers not implemented?')
 		self.assertTrue(len(p.maintainers) == 0)
+
+	def test_repo_masked(self):
+		p = self._pmasked_pkg
+		try:
+			self.assertTrue(p.repo_masked)
+		except NotImplementedError:
+			self.skipTest('repo_masked not implemented')
+
+	def test_nonrepo_masked(self):
+		p = self._nonpmasked_pkg
+		try:
+			self.assertFalse(p.repo_masked)
+		except NotImplementedError:
+			self.skipTest('repo_masked not implemented')
 
 	def tearDown(self):
 		pass

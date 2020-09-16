@@ -383,6 +383,13 @@ class PMInstallablePackage(PMPackage):
 		"""
 		pass
 
+	@abstractproperty
+	def repo_masked(self):
+		"""
+		Return True if package is masked in repository's package.mask.
+		"""
+		pass
+
 class PMInstalledPackage(PMPackage):
 	"""
 	An abstract class for a installed package.

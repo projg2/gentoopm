@@ -88,6 +88,12 @@ class PackageNames(object):
 	subslotted = 'a/subslotted'
 	""" Atom matching a subslotted package. """
 
+	pmasked = '=a/pmasked-2'
+	""" Atom matching a p.masked package. """
+
+	nonpmasked = '=a/pmasked-1'
+	""" Atom matching a non-p.masked package. """
+
 	repository = 'gentoo'
 	""" Repository name guaranteed to match. """
 
