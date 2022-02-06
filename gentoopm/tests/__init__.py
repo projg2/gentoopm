@@ -17,57 +17,6 @@ class PMTestCase(unittest.TestCase):
             self._pm = get_package_manager()
         return self._pm
 
-    @pm.setter
-    def pm(self, val):
-        assert self._pm is None
-        self._pm = val
-
-    def _try(self, f, args):
-        try:
-            f(self, *args)
-        except Exception as e:
-            if isinstance(e.args[0], str):
-                raise e.__class__("[%s] %s" % (self._pm.name, e.args[0]), *e.args[1:])
-            else:
-                raise
-
-    def assertEqual(self, *args):
-        self._try(unittest.TestCase.assertEqual, args)
-
-    def assertNotEqual(self, *args):
-        self._try(unittest.TestCase.assertNotEqual, args)
-
-    def assertTrue(self, *args):
-        self._try(unittest.TestCase.assertTrue, args)
-
-    def assertFalse(self, *args):
-        self._try(unittest.TestCase.assertFalse, args)
-
-    def assertRaises(self, *args):
-        self._try(unittest.TestCase.assertRaises, args)
-
-
-class PMTestSuiteFactory(object):
-    def __init__(self, pm):
-        self._pm = pm
-
-    def __call__(self, tests):
-        tests = list(tests)
-        for t in tests:
-            t.pm = self._pm
-        return unittest.TestSuite(tests)
-
-
-class PMTestLoader(unittest.TestLoader):
-    def __init__(self, pm):
-        self.suiteClass = PMTestSuiteFactory(pm)
-        unittest.TestLoader.__init__(self)
-
-    def loadTestsFromModule(self, mod):
-        if isinstance(mod, str):
-            mod = __import__(mod, globals=globals(), fromlist=["."], level=0)
-        return unittest.TestLoader.loadTestsFromModule(self, mod)
-
 
 class PackageNames(object):
     """
