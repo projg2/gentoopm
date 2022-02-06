@@ -8,6 +8,7 @@ authors = [{name = "Michał Górny", email = "mgorny@gentoo.org"}]
 readme = "README.rst"
 dynamic = ["version", "description"]
 license = {file = "COPYING"}
+requires-python = ">=3.6"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
