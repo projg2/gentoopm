@@ -11,7 +11,10 @@ class PMTestCase(unittest.TestCase):
 
     @property
     def pm(self):
-        assert self._pm is not None
+        if self._pm is None:
+            from gentoopm import get_package_manager
+
+            self._pm = get_package_manager()
         return self._pm
 
     @pm.setter
