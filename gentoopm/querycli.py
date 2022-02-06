@@ -8,7 +8,7 @@ import os.path
 import sys
 from abc import abstractmethod
 
-from . import PV, get_package_manager
+from . import __version__, get_package_manager
 from .exceptions import (
     AmbiguousPackageSetError,
     EmptyPackageSetError,
@@ -258,7 +258,10 @@ class PMQueryCLI(object):
         all_pms = frozenset(_supported_pms)
 
         arg.add_argument(
-            "-V", "--version", action="version", version="%s %s" % (arg.prog, PV)
+            "-V",
+            "--version",
+            action="version",
+            version="%s %s" % (arg.prog, __version__),
         )
         arg.add_argument(
             "-p",
