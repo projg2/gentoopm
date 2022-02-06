@@ -1,6 +1,0 @@
-Please note that gentoopm Python API is currently considered unstable.
-
-I'd appreciate any comments on it. It would be great to improve it for future
-consumers before releasing the first stable-API version.
-
-The gentoopmq script API is considered stable. Feel free to use it.
