@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2017 Michał Górny <mgorny@gentoo.org>
+# (c) 2017-2022 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import argparse, os.path
+import argparse
+import os.path
+import sys
 from abc import abstractmethod
 
 from . import PV, get_package_manager
@@ -285,3 +287,8 @@ class PMQueryCLI(object):
                 arg.error("No working package manager could be found.")
 
         return args.instance(pm, args) or 0
+
+
+def main():
+    cli = PMQueryCLI()
+    sys.exit(cli.main(sys.argv))

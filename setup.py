@@ -3,7 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from distutils.core import setup, Command
+from setuptools import setup
 
 import errno, os, os.path, shutil, subprocess, sys
 
@@ -29,7 +29,11 @@ setup(
         "gentoopm.portagepm",
         "gentoopm.tests",
     ],
-    scripts=["gentoopmq"],
+    entry_points={
+        "console_scripts": [
+            "gentoopmq=gentoopm.querycli:main",
+        ],
+    },
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
