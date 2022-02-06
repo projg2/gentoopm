@@ -99,7 +99,9 @@ class TestCommand(Command):
 
         # common tests
         commonloader = gentoopm.tests.PMTestLoader(None)
-        maintestsuite.addTests(commonloader.loadTestsFromModule("gentoopm.tests.bash"))
+        maintestsuite.addTests(
+            commonloader.loadTestsFromModule("gentoopm.tests.test_bash")
+        )
 
         for pm in gentoopm.submodules._supported_pms:
             try:
@@ -112,11 +114,11 @@ class TestCommand(Command):
                 l = gentoopm.tests.PMTestLoader(pm_inst)
 
                 testsuite = unittest.TestSuite()
-                testsuite.addTests(l.loadTestsFromModule("gentoopm.tests.atom"))
-                testsuite.addTests(l.loadTestsFromModule("gentoopm.tests.config"))
-                testsuite.addTests(l.loadTestsFromModule("gentoopm.tests.pkg"))
-                testsuite.addTests(l.loadTestsFromModule("gentoopm.tests.psets"))
-                testsuite.addTests(l.loadTestsFromModule("gentoopm.tests.repo"))
+                testsuite.addTests(l.loadTestsFromModule("gentoopm.tests.test_atom"))
+                testsuite.addTests(l.loadTestsFromModule("gentoopm.tests.test_config"))
+                testsuite.addTests(l.loadTestsFromModule("gentoopm.tests.test_pkg"))
+                testsuite.addTests(l.loadTestsFromModule("gentoopm.tests.test_psets"))
+                testsuite.addTests(l.loadTestsFromModule("gentoopm.tests.test_repo"))
                 maintestsuite.addTests(testsuite)
 
         r = unittest.TextTestRunner(verbosity=2)
