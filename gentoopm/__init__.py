@@ -5,7 +5,7 @@
 
 """Python wrapper for APIs of Gentoo package managers"""
 
-__version__ = "0.3.3"
+__version__ = "0.4"
 
 
 def get_package_manager():
