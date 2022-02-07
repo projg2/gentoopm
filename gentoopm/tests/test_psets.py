@@ -1,117 +1,95 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2022 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from ..exceptions import AmbiguousPackageSetError, EmptyPackageSetError
-from ..util import BoolCompat
+import pytest
 
-from . import PMTestCase, PackageNames
+from gentoopm.exceptions import AmbiguousPackageSetError, EmptyPackageSetError
 
-
-class IterChecker(BoolCompat):
-    def __init__(self, iterable):
-        self._it = iter(iterable)
-
-    def __bool__(self):
-        try:
-            next(self._it)
-        except StopIteration:
-            return False
-        else:
-            return True
+from . import PackageNames
 
 
-class PackageSetsTestCase(PMTestCase):
-    def setUp(self):
-        self._inst = self.pm.installed
-        self._stack = self.pm.stack
-        self._repo = self.pm.repositories[PackageNames.repository]
-        self._repos = (self._inst, self._stack, self._repo)
+@pytest.fixture(scope="session", params=["installed", "stack", PackageNames.repository])
+def repo(request, pm):
+    if request.param in ["installed", "stack"]:
+        return getattr(pm, request.param)
+    return pm.repositories[request.param]
 
-    def test_filter_atom(self):
-        at = PackageNames.single_complete
-        for r in self._repos:
-            self.assertTrue(IterChecker(r.filter(at)))
 
-    def test_filter_atom_incomplete(self):
-        at = PackageNames.single
-        for r in self._repos:
-            self.assertTrue(IterChecker(r.filter(at)))
+@pytest.fixture(scope="session", params=["stack", PackageNames.repository])
+def installable_repo(request, pm):
+    if request.param == "stack":
+        return getattr(pm, request.param)
+    return pm.repositories[request.param]
 
-    def test_filter_atom_multiple(self):
-        """Check whether multi-matching atoms return multiple packages."""
-        at = PackageNames.multiple
-        for r in (self._repo, self._stack):
-            keys = set()
-            for p in r.filter(at):
-                keys.add(p.key)
-            self.assertTrue(len(keys) > 1)
 
-    def test_filter_atom_empty(self):
-        at = PackageNames.empty
-        for r in self._repos:
-            self.assertFalse(IterChecker(r.filter(at)))
+@pytest.fixture(
+    scope="session", params=[PackageNames.single_complete, PackageNames.single]
+)
+def single_atom(request):
+    return request.param
 
-    def test_select_atom(self):
-        at = PackageNames.single_complete
-        for r in self._repos:
-            self.assertTrue(r.select(at))
 
-    def test_select_atom_incomplete(self):
-        at = PackageNames.single
-        for r in self._repos:
-            self.assertTrue(r.select(at))
+def test_atom_single_filter(repo, single_atom):
+    assert any(repo.filter(single_atom))
 
-    def test_select_atom_multiple(self):
-        at = PackageNames.multiple
-        for r in (self._repo, self._stack):
-            self.assertRaises(AmbiguousPackageSetError, r.select, at)
 
-    def test_select_atom_empty(self):
-        at = PackageNames.empty
-        for r in self._repos:
-            self.assertRaises(EmptyPackageSetError, r.select, at)
+def test_atom_single_select(repo, single_atom):
+    assert repo.select(single_atom)
 
-    def test_getitem_atom(self):
-        at = PackageNames.single_complete
-        for r in (self._stack, self._repo):
-            self.assertRaises(AmbiguousPackageSetError, lambda r, at: r[at], r, at)
-        self.assertTrue(self._inst[at])
 
-    def test_getitem_atom_empty(self):
-        at = PackageNames.empty
-        for r in self._repos:
-            self.assertRaises(EmptyPackageSetError, lambda r, at: r[at], r, at)
+def test_atom_single_filter_bool(repo, single_atom):
+    assert repo.filter(single_atom)
 
-    def test_nonzero_true(self):
-        at = PackageNames.single_complete
-        for r in self._repos:
-            pset = r.filter(at)
-            self.assertTrue(IterChecker(pset))
-            self.assertTrue(pset)
 
-    def test_nonzero_false(self):
-        at = PackageNames.empty
-        for r in self._repos:
-            pset = r.filter(at)
-            self.assertFalse(IterChecker(pset))
-            self.assertFalse(pset)
+def test_atom_single_contains(repo, single_atom):
+    assert single_atom in repo
 
-    def test_contains_atom(self):
-        at = PackageNames.single_complete
-        for r in self._repos:
-            self.assertTrue(at in r)
 
-    def test_contains_atom_multiple(self):
-        at = PackageNames.multiple
-        for r in (self._repo, self._stack):
-            self.assertTrue(at in r)
+def test_atom_single_getitem(installable_repo):
+    with pytest.raises(AmbiguousPackageSetError):
+        installable_repo[PackageNames.single_complete]
 
-    def test_contains_atom_empty(self):
-        at = PackageNames.empty
-        for r in self._repos:
-            self.assertFalse(at in r)
 
-    def tearDown(self):
-        pass
+def test_atom_single_getitem_installed(pm):
+    assert pm.installed[PackageNames.single_complete]
+
+
+def test_atom_multiple_filter(installable_repo):
+    assert len({p.key for p in installable_repo.filter(PackageNames.multiple)}) > 1
+
+
+def test_atom_multiple_select(installable_repo):
+    with pytest.raises(AmbiguousPackageSetError):
+        list(installable_repo.select(PackageNames.multiple))
+
+
+def test_atom_multiple_filter_bool(installable_repo):
+    assert installable_repo.filter(PackageNames.multiple)
+
+
+def test_atom_multiple_contains(installable_repo):
+    assert PackageNames.multiple in installable_repo
+
+
+def test_atom_empty_filter(repo):
+    assert not any(repo.filter(PackageNames.empty))
+
+
+def test_atom_empty_select(repo):
+    with pytest.raises(EmptyPackageSetError):
+        list(repo.select(PackageNames.empty))
+
+
+def test_atom_empty_filter_bool(repo):
+    assert not repo.filter(PackageNames.empty)
+
+
+def test_atom_empty_contains(repo):
+    assert not PackageNames.empty in repo
+
+
+def test_getitem_atom_empty(repo):
+    with pytest.raises(EmptyPackageSetError):
+        repo[PackageNames.empty]

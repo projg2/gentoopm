@@ -1,24 +1,10 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2022 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-import unittest
 
-
-class PMTestCase(unittest.TestCase):
-    _pm = None
-
-    @property
-    def pm(self):
-        if self._pm is None:
-            from gentoopm import get_package_manager
-
-            self._pm = get_package_manager()
-        return self._pm
-
-
-class PackageNames(object):
+class PackageNames:
     """
     A container for package names used in tests. Supposed to allow simple
     switch to another packages when one of them stops to work.

@@ -1,153 +1,143 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2022 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
+
+import pytest
 
 import os.path
 
-from . import PMTestCase, PackageNames
+from . import PackageNames
 
 
-class PackagesTestCase(PMTestCase):
-    def setUp(self):
-        self._inst_pkg = self.pm.installed.select(PackageNames.single_complete)
-        self._stack_pkg = self.pm.stack.select(PackageNames.single_complete)
-        self._subslotted_pkg = self.pm.stack.select(PackageNames.subslotted)
-        self._pmasked_pkg = self.pm.stack.select(PackageNames.pmasked)
-        self._nonpmasked_pkg = self.pm.stack.select(PackageNames.nonpmasked)
-        self._pkgs = (self._inst_pkg, self._stack_pkg)
+@pytest.fixture(scope="session", params=["installed", "stack"])
+def repo(request, pm):
+    return getattr(pm, request.param)
 
-    def test_key_id(self):
-        """Check whether package IDs are unique and keys are not."""
-        for r in (self.pm.installed, self.pm.stack):
-            ids = set()
-            key = None
-            for p in r.filter(PackageNames.single_complete):
-                self.assertFalse(p in ids)
-                ids.add(p)
-                if key is not None:
-                    self.assertEqual(p.key, key)
-                else:
-                    key = p.key
 
-    def test_key_state(self):
-        """Check whether package keys set state correctly."""
-        self.assertTrue(self._inst_pkg.key.state.installed)
-        self.assertTrue(self._stack_pkg.key.state.installable)
-        self.assertNotEqual(self._inst_pkg.key, self._stack_pkg.key)
+@pytest.fixture(scope="session")
+def inst_pkg(pm):
+    return pm.installed.select(PackageNames.single_complete)
 
-    def test_path_exists(self):
-        """Check whether the path returned is ok (if any)."""
-        for p in self._pkgs:
-            if p.path:
-                self.assertTrue(os.path.exists(p.path))
 
-    def test_atom_reverse(self):
-        """Check whether the atom matches the same package."""
-        for r in (self.pm.installed, self.pm.stack):
-            # get worst match
-            p = next(iter(sorted(r.filter(PackageNames.single_complete))))
+@pytest.fixture(scope="session")
+def stack_pkg(pm):
+    return pm.stack.select(PackageNames.single_complete)
 
-            self.assertEqual(p, r[p])
-            self.assertEqual(p.key, r.select(p.slotted_atom).key)
-            self.assertEqual(p.key, r.select(p.unversioned_atom).key)
 
-    def test_metadata_inherited(self):
-        """Check the INHERITED metadata var. It was known to cause problems
-        with pkgcore."""
-        for p in self._pkgs:
-            p.inherits
+@pytest.fixture(scope="session")
+def subslotted_pkg(pm):
+    return pm.stack.select(PackageNames.subslotted)
 
-    def test_inherits(self):
-        """Check whether inherits are an iterable of stringifiables."""
-        for p in self._pkgs:
-            if p.inherits is not None:
-                try:
-                    self.assertTrue(str(next(iter(p.inherits))))
-                except StopIteration:
-                    pass
 
-    def test_environ_dict(self):
-        """Try to access environment.bz2 via dict."""
-        rk = PackageNames.envsafe_metadata_key
-        ra = PackageNames.envsafe_metadata_acc
-        for p in (self._inst_pkg,):
-            self.assertEqual(ra(p), p.environ[rk])
+@pytest.fixture(scope="session")
+def pkg(request, repo):
+    return repo.select(PackageNames.single_complete)
 
-    def test_environ_copy(self):
-        """Try to access environment.bz2 via .copy()."""
-        rk = PackageNames.envsafe_metadata_key
-        ra = PackageNames.envsafe_metadata_acc
-        for p in (self._inst_pkg,):
-            self.assertEqual(ra(p), p.environ.copy(rk)[rk])
 
-    def test_environ_fork(self):
-        """Test forking environment accessor."""
-        rk = PackageNames.envsafe_metadata_key
-        ra = PackageNames.envsafe_metadata_acc
-        for p in (self._inst_pkg,):
-            forkenv = p.environ.fork()
-            self.assertEqual(ra(p), forkenv[rk])
-            del forkenv
+def test_key_id(repo):
+    """Test that IDs are unique while keys are not"""
+    pkgs = list(repo.filter(PackageNames.single_complete))
+    assert len(set(pkgs)) == len(pkgs)
+    assert len(set(p.key for p in pkgs)) == 1
 
-    def test_contents(self):
-        """Test .contents."""
-        p = self._inst_pkg
-        f = next(iter(p.contents))
-        self.assertTrue(f in p.contents)
 
-    def test_use(self):
-        """Test .use."""
-        p = self._inst_pkg
-        fl = PackageNames.single_use
-        self.assertTrue(fl in p.use)
+def test_key_state(inst_pkg, stack_pkg):
+    assert inst_pkg.key.state.installed
+    assert not inst_pkg.key.state.installable
+    assert not stack_pkg.key.state.installed
+    assert stack_pkg.key.state.installable
+    assert inst_pkg.key != stack_pkg.key
 
-    def test_slot(self):
-        """Test .slot and friends."""
-        p = self._subslotted_pkg
-        # ensure that subslot is not included in slot nor slotted atom
-        self.assertTrue("/" not in p.slot)
-        self.assertTrue("/" not in str(p.slotted_atom).split(":")[1])
-        # ensure that subslot is not null
-        self.assertTrue(p.subslot)
 
-    def test_non_subslotted(self):
-        """Test .subslot on package not using explicit subslots."""
-        p = self._stack_pkg
-        self.assertEqual(p.slot, p.subslot)
+def test_path_exists(pkg):
+    if pkg.path is None:
+        pytest.skip("no path")
+    assert os.path.exists(pkg.path)
 
-    def test_maintainers(self):
-        """Test .maintainers on a package having them."""
-        p = self._stack_pkg
-        # TODO: remove this hack once portage&paludis give us maintainers
-        if p.maintainers is None:
-            self.skipTest("Maintainers not implemented?")
-        m_emails = [m.email for m in p.maintainers]
-        self.assertTrue(len(m_emails) == 2)
-        self.assertTrue("test@example.com" in m_emails)
-        self.assertTrue("test2@example.com" in m_emails)
 
-    def test_no_maintainers(self):
-        """Test .maintainres on a package not having them."""
-        p = self._subslotted_pkg
-        # TODO: remove this hack once portage&paludis give us maintainers
-        if p.maintainers is None:
-            self.skipTest("Maintainers not implemented?")
-        self.assertTrue(len(p.maintainers) == 0)
+def test_atom_reverse(repo):
+    # get the worst match
+    pkg = sorted(repo.filter(PackageNames.single_complete))[0]
+    assert repo[pkg] == pkg
+    assert repo.select(pkg.slotted_atom).key == pkg.key
+    assert repo.select(pkg.unversioned_atom).key == pkg.key
 
-    def test_repo_masked(self):
-        p = self._pmasked_pkg
-        try:
-            self.assertTrue(p.repo_masked)
-        except NotImplementedError:
-            self.skipTest("repo_masked not implemented")
 
-    def test_nonrepo_masked(self):
-        p = self._nonpmasked_pkg
-        try:
-            self.assertFalse(p.repo_masked)
-        except NotImplementedError:
-            self.skipTest("repo_masked not implemented")
+def test_inherited(pkg):
+    if pkg.inherits is None:
+        pytest.skip("inherits not supported")
+    assert all(str(i) for i in pkg.inherits)
 
-    def tearDown(self):
-        pass
+
+def test_environ_dict(inst_pkg):
+    assert inst_pkg.environ[
+        PackageNames.envsafe_metadata_key
+    ] == PackageNames.envsafe_metadata_acc(inst_pkg)
+
+
+def test_environ_copy(inst_pkg):
+    assert inst_pkg.environ.copy(PackageNames.envsafe_metadata_key)[
+        PackageNames.envsafe_metadata_key
+    ] == PackageNames.envsafe_metadata_acc(inst_pkg)
+
+
+def test_environ_fork(inst_pkg):
+    forkenv = inst_pkg.environ.fork()
+    assert forkenv[
+        PackageNames.envsafe_metadata_key
+    ] == PackageNames.envsafe_metadata_acc(inst_pkg)
+    del forkenv
+
+
+def test_contents(inst_pkg):
+    assert all(f in inst_pkg.contents for f in inst_pkg.contents)
+
+
+def test_use(inst_pkg):
+    assert PackageNames.single_use in inst_pkg.use
+
+
+def test_slot(subslotted_pkg):
+    # ensure that subslot is not included in slot nor slotted atom
+    assert "/" not in subslotted_pkg.slot
+    assert "/" not in str(subslotted_pkg.slotted_atom).split(":")[1]
+    # ensure that subslot is not null
+    assert subslotted_pkg.subslot
+
+
+def test_non_subslotted(stack_pkg):
+    assert stack_pkg.slot == stack_pkg.subslot
+
+
+def test_maintainers(stack_pkg):
+    # TODO: remove this hack once portage&paludis give us maintainers
+    if stack_pkg.maintainers is None:
+        pytest.skip("maintainers not supported")
+    assert [m.email for m in stack_pkg.maintainers] == [
+        "test@example.com",
+        "test2@example.com",
+    ]
+
+
+def test_no_maintainers(subslotted_pkg):
+    # TODO: remove this hack once portage&paludis give us maintainers
+    if subslotted_pkg.maintainers is None:
+        pytest.skip("maintainers not supported")
+    assert list(subslotted_pkg.maintainers) == []
+
+
+def test_repo_masked(pm):
+    pkg = pm.stack.select(PackageNames.pmasked)
+    try:
+        assert pkg.repo_masked
+    except NotImplementedError:
+        pytest.skip("repo_masked not implemented")
+
+
+def test_non_repo_masked(pm):
+    pkg = pm.stack.select(PackageNames.nonpmasked)
+    try:
+        assert not pkg.repo_masked
+    except NotImplementedError:
+        pytest.skip("repo_masked not implemented")
