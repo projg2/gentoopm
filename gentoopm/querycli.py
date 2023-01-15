@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2017-2022 Michał Górny <mgorny@gentoo.org>
+# (c) 2017-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import argparse
@@ -295,3 +295,7 @@ class PMQueryCLI(object):
 def main():
     cli = PMQueryCLI()
     sys.exit(cli.main(sys.argv))
+
+
+if __name__ == "__main__":
+    main()
