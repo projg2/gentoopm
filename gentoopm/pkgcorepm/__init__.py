@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2017-2021 Michał Górny <mgorny@gentoo.org>
+# (c) 2017-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 from distutils.version import StrictVersion
@@ -28,7 +28,7 @@ class PkgCorePM(PackageManager):
         return pkgcore_version_raw
 
     def reload_config(self):
-        config_root = os.environ.get("PORTAGE_CONFIGROOT")
+        config_root = os.environ.get("PORTAGE_CONFIGROOT", "")
         if self.config_root != "":
             config_root = self.config_root
         kwargs = {}
