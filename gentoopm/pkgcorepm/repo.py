@@ -43,11 +43,7 @@ class PkgCoreRepository(PkgCorePackageSet, PMRepository):
     _index = 0
 
     def __init__(self, repo_obj, domain):
-        from . import PKGCORE_VERSION
-
         args = []
-        if PKGCORE_VERSION < "0.11.7":
-            args.append(repo_obj)
         for configurable in repo_obj.configurables:
             if configurable == "domain":
                 args.append(domain)

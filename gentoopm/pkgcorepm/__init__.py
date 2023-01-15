@@ -3,7 +3,6 @@
 # (c) 2017-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from distutils.version import StrictVersion
 import os
 import os.path
 
@@ -15,9 +14,6 @@ from ..basepm import PackageManager
 from .atom import PkgCoreAtom
 from .config import PkgCoreConfig
 from .repo import PkgCoreRepoDict, PkgCoreInstalledRepo
-
-
-PKGCORE_VERSION = StrictVersion(pkgcore_version_raw)
 
 
 class PkgCorePM(PackageManager):
@@ -33,10 +29,7 @@ class PkgCorePM(PackageManager):
             config_root = self.config_root
         kwargs = {}
         if config_root != "":
-            if PKGCORE_VERSION >= "0.11.7":
-                kwargs["location"] = os.path.join(config_root, "etc", "portage")
-            else:
-                kwargs["configroot"] = config_root
+            kwargs["location"] = os.path.join(config_root, "etc", "portage")
         c = load_config(**kwargs)
         self._domain = c.get_default("domain")
 
