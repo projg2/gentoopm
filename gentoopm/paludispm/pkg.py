@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import paludis
@@ -203,6 +203,18 @@ class PaludisID(PMPackage, PaludisAtom):
         return PaludisPackageDepSet(
             self._get_meta("REQUIRED_USE"), self, PMRequiredUseAtom
         )
+
+    @property
+    def license(self):
+        raise NotImplementedError(".license is not implemented for Paludis")
+
+    @property
+    def properties(self):
+        raise NotImplementedError(".properties is not implemented for Paludis")
+
+    @property
+    def restrict(self):
+        raise NotImplementedError(".restrict is not implemented for Paludis")
 
     @property
     def use(self):

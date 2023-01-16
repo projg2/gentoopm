@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 from pkgcore.ebuild.atom import atom
@@ -49,6 +49,8 @@ class PkgCoreBaseDep(PMBaseDep):
                 yield PkgCoreAtMostOneOfDep(d, self._pkg)
             elif isinstance(d, Conditional) and d.attr == "use":
                 yield PkgCoreConditionalUseDep(d, self._pkg)
+            elif isinstance(d, str):  # LICENSE, PROPERTIES, RESTRICT
+                yield d
             else:
                 raise NotImplementedError("Parsing %s not implemented" % repr(d))
 

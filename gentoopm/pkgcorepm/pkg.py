@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 from ..basepm.pkg import (
@@ -213,6 +213,18 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
     @property
     def required_use(self):
         return PkgCorePackageDepSet(self._pkg._raw_pkg.required_use, self._pkg)
+
+    @property
+    def license(self):
+        return PkgCorePackageDepSet(self._pkg._raw_pkg.license, self._pkg)
+
+    @property
+    def properties(self):
+        return PkgCorePackageDepSet(self._pkg._raw_pkg.properties, self._pkg)
+
+    @property
+    def restrict(self):
+        return PkgCorePackageDepSet(self._pkg._raw_pkg.restrict, self._pkg)
 
     @property
     def maintainers(self):

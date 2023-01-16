@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import os.path
@@ -337,6 +337,33 @@ class PMPackage(PMAtom, FillMissingComparisons):
     def required_use(self):
         """
         Get the C{REQUIRED_USE} specification.
+
+        @type: L{PMPackageDepSet}
+        """
+        pass
+
+    @abstractproperty
+    def license(self):
+        """
+        Get the C{LICENSE} specification.
+
+        @type: L{PMPackageDepSet}
+        """
+        pass
+
+    @abstractproperty
+    def properties(self):
+        """
+        Get the C{PROPERTIES} specification.
+
+        @type: L{PMPackageDepSet}
+        """
+        pass
+
+    @abstractproperty
+    def restrict(self):
+        """
+        Get the C{RESTRICT} specification.
 
         @type: L{PMPackageDepSet}
         """

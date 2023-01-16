@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2017 Michał Górny <mgorny@gentoo.org>
+# (c) 2017-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import errno
@@ -260,6 +260,24 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
     def required_use(self):
         return PortagePackageDepSet(
             self._aux_get("REQUIRED_USE"), self._applied_use, PMRequiredUseAtom
+        )
+
+    @property
+    def license(self):
+        return PortagePackageDepSet(
+            self._aux_get("LICENSE"), self._applied_use, str
+        )
+
+    @property
+    def properties(self):
+        return PortagePackageDepSet(
+            self._aux_get("PROPERTIES"), self._applied_use, str
+        )
+
+    @property
+    def restrict(self):
+        return PortagePackageDepSet(
+            self._aux_get("RESTRICT"), self._applied_use, str
         )
 
     def __str__(self):
