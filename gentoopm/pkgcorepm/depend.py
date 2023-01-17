@@ -115,9 +115,9 @@ class PkgCoreUncondAllOfDep(PMAllOfDep, PkgCoreUncondDep):
     pass
 
 
-class PkgCoreUncondAllOfDep(PMExactlyOneOfDep, PkgCoreUncondDep):
+class PkgCoreUncondExactlyOneOfDep(PMExactlyOneOfDep, PkgCoreUncondDep):
     pass
 
 
-class PkgCoreUncondAllOfDep(PMAtMostOneOfDep, PkgCoreUncondDep):
+class PkgCoreUncondAtMostOneOfDep(PMAtMostOneOfDep, PkgCoreUncondDep):
     pass
