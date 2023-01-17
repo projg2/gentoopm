@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011-2022 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import pytest
@@ -111,7 +111,7 @@ def test_non_subslotted(stack_pkg):
 
 
 def test_maintainers(stack_pkg):
-    # TODO: remove this hack once portage&paludis give us maintainers
+    # TODO: remove this hack once portage give us maintainers
     if stack_pkg.maintainers is None:
         pytest.skip("maintainers not supported")
     assert [m.email for m in stack_pkg.maintainers] == [
@@ -121,7 +121,7 @@ def test_maintainers(stack_pkg):
 
 
 def test_no_maintainers(subslotted_pkg):
-    # TODO: remove this hack once portage&paludis give us maintainers
+    # TODO: remove this hack once portage give us maintainers
     if subslotted_pkg.maintainers is None:
         pytest.skip("maintainers not supported")
     assert list(subslotted_pkg.maintainers) == []

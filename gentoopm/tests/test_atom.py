@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011-2022 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import pytest
@@ -124,21 +124,18 @@ def test_atom_parts_dumb(pm):
 
 
 def test_atom_slots(pm):
-    # Paludis does not allow dependency syntax on user-specified slots
-    # FIXME: figure out how to test it better
-    if pm.name != "paludis":
-        a = pm.Atom("app-foo/bar:=")
-        assert a.slot is None
-        assert a.subslot is None
-        assert a.slot_operator == "="
-        b = pm.Atom("app-foo/bar:*")
-        assert b.slot is None
-        assert b.subslot is None
-        assert b.slot_operator == "*"
-        c = pm.Atom("app-foo/bar:1=")
-        assert c.slot == "1"
-        assert c.subslot is None
-        assert c.slot_operator == "="
+    a = pm.Atom("app-foo/bar:=")
+    assert a.slot is None
+    assert a.subslot is None
+    assert a.slot_operator == "="
+    b = pm.Atom("app-foo/bar:*")
+    assert b.slot is None
+    assert b.subslot is None
+    assert b.slot_operator == "*"
+    c = pm.Atom("app-foo/bar:1=")
+    assert c.slot == "1"
+    assert c.subslot is None
+    assert c.slot_operator == "="
     d = pm.Atom("app-foo/bar:1/2")
     assert d.slot == "1"
     assert d.subslot == "2"
@@ -150,23 +147,20 @@ def test_atom_slots(pm):
 
 
 def test_unqualified_atom_slots(pm):
-    # Paludis does not allow dependency syntax on user-specified slots
-    # FIXME: figure out how to test it better
-    if pm.name != "paludis":
-        a = pm.Atom("bar:=")
-        assert a.slot is None
-        assert a.subslot is None
-        assert a.slot_operator == "="
-        # FIXME: this is broken with recent pkgcore
-        if pm.name != "pkgcore":
-            b = pm.Atom("bar:*")
-            assert b.slot is None
-            assert b.subslot is None
-            assert b.slot_operator == "*"
-        c = pm.Atom("bar:1=")
-        assert c.slot == "1"
-        assert c.subslot is None
-        assert c.slot_operator == "="
+    a = pm.Atom("bar:=")
+    assert a.slot is None
+    assert a.subslot is None
+    assert a.slot_operator == "="
+    # FIXME: this is broken with recent pkgcore
+    if pm.name != "pkgcore":
+        b = pm.Atom("bar:*")
+        assert b.slot is None
+        assert b.subslot is None
+        assert b.slot_operator == "*"
+    c = pm.Atom("bar:1=")
+    assert c.slot == "1"
+    assert c.subslot is None
+    assert c.slot_operator == "="
     d = pm.Atom("bar:1/2")
     assert d.slot == "1"
     assert d.subslot == "2"

@@ -1,10 +1,9 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 _supported_pms = {
-    "paludis": ("paludispm", "PaludisPM"),
     "pkgcore": ("pkgcorepm", "PkgCorePM"),
     "portage": ("portagepm", "PortagePM"),
 }

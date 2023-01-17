@@ -29,7 +29,7 @@ def test_env(tmp_path_factory):
     os.environ["PORTAGE_CONFIGROOT"] = str(abs_test_dir)
 
 
-@pytest.fixture(scope="session", params=["paludis", "pkgcore", "portage"])
+@pytest.fixture(scope="session", params=["pkgcore", "portage"])
 def pm(request, test_env):
     from gentoopm.submodules import get_pm
 

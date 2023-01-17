@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import os
 
 # portage comes last as it is often installed aside anyway
 # pkgcore is best supported and fastest ATM
-default_preference_list = ("pkgcore", "paludis", "portage")
+default_preference_list = ("pkgcore", "portage")
 
 
 def get_preferred_pms():

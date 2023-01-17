@@ -42,7 +42,6 @@ include = [
 
 [[tool.mypy.overrides]]
 module = [
-    "paludis.*",
     "pkgcore.*",
     "portage.*",
 ]
