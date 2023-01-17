@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 from abc import abstractproperty
@@ -46,7 +46,6 @@ class PaludisBaseRepo(PMRepository, PaludisPackageSet):
         pass
 
     def __iter__(self):
-        enum = PaludisEnumID()
         for p in self._env[self._sel(paludis.FilteredGenerator(self._gen, self._filt))]:
             yield self._pkg_class(p, self._env)
 

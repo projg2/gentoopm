@@ -6,7 +6,7 @@
 import errno
 import os.path
 
-from portage.versions import cpv_getkey, cpv_getversion, vercmp
+from portage.versions import cpv_getkey
 from portage.xml.metadata import MetaDataXML
 
 from ..basepm.depend import PMRequiredUseAtom
