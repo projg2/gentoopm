@@ -288,6 +288,18 @@ class PkgCoreInstalledPackage(PkgCorePackage, PMInstalledPackage):
         return PkgCorePackageDepSet(self._pkg.required_use, self._pkg)
 
     @property
+    def license(self):
+        return PkgCorePackageDepSet(self._pkg.license, self._pkg)
+
+    @property
+    def properties(self):
+        return PkgCorePackageDepSet(self._pkg.properties, self._pkg)
+
+    @property
+    def restrict(self):
+        return PkgCorePackageDepSet(self._pkg.restrict, self._pkg)
+
+    @property
     def contents(self):
         return PkgCorePackageContents(self._pkg.contents)
 
