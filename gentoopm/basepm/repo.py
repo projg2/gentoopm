@@ -1,9 +1,13 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 import os.path
+import typing
+
+from pathlib import Path
+
 from abc import abstractmethod, abstractproperty
 
 from ..util import ABCObject, FillMissingComparisons
@@ -77,6 +81,13 @@ class PMRepository(PMPackageSet):
     """
 
 
+class GlobalUseFlag(typing.NamedTuple):
+    """Global USE flag (as defined by use.desc)"""
+
+    name: str
+    description: str
+
+
 class PMEbuildRepository(PMRepository, FillMissingComparisons):
     """
     Base abstract class for an ebuild repository (on livefs).
@@ -100,6 +111,27 @@ class PMEbuildRepository(PMRepository, FillMissingComparisons):
         @type: string
         """
         pass
+
+    @property
+    def global_use(self) -> dict[str, GlobalUseFlag]:
+        """Get dict of global USE flags as defined in use.desc"""
+
+        # Portage does not implement use.desc support, so we roll out
+        # a generic implementation here
+        try:
+            with open(Path(self.path) / "profiles/use.desc", "r") as f:
+                def inner() -> typing.Generator[tuple[str, str], None, None]:
+                    for line in f:
+                        line = line.strip()
+                        if not line or line[0] == "#":
+                            continue
+                        yield tuple(line.split(" - ", 1))
+                return {
+                    name: GlobalUseFlag(name, desc) for name, desc in inner()
+                }
+
+        except FileNotFoundError:
+            return {}
 
     @abstractmethod
     def __lt__(self, other):

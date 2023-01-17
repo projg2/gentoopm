@@ -12,7 +12,9 @@ try:
 except ImportError:
     from pkgcore.ebuild.repository import _UnconfiguredTree as UnconfiguredTree
 
-from ..basepm.repo import PMRepository, PMRepositoryDict, PMEbuildRepository
+from ..basepm.repo import (PMRepository, PMRepositoryDict, PMEbuildRepository,
+                           GlobalUseFlag,
+                           )
 from ..util import FillMissingComparisons
 
 from .pkg import (
@@ -120,6 +122,12 @@ class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository, FillMissingCompar
     @property
     def path(self):
         return self._repo.location
+
+    @property
+    def global_use(self) -> dict[str, GlobalUseFlag]:
+        return {
+            k: GlobalUseFlag(k, v) for _, (k, v) in self._repo.config.use_desc
+        }
 
     def __lt__(self, other):
         return other._index < self._index
