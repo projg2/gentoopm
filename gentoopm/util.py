@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 """
@@ -10,22 +10,10 @@ Utility functions for gentoopm.
 import collections
 from abc import ABCMeta
 
-try:
-    exec(
-        '''
+
 class ABCObject(object, metaclass = ABCMeta):
-	""" A portably-defined object with ABCMeta metaclass. """
-	pass
-'''
-    )
-except SyntaxError:  # py2
-    exec(
-        '''
-class ABCObject(object):
-	""" A portably-defined object with ABCMeta metaclass. """
-	__metaclass__ = ABCMeta
-'''
-    )
+    """ A portably-defined object with ABCMeta metaclass. """
+    pass
 
 
 class FillMissingNotEqual(object):
@@ -77,27 +65,14 @@ class BoolCompat(object):
         return self.__bool__()
 
 
-try:
+class StringCompat(str):
+    """
+    A helper class to create objects inheriting from string. It is basically
+    like subclassing str directly but with a nice C{repr()}.
+    """
 
-    class StringCompat(unicode):
-        """
-        A helper class to create objects inheriting from string. It is basically
-        like subclassing str directly but with a nice C{repr()}.
-        """
-
-        def __repr__(self):
-            return "%s(%s)" % (self.__class__.__name__, repr(unicode(self)))
-
-except NameError:
-
-    class StringCompat(str):
-        """
-        A helper class to create objects inheriting from string. It is basically
-        like subclassing str directly but with a nice C{repr()}.
-        """
-
-        def __repr__(self):
-            return "%s(%s)" % (self.__class__.__name__, repr(str(self)))
+    def __repr__(self):
+        return "%s(%s)" % (self.__class__.__name__, repr(str(self)))
 
 
 class _SpaceSepIter(object):
