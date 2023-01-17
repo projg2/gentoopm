@@ -125,7 +125,8 @@ class PMEbuildRepository(PMRepository, FillMissingComparisons):
                         line = line.strip()
                         if not line or line[0] == "#":
                             continue
-                        yield tuple(line.split(" - ", 1))
+                        name, desc = line.split(" - ", 1)
+                        yield (name, desc)
                 return {
                     name: GlobalUseFlag(name, desc) for name, desc in inner()
                 }
