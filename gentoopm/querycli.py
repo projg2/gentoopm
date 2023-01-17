@@ -226,17 +226,11 @@ class PMQueryCommands(object):
             try:
                 from IPython import embed
             except ImportError:
-                try:
-                    from IPython.Shell import IPShellEmbed
-                except ImportError:
-                    print("For better user experience, install IPython.")
-                    from code import InteractiveConsole
+                print("For better user experience, install IPython.")
+                from code import InteractiveConsole
 
-                    embed = InteractiveConsole({"pm": pm}).interact
-                    kwargs["banner"] = welc
-                else:
-                    embed = IPShellEmbed()
-                    embed.set_banner(embed.IP.BANNER + "\n\n" + welc)
+                embed = InteractiveConsole({"pm": pm}).interact
+                kwargs["banner"] = welc
             else:
                 kwargs["banner2"] = welc
 
