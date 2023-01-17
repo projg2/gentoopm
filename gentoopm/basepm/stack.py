@@ -3,7 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from .repo import PMRepository
+from .repo import PMRepository, GlobalUseFlag, UseExpand
 from .pkgset import PMPackageSet
 
 
@@ -22,6 +22,22 @@ class PMRepoStackWrapper(PMRepository):
 
     def filter(self, *args, **kwargs):
         return PMFilteredStackPackageSet(self._repos, args, kwargs)
+
+    @property
+    def global_use(self) -> dict[str, GlobalUseFlag]:
+        """Get dict of global USE flags as defined in use.desc"""
+        ret = {}
+        for r in self._repos:
+            ret.update(r.global_use)
+        return ret
+
+    @property
+    def use_expand(self) -> dict[str, UseExpand]:
+        """Get dict of USE_EXPAND groups"""
+        ret = {}
+        for r in self._repos:
+            ret.update(r.use_expand)
+        return ret
 
 
 class PMFilteredStackPackageSet(PMPackageSet):
