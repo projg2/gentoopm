@@ -85,7 +85,25 @@ class GlobalUseFlag(typing.NamedTuple):
     """Global USE flag (as defined by use.desc)"""
 
     name: str
-    description: str
+    description: typing.Optional[str]
+
+
+class UseExpand(typing.NamedTuple):
+    """USE_EXPAND group"""
+
+    name: str
+    prefixed: bool
+    visible: bool
+    values: dict[str, GlobalUseFlag]
+
+    @property
+    def prefixed_values(self) -> dict[str, GlobalUseFlag]:
+        return {
+            f"{self.name.lower()}_{flag}":
+            GlobalUseFlag(f"{self.name.lower()}_{flag}",
+                          details.description)
+            for flag, details in self.values.items()
+        }
 
 
 class PMEbuildRepository(PMRepository, FillMissingComparisons):
@@ -133,6 +151,30 @@ class PMEbuildRepository(PMRepository, FillMissingComparisons):
 
         except FileNotFoundError:
             return {}
+
+    def _use_expand_desc(self, k: str) -> dict[str, GlobalUseFlag]:
+        """Read USE_EXPAND descriptions for given key"""
+
+        filename = k.lower() + ".desc"
+        try:
+            with open(Path(self.path) / "profiles/desc" / filename, "r") as f:
+                def inner() -> typing.Generator[tuple[str, str], None, None]:
+                    for line in f:
+                        line = line.strip()
+                        if not line or line[0] == "#":
+                            continue
+                        name, desc = line.split(" - ", 1)
+                        yield (name, desc)
+                return {
+                    name: GlobalUseFlag(name, desc) for name, desc in inner()
+                }
+
+        except FileNotFoundError:
+            return {}
+
+    @abstractproperty
+    def use_expand(self) -> dict[str, UseExpand]:
+        """Get dict of USE_EXPAND groups"""
 
     @abstractmethod
     def __lt__(self, other):

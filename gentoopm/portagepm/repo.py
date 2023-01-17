@@ -1,15 +1,20 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import itertools
 import os.path
+import typing
+
 from abc import abstractproperty
 
 import portage.exception as pe
 from portage.versions import catsplit
 
-from ..basepm.repo import PMRepositoryDict, PMEbuildRepository, PMRepository
+from ..basepm.repo import (PMRepositoryDict, PMEbuildRepository, PMRepository,
+                           UseExpand, GlobalUseFlag,
+                           )
 from ..util import FillMissingComparisons
 
 from .atom import PortageAtom, CompletePortageAtom
@@ -197,6 +202,28 @@ class PortageRepository(PortDBRepository, PMEbuildRepository, FillMissingCompari
     @property
     def path(self):
         return self._repo.location
+
+    @property
+    def use_expand(self) -> dict[str, UseExpand]:
+        def inner() -> typing.Generator[tuple[str, UseExpand], None, None]:
+            def getconf(k: str) -> list[str]:
+                return self._dbapi.settings.get(k, "").split()
+
+            prefixed = getconf("USE_EXPAND")
+            unprefixed = getconf("USE_EXPAND_UNPREFIXED")
+            hidden = getconf("USE_EXPAND_HIDDEN")
+
+            for k in itertools.chain(prefixed, unprefixed):
+                values = {}
+                for flag in getconf("USE_EXPAND_VALUES_" + k):
+                    values[flag] = GlobalUseFlag(flag, None)
+                values.update(self._use_expand_desc(k))
+
+                yield (k, UseExpand(name=k,
+                                    prefixed=k not in unprefixed,
+                                    visible=k not in hidden,
+                                    values=values))
+        return dict(inner())
 
     def __lt__(self, other):
         return self._repo.priority < other._repo.priority

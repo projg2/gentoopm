@@ -3,6 +3,9 @@
 # (c) 2017-2021 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import itertools
+import typing
+
 from abc import abstractproperty
 
 import pkgcore.restrictions.boolean as br
@@ -13,7 +16,7 @@ except ImportError:
     from pkgcore.ebuild.repository import _UnconfiguredTree as UnconfiguredTree
 
 from ..basepm.repo import (PMRepository, PMRepositoryDict, PMEbuildRepository,
-                           GlobalUseFlag,
+                           GlobalUseFlag, UseExpand,
                            )
 from ..util import FillMissingComparisons
 
@@ -113,6 +116,7 @@ class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository, FillMissingCompar
 
     def __init__(self, repo_obj, domain, index):
         PkgCoreRepository.__init__(self, repo_obj, domain)
+        self._domain = domain
         self._index = index
 
     @property
@@ -128,6 +132,30 @@ class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository, FillMissingCompar
         return {
             k: GlobalUseFlag(k, v) for _, (k, v) in self._repo.config.use_desc
         }
+
+    @property
+    def use_expand(self) -> dict[str, UseExpand]:
+        def inner() -> typing.Generator[tuple[str, UseExpand], None, None]:
+            prefixed = self._domain.profile.use_expand
+            unprefixed = self._domain.profile.use_expand_unprefixed
+            hidden = self._domain.profile.use_expand_hidden
+
+            for k in itertools.chain(prefixed, unprefixed):
+                values = {}
+                for flag in (self._domain.profile.default_env
+                             .get("USE_EXPAND_VALUES_" + k, "").split()):
+                    values[flag] = GlobalUseFlag(flag, None)
+                for flag, desc in (self._repo.use_expand_desc
+                                   .get(k.lower(), [])):
+                    if k not in unprefixed:
+                        flag = flag[len(k)+1:]
+                    values[flag] = GlobalUseFlag(flag, desc)
+
+                yield (k, UseExpand(name=k,
+                                    prefixed=k not in unprefixed,
+                                    visible=k not in hidden,
+                                    values=values))
+        return dict(inner())
 
     def __lt__(self, other):
         return other._index < self._index
