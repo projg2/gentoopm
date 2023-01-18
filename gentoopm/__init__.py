@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # 	vim:fileencoding=utf-8
-# (c) 2011-2022 Michał Górny <mgorny@gentoo.org>
+# (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
 """Python wrapper for APIs of Gentoo package managers"""
 
-__version__ = "0.4"
+__version__ = "0.5.0"
 
 
 def get_package_manager():
