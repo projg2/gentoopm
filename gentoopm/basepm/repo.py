@@ -106,6 +106,13 @@ class UseExpand(typing.NamedTuple):
         }
 
 
+class ArchDesc(typing.NamedTuple):
+    """Architecture defined by arch.list + arches.desc"""
+
+    name: str
+    stability: typing.Optional[str] = None
+
+
 class PMEbuildRepository(PMRepository, FillMissingComparisons):
     """
     Base abstract class for an ebuild repository (on livefs).
@@ -175,6 +182,35 @@ class PMEbuildRepository(PMRepository, FillMissingComparisons):
     @abstractproperty
     def use_expand(self) -> dict[str, UseExpand]:
         """Get dict of USE_EXPAND groups"""
+
+    @property
+    def arches(self) -> dict[str, ArchDesc]:
+        """Get dict of known architectures"""
+
+        arches = {}
+
+        try:
+            with open(Path(self.path) / "profiles/arch.list", "r") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and line[0] != "#":
+                        arches[line] = ArchDesc(line)
+        except FileNotFoundError:
+            pass
+
+        try:
+            with open(Path(self.path) / "profiles/arches.desc", "r") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line or line[0] == "#":
+                        continue
+                    arch, stability, *_ = line.split()
+                    arches[arch] = ArchDesc(name=arch,
+                                            stability=stability)
+        except FileNotFoundError:
+            pass
+
+        return arches
 
     @abstractmethod
     def __lt__(self, other):

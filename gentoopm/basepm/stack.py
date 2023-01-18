@@ -3,7 +3,7 @@
 # (c) 2011 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
-from .repo import PMRepository, GlobalUseFlag, UseExpand
+from .repo import PMRepository, GlobalUseFlag, UseExpand, ArchDesc
 from .pkgset import PMPackageSet
 
 
@@ -37,6 +37,14 @@ class PMRepoStackWrapper(PMRepository):
         ret = {}
         for r in self._repos:
             ret.update(r.use_expand)
+        return ret
+
+    @property
+    def arches(self) -> dict[str, ArchDesc]:
+        """Get dict of known architectures"""
+        ret = {}
+        for r in self._repos:
+            ret.update(r.arches)
         return ret
 
 
