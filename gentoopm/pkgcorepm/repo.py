@@ -16,7 +16,7 @@ except ImportError:
     from pkgcore.ebuild.repository import _UnconfiguredTree as UnconfiguredTree
 
 from ..basepm.repo import (PMRepository, PMRepositoryDict, PMEbuildRepository,
-                           GlobalUseFlag, UseExpand, ArchDesc,
+                           GlobalUseFlag, UseExpand, ArchDesc, LicenseDesc,
                            )
 from ..util import FillMissingComparisons
 
@@ -169,6 +169,12 @@ class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository, FillMissingCompar
                 arches[arch] = ArchDesc(name=arch,
                                         stability=stability)
         return arches
+
+    @property
+    def licenses(self) -> dict[str, LicenseDesc]:
+        return {
+            name: LicenseDesc(name) for name in self._repo.licenses.licenses
+        }
 
     def __lt__(self, other):
         return other._index < self._index

@@ -3,6 +3,7 @@
 # (c) 2011-2023 Michał Górny <mgorny@gentoo.org>
 # Released under the terms of the 2-clause BSD license.
 
+import os
 import os.path
 import typing
 
@@ -113,6 +114,12 @@ class ArchDesc(typing.NamedTuple):
     stability: typing.Optional[str] = None
 
 
+class LicenseDesc(typing.NamedTuple):
+    """License information"""
+
+    name: str
+
+
 class PMEbuildRepository(PMRepository, FillMissingComparisons):
     """
     Base abstract class for an ebuild repository (on livefs).
@@ -211,6 +218,17 @@ class PMEbuildRepository(PMRepository, FillMissingComparisons):
             pass
 
         return arches
+
+    @property
+    def licenses(self) -> dict[str, LicenseDesc]:
+        try:
+            return {
+                name: LicenseDesc(name) for name
+                in os.listdir(Path(self.path) / "licenses")
+                if not name.startswith(".")
+            }
+        except FileNotFoundError:
+            return {}
 
     @abstractmethod
     def __lt__(self, other):
