@@ -120,6 +120,14 @@ class LicenseDesc(typing.NamedTuple):
     name: str
 
 
+class LicenseGroup(typing.NamedTuple):
+    """License group"""
+
+    name: str
+    nested_groups: list[str]
+    licenses: list[str]
+
+
 class PMEbuildRepository(PMRepository, FillMissingComparisons):
     """
     Base abstract class for an ebuild repository (on livefs).
@@ -227,6 +235,31 @@ class PMEbuildRepository(PMRepository, FillMissingComparisons):
                 in os.listdir(Path(self.path) / "licenses")
                 if not name.startswith(".")
             }
+        except FileNotFoundError:
+            return {}
+
+    @property
+    def license_groups(self) -> dict[str, LicenseGroup]:
+        """Get dict of license groups"""
+        def inner(f: typing.IO[str],
+                  ) -> typing.Generator[tuple[str, LicenseGroup], None, None]:
+            for line in f:
+                line = line.strip()
+                if not line or line[0] == "#":
+                    continue
+
+                group, *members = line.split()
+                yield (group,
+                       LicenseGroup(name=group,
+                                    nested_groups=[member[1:] for member
+                                                   in members
+                                                   if member.startswith("@")],
+                                    licenses=[member for member in members
+                                              if not member.startswith("@")]))
+
+        try:
+            with open(Path(self.path) / "profiles/license_groups", "r") as f:
+                return dict(inner(f))
         except FileNotFoundError:
             return {}
 

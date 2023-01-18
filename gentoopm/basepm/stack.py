@@ -4,7 +4,7 @@
 # Released under the terms of the 2-clause BSD license.
 
 from .repo import (PMRepository, GlobalUseFlag, UseExpand, ArchDesc,
-                   LicenseDesc,
+                   LicenseDesc, LicenseGroup,
                    )
 from .pkgset import PMPackageSet
 
@@ -55,6 +55,14 @@ class PMRepoStackWrapper(PMRepository):
         ret = {}
         for r in self._repos:
             ret.update(r.licenses)
+        return ret
+
+    @property
+    def license_groups(self) -> dict[str, LicenseGroup]:
+        """Get dict of license groups"""
+        ret = {}
+        for r in self._repos:
+            ret.update(r.license_groups)
         return ret
 
 
