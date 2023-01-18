@@ -85,7 +85,7 @@ class GlobalUseFlag(typing.NamedTuple):
     """Global USE flag (as defined by use.desc)"""
 
     name: str
-    description: typing.Optional[str]
+    description: typing.Optional[str] = None
 
 
 class UseExpand(typing.NamedTuple):

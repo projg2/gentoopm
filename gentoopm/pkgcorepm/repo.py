@@ -141,7 +141,11 @@ class PkgCoreEbuildRepo(PkgCoreRepository, PMEbuildRepository, FillMissingCompar
             hidden = self._domain.profile.use_expand_hidden
 
             for k in itertools.chain(prefixed, unprefixed):
-                values = {}
+                values = {
+                    flag: GlobalUseFlag(flag)
+                    for flag in self._domain.profile.default_env.get(
+                        "USE_EXPAND_VALUES_" + k, "").split()
+                }
                 for flag in (self._domain.profile.default_env
                              .get("USE_EXPAND_VALUES_" + k, "").split()):
                     values[flag] = GlobalUseFlag(flag, None)
