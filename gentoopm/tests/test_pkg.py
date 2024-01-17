@@ -1,4 +1,5 @@
 # (c) 2011-2024 Michał Górny <mgorny@gentoo.org>
+# (c) 2024 Anna <cyber@sysrq.in>
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import pytest
@@ -123,6 +124,46 @@ def test_no_maintainers(subslotted_pkg):
     if subslotted_pkg.maintainers is None:
         pytest.skip("maintainers not supported")
     assert list(subslotted_pkg.maintainers) == []
+
+
+def test_upstream(stack_pkg):
+    assert (upstream := stack_pkg.upstream) is not None
+    try:
+        assert upstream.bugs_to == "https://bugs.example.com/enter_bug.cgi"
+        assert upstream.changelog == "https://example.com/changelog.txt"
+    except NotImplementedError:
+        pytest.skip("upstream.bugs_to not implemented")
+
+
+def test_upstream_docs(stack_pkg):
+    assert (upstream := stack_pkg.upstream) is not None
+    try:
+        assert [(d.url, d.lang) for d in upstream.docs] == [
+            ("https://docs.example.com/en/", "en"),
+            ("https://docs.example.com/pl/", "pl"),
+        ]
+    except NotImplementedError:
+        pytest.skip("upstream.docs not implemented")
+
+
+def test_upstream_maintainers(stack_pkg):
+    assert (upstream := stack_pkg.upstream) is not None
+    try:
+        assert [(d.name, d.email, d.status) for d in upstream.maintainers] == [
+            ("Alice", None, "active"),
+            ("Bob", "bob@example.com", "inactive"),
+            ("Carol", "carol@example.com", None),
+        ]
+    except NotImplementedError:
+        pytest.skip("upstream.maintainers not implemented")
+
+
+def test_upstream_remote_id(stack_pkg):
+    assert (upstream := stack_pkg.upstream) is not None
+    assert [(r.site, r.name) for r in upstream.remote_ids] == [
+        ("github", "projg2/gentoopm"),
+        ("pypi", "gentoopm")
+    ]
 
 
 def test_repo_masked(pm):

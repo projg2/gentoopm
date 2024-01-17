@@ -1,8 +1,11 @@
 # (c) 2017-2024 Michał Górny <mgorny@gentoo.org>
+# (c) 2024 Anna <cyber@sysrq.in>
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import errno
-import os.path
+import typing
+from collections.abc import Sequence
+from pathlib import Path
 
 from portage.versions import cpv_getkey
 from portage.xml.metadata import MetaDataXML
@@ -19,6 +22,12 @@ from ..basepm.pkg import (
     PMPackageMaintainer,
 )
 from ..basepm.pkgset import PMPackageSet, PMFilteredPackageSet
+from ..basepm.upstream import (
+    PMUpstream,
+    PMUpstreamDoc,
+    PMUpstreamMaintainer,
+    PMUpstreamRemoteID,
+)
 from ..util import SpaceSepTuple, SpaceSepFrozenSet
 
 from .atom import (
@@ -292,11 +301,89 @@ class PortageDBCPV(PMPackage, CompletePortageAtom):
         return False
 
 
+class PortageUpstreamDoc(PMUpstreamDoc):
+    def __new__(cls, doc: Sequence[str]):
+        return PMUpstreamDoc.__new__(cls, doc[0], doc[1] or "en")
+
+
+class PortageUpstreamMaintainer(PMUpstreamMaintainer):
+    def __new__(cls, m):
+        return PMUpstreamMaintainer.__new__(cls, m.name, m.email, m.status)
+
+
+class PortageUpstreamRemoteID(PMUpstreamRemoteID):
+    def __new__(cls, remote_id: Sequence[str]):
+        return PMUpstreamRemoteID.__new__(cls, remote_id[0], remote_id[1])
+
+
+class PortageUpstream(PMUpstream):
+    def __init__(self, meta: MetaDataXML):
+        self._bugs_to: typing.Optional[str] = None
+        self._changelog: typing.Optional[str] = None
+        self._docs: list[PortageUpstreamDoc] = []
+        self._maintainers: list[PortageUpstreamMaintainer] = []
+        self._remote_ids: list[PortageUpstreamRemoteID] = []
+
+        if meta is None:
+            return
+
+        upstreams = meta.upstream()
+        if len(upstreams) == 0:
+            return
+
+        upstream = upstreams[-1]
+        if len(upstream.bugtrackers) != 0:
+            self._bugs_to = upstream.bugtrackers[-1]
+        if len(upstream.changelogs) != 0:
+            self._changelog = upstream.changelogs[-1]
+
+        for doc in upstream.docs:
+            self._docs.append(PortageUpstreamDoc(doc))
+
+        for maintainer in filter(lambda m: m.name, upstream.maintainers):
+            self._maintainers.append(PortageUpstreamMaintainer(maintainer))
+
+        for remote_id in filter(all, upstream.remoteids):
+            self._remote_ids.append(PortageUpstreamRemoteID(remote_id))
+
+    @property
+    def bugs_to(self) -> typing.Optional[str]:
+        return self._bugs_to
+
+    @property
+    def changelog(self) -> typing.Optional[str]:
+        return self._changelog
+
+    @property
+    def docs(self) -> Sequence[PortageUpstreamDoc]:
+        return tuple(self._docs)
+
+    @property
+    def maintainers(self) -> Sequence[PortageUpstreamMaintainer]:
+        return tuple(self._maintainers)
+
+    @property
+    def remote_ids(self) -> Sequence[PortageUpstreamRemoteID]:
+        return tuple(self._remote_ids)
+
+
 class PortageCPV(PortageDBCPV, PMInstallablePackage):
     def __init__(self, cpv, dbapi, tree, repo_prio):
         PortageDBCPV.__init__(self, cpv, dbapi)
         self._tree = tree
         self._repo_prio = repo_prio
+
+    @property
+    def _metadata(self) -> typing.Optional[MetaDataXML]:
+        # yes, seriously, the only API portage has is direct parser
+        # for the XML file
+        xml_path = Path(self.path).parent / "metadata.xml"
+        try:
+            return MetaDataXML(xml_path, None)
+        except (IOError, OSError) as e:
+            if e.errno == errno.ENOENT:
+                return None
+            raise e
 
     @property
     def path(self):
@@ -307,18 +394,14 @@ class PortageCPV(PortageDBCPV, PMInstallablePackage):
         return self._dbapi.getRepositoryName(self._tree)
 
     @property
-    def maintainers(self):
-        # yes, seriously, the only API portage has is direct parser
-        # for the XML file
-        xml_path = os.path.join(os.path.dirname(self.path), "metadata.xml")
-        try:
-            meta = MetaDataXML(xml_path, None)
-        except (IOError, OSError) as e:
-            if e.errno == errno.ENOENT:
-                return ()
-            raise
-
+    def maintainers(self) -> Sequence[PortagePackageMaintainer]:
+        if (meta := self._metadata) is None:
+            return tuple()
         return tuple(PortagePackageMaintainer(m) for m in meta.maintainers())
+
+    @property
+    def upstream(self) -> PortageUpstream:
+        return PortageUpstream(self._metadata)
 
     @property
     def repo_masked(self):
