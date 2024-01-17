@@ -7,7 +7,7 @@ name = "gentoopm"
 authors = [{name = "Michał Górny", email = "mgorny@gentoo.org"}]
 readme = "README.rst"
 dynamic = ["version", "description"]
-license = {file = "COPYING"}
+license = {text = "GPL-2.0-or-later"}
 requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 4 - Beta",
