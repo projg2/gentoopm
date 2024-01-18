@@ -264,7 +264,7 @@ class PMQueryCLI(object):
             choices=all_pms,
         )
 
-        subp = arg.add_subparsers(title="Sub-commands")
+        subp = arg.add_subparsers(title="Sub-commands", required=True)
         for cmd_name, cmd_help, cmd_class in PMQueryCommands():
             p = subp.add_parser(cmd_name, help=cmd_help)
             cmd_class(p)
