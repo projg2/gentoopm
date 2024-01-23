@@ -1,5 +1,8 @@
 # (c) 2011-2024 Michał Górny <mgorny@gentoo.org>
+# (c) 2024 Anna <cyber@sysrq.in>
 # SPDX-License-Identifier: GPL-2.0-or-later
+
+import typing
 
 from ..basepm.pkg import (
     PMPackage,
@@ -12,6 +15,11 @@ from ..basepm.pkg import (
     PMPackageMaintainer,
 )
 from ..basepm.pkgset import PMPackageSet, PMFilteredPackageSet
+from gentoopm.basepm.upstream import (
+    PMUpstream,
+    PMUpstreamMaintainer,
+    PMUpstreamRemoteID,
+)
 from ..util import SpaceSepTuple, SpaceSepFrozenSet
 
 from .atom import PkgCoreAtom, PkgCorePackageKey
@@ -101,6 +109,14 @@ class PkgCoreMaintainerTuple(tuple):
                 yield PkgCorePackageMaintainer(m)
 
         return tuple.__new__(self, _iter_maints())
+
+
+class PkgCoreUpstream(PMUpstream):
+    def __getattribute__(self, key: str) -> typing.Any:
+        if key == "remote_ids":
+            return super().__getattribute__(key)
+        raise NotImplementedError("This metadata attribute is not implemented "
+                                  "for pkgcore")
 
 
 class PkgCorePackage(PMPackage, PkgCoreAtom):
@@ -227,6 +243,13 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
     @property
     def maintainers(self):
         return PkgCoreMaintainerTuple(self._pkg.maintainers)
+
+    @property
+    def upstream(self) -> typing.Optional[PkgCoreUpstream]:
+        result = PkgCoreUpstream()
+        result.remote_ids = tuple(PMUpstreamRemoteID(r.type, r.name)
+                                  for r in self._pkg.upstreams)
+        return result
 
     @property
     def repo_masked(self):

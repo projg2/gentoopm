@@ -1,8 +1,11 @@
 # (c) 2017-2024 Michał Górny <mgorny@gentoo.org>
+# (c) 2024 Anna <cyber@sysrq.in>
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import errno
-import os.path
+import typing
+from collections.abc import Iterable
+from pathlib import Path
 
 from portage.versions import cpv_getkey
 from portage.xml.metadata import MetaDataXML
@@ -17,6 +20,12 @@ from ..basepm.pkg import (
     PMPackageState,
     PMUseFlag,
     PMPackageMaintainer,
+)
+from gentoopm.basepm.upstream import (
+    PMUpstream,
+    PMUpstreamDoc,
+    PMUpstreamMaintainer,
+    PMUpstreamRemoteID,
 )
 from ..basepm.pkgset import PMPackageSet, PMFilteredPackageSet
 from ..util import SpaceSepTuple, SpaceSepFrozenSet
@@ -299,6 +308,18 @@ class PortageCPV(PortageDBCPV, PMInstallablePackage):
         self._repo_prio = repo_prio
 
     @property
+    def _metadata(self) -> typing.Optional[MetaDataXML]:
+        # yes, seriously, the only API portage has is direct parser
+        # for the XML file
+        xml_path = Path(self.path).parent / "metadata.xml"
+        try:
+            return MetaDataXML(xml_path, None)
+        except (IOError, OSError) as e:
+            if e.errno == errno.ENOENT:
+                return None
+            raise e
+
+    @property
     def path(self):
         return self._dbapi.findname(self._cpv, self._tree)
 
@@ -307,18 +328,38 @@ class PortageCPV(PortageDBCPV, PMInstallablePackage):
         return self._dbapi.getRepositoryName(self._tree)
 
     @property
-    def maintainers(self):
-        # yes, seriously, the only API portage has is direct parser
-        # for the XML file
-        xml_path = os.path.join(os.path.dirname(self.path), "metadata.xml")
-        try:
-            meta = MetaDataXML(xml_path, None)
-        except (IOError, OSError) as e:
-            if e.errno == errno.ENOENT:
-                return ()
-            raise
-
+    def maintainers(self) -> typing.Optional[Iterable[PortagePackageMaintainer]]:
+        if (meta := self._metadata) is None:
+            return None
         return tuple(PortagePackageMaintainer(m) for m in meta.maintainers())
+
+    @property
+    def upstream(self) -> typing.Optional[PMUpstream]:
+        if (meta := self._metadata) is None:
+            return None
+
+        upstreams = meta.upstream()
+        if len(upstreams) == 0:
+            return None
+        upstream = upstreams[0]
+
+        result = PMUpstream()
+        if len(upstream.bugtrackers) != 0:
+            result.bugs_to = upstream.bugtrackers[0]
+        if len(upstream.changelogs) != 0:
+            result.changelog = upstream.changelogs[0]
+
+        result.docs = tuple(PMUpstreamDoc(url, lang)
+                            for url, lang in upstream.docs) or None
+
+        result.maintainers = tuple(PMUpstreamMaintainer(m.name, m.email)
+                                   for m in upstream.maintainers
+                                   if m.name) or None
+
+        result.remote_ids = tuple(PMUpstreamRemoteID(name, site)
+                                  for site, name in upstream.remoteids
+                                  if name and site) or None
+        return result
 
     @property
     def repo_masked(self):
