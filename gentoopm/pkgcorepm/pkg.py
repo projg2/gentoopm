@@ -1,5 +1,10 @@
 # (c) 2011-2024 Michał Górny <mgorny@gentoo.org>
+# (c) 2024 Anna <cyber@sysrq.in>
 # SPDX-License-Identifier: GPL-2.0-or-later
+
+from collections.abc import Iterable, Sequence
+
+from pkgcore.ebuild.repo_objs import Upstream
 
 from ..basepm.pkg import (
     PMPackage,
@@ -12,6 +17,10 @@ from ..basepm.pkg import (
     PMPackageMaintainer,
 )
 from ..basepm.pkgset import PMPackageSet, PMFilteredPackageSet
+from gentoopm.basepm.upstream import (
+    PMUpstream,
+    PMUpstreamRemoteID,
+)
 from ..util import SpaceSepTuple, SpaceSepFrozenSet
 
 from .atom import PkgCoreAtom, PkgCorePackageKey
@@ -168,6 +177,20 @@ class PkgCorePackage(PMPackage, PkgCoreAtom):
         return "=%s" % s
 
 
+class PkgCoreUpstreamRemoteID(PMUpstreamRemoteID):
+    def __new__(cls, remote_id: Upstream):
+        return PMUpstreamRemoteID.__new__(cls, remote_id.name, remote_id.type)
+
+
+class PkgCoreUpstream(PMUpstream):
+    def __init__(self, remote_ids: Iterable[Upstream]):
+        self._remote_ids = remote_ids
+
+    @property
+    def remote_ids(self) -> Sequence[PkgCoreUpstreamRemoteID]:
+        return tuple(PkgCoreUpstreamRemoteID(r) for r in self._remote_ids)
+
+
 class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
     @property
     def inherits(self):
@@ -227,6 +250,10 @@ class PkgCoreInstallablePackage(PkgCorePackage, PMInstallablePackage):
     @property
     def maintainers(self):
         return PkgCoreMaintainerTuple(self._pkg.maintainers)
+
+    @property
+    def upstream(self) -> PkgCoreUpstream:
+        return PkgCoreUpstream(self._pkg.upstreams)
 
     @property
     def repo_masked(self):

@@ -1,4 +1,5 @@
 # (c) 2011-2024 Michał Górny <mgorny@gentoo.org>
+# (c) 2024 Anna <cyber@sysrq.in>
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import os.path
@@ -14,6 +15,7 @@ from ..util import (
 
 from .atom import PMAtom, PMPackageKey
 from .environ import PMPackageEnvironment
+from gentoopm.basepm.upstream import PMUpstream
 
 PMPackageState = EnumTuple("PMPackageState", "installable", "installed")
 
@@ -416,6 +418,13 @@ class PMInstallablePackage(PMPackage):
         @type: tuple(L{PMPackageMaintainer})/C{None}
         """
         pass
+
+    @property
+    @abstractmethod
+    def upstream(self) -> PMUpstream:
+        """
+        Get the package upstream metadata.
+        """
 
     @abstractproperty
     def repo_masked(self):
