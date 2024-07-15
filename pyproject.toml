@@ -36,6 +36,7 @@ Homepage = "https://github.com/mgorny/gentoopm/"
 
 [tool.flit.sdist]
 include = [
+    "COPYING",
     "test-root",
     "tox.ini",
 ]
