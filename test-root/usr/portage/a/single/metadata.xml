@@ -9,4 +9,23 @@
 		<email>test2@example.com</email>
 		<name>Michał Górny</name>
 	</maintainer>
+	<upstream>
+		<bugs-to>https://bugs.example.com/enter_bug.cgi</bugs-to>
+		<changelog>https://example.com/changelog.txt</changelog>
+		<doc>https://docs.example.com/en/</doc>
+		<doc lang="pl">https://docs.example.com/pl/</doc>
+		<maintainer status="active">
+			<name>Alice</name>
+		</maintainer>
+		<maintainer status="inactive">
+			<name>Bob</name>
+			<email>bob@example.com</email>
+		</maintainer>
+		<maintainer>
+			<name>Carol</name>
+			<email>carol@example.com</email>
+		</maintainer>
+		<remote-id type="github">projg2/gentoopm</remote-id>
+		<remote-id type="pypi">gentoopm</remote-id>
+	</upstream>
 </pkgmetadata>
